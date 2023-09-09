@@ -1,0 +1,12 @@
+.playlist-list {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    overflow-y: scroll;
+
+    .playlist-card {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+}
