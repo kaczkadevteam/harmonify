@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import queryString from "query-string";
+import { getResponseWithCookies } from "../tokenCookies";
 
 const redirectCallback = "/token/callback";
 
@@ -41,19 +42,15 @@ export async function GET(request: NextRequest) {
                 }),
             }
         );
-        const result = await spotifyResponse.json();
+        const { access_token, refresh_token, expires_in } =
+            await spotifyResponse.json();
 
-        const response = NextResponse.redirect(new URL("/", request.url));
-        response.cookies.set("access_token", result.access_token, {
-            httpOnly: true,
-            maxAge: result.expires_in,
-        });
-        response.cookies.set("refresh_token", result.refresh_token, {
-            httpOnly: true,
-            maxAge: result.expires_in * 24 * 365,
-        });
-
-        return response;
+        return getResponseWithCookies(
+            new URL("/", request.url),
+            access_token,
+            refresh_token,
+            expires_in
+        );
     } else {
         return new Response(params.get("error"), {
             status: 401,

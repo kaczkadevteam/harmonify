@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
 const redirectToRefresh = "/token/refresh";
-const redirectNoTokens = "/token/request";
+const redirectNoTokens = "/";
 
 export function middleware(request: NextRequest) {
     if (request.cookies.has("access_token")) {
@@ -12,10 +12,12 @@ export function middleware(request: NextRequest) {
             return NextResponse.redirect(
                 new URL(redirectToRefresh, request.url)
             );
-        } else {
+        } else if (request.nextUrl.pathname !== "/") {
             return NextResponse.redirect(
                 new URL(redirectNoTokens, request.url)
             );
+        } else {
+            return NextResponse.next();
         }
     }
 }

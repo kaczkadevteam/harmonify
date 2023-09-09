@@ -1,0 +1,12 @@
+.layout {
+    display: grid;
+    place-content: center;
+    height: 100%;
+}
+
+.header {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    margin: 20px;
+}
