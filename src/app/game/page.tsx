@@ -4,22 +4,10 @@ import React from "react";
 import GameProvider from "./GameContext";
 import Image from "next/image";
 import styles from "./page.module.scss";
-
-type SimplePlaylistObject = {
-    id: string;
-    images: ImageObject[];
-    name: string;
-    tracks: {
-        href: string;
-        total: number;
-    };
-};
-
-type ImageObject = {
-    url: string;
-    height?: number;
-    width?: number;
-};
+import { SimplePlaylistObject } from "../../types";
+import PlaylistCard from "./PlaylistCard";
+import StartButton from "./StartButton";
+import Game from "./Game";
 
 export default async function Giam() {
     const access_token = cookies().get("access_token")!.value;
@@ -37,27 +25,19 @@ export default async function Giam() {
 
     return (
         <GameProvider>
-            <main>
+            <main className={styles["main"]}>
                 <aside className={styles["playlist-list"]}>
                     {playlistsResult.items.map((playlist) => {
-                        const { url, width, height } = playlist.images[0];
-
                         return (
-                            <div
+                            <PlaylistCard
                                 key={playlist.id}
-                                className={styles["playlist-card"]}
-                            >
-                                <Image
-                                    src={url}
-                                    alt="Playlist icon"
-                                    width={350}
-                                    height={350}
-                                />
-                                <span key={playlist.id}>{playlist.name}</span>
-                            </div>
+                                playlist={playlist}
+                            />
                         );
                     })}
                 </aside>
+                <StartButton />
+                {<Game />}
             </main>
         </GameProvider>
     );

@@ -8,11 +8,11 @@ export function getResponseWithCookies(
 ) {
     const response = NextResponse.redirect(url);
     response.cookies.set("access_token", access_token, {
-        maxAge: expires_in,
+        maxAge: expires_in - 600,
     });
     response.cookies.set("refresh_token", refresh_token, {
         httpOnly: true,
-        maxAge: expires_in * 24 * 365,
+        maxAge: expires_in,
     });
     return response;
 }
