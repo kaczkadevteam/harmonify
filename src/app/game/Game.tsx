@@ -7,12 +7,14 @@ declare global {
     }
 }
 
-import { useContext } from "react";
+import { useCallback, useContext } from "react";
 import { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import { GameContext } from "./GameContext";
 import { fetchFromSpotify } from "@/fetch";
 import { useRouter } from "next/navigation";
+import { useTimer } from "react-timer-hook";
+import dayjs from "dayjs";
 
 interface Track {
     artists: { name: string; id: string }[];
@@ -20,24 +22,43 @@ interface Track {
     name: string;
     uri: string;
 }
-//artists(name,id),duration_ms,name,uri)
+
+function getTimerExpiryTimestamp(seconds: number) {
+    return dayjs().add(seconds, "seconds").toDate();
+}
+
 export default function Game() {
     const router = useRouter();
     const game = useContext(GameContext);
     const [player, setPlayer] = useState<any>(null);
     const [playerID, setPlayerID] = useState<string | null>(null);
     const [tracks, setTracks] = useState<Track[]>([]);
-    const [round, setRound] = useState(1);
+    const [round, setRound] = useState(0);
     const [selectedTrack, setSelectedTrack] = useState<string | null>(null);
     const [began, setBegan] = useState(false);
     const [isPlaying, setIsPlaying] = useState(false);
 
-    function setupRound(tracks: Track[]) {
-        setRound((prev) => prev + 1);
+    const advanceRound = useCallback(
+        function (tracks: Track[]) {
+            const selectedTrack = Math.floor(Math.random() * tracks.length);
 
-        const selectedTrack = Math.floor(Math.random() * tracks.length);
-        setSelectedTrack(tracks[selectedTrack].uri);
-    }
+            setRound((prev) => prev + 1);
+            setSelectedTrack(tracks[selectedTrack].uri);
+            setIsPlaying(false);
+            setBegan(false);
+            roundTimer.restart(getTimerExpiryTimestamp(10), false);
+            player.pause();
+        },
+        [player]
+    );
+
+    const roundTimer = useTimer({
+        expiryTimestamp: getTimerExpiryTimestamp(10),
+        autoStart: false,
+        onExpire: () => {
+            advanceRound(tracks);
+        },
+    });
 
     async function togglePlay() {
         if (isPlaying) {
@@ -53,6 +74,7 @@ export default function Game() {
                     JSON.stringify({ uris: [selectedTrack] })
                 );
                 setBegan(true);
+                roundTimer.start();
             } else {
                 player.resume();
             }
@@ -70,8 +92,11 @@ export default function Game() {
 
         window.onSpotifyWebPlaybackSDKReady = () => {
             const player = new window.Spotify.Player({
-                name: "Web Playback SDK",
+                name: "Name that tune!",
                 getOAuthToken: (cb: any) => {
+                    if (!Cookies.get("access_token")) {
+                        router.push("/token/refresh");
+                    }
                     cb(Cookies.get("access_token"));
                 },
                 volume: 0.05,
@@ -88,16 +113,15 @@ export default function Game() {
                 console.log("Device ID has gone offline", device_id);
             });
 
-            player.setName("Name that tune!");
-
             player.connect();
         };
-    }, []);
+    }, [router]);
 
     useEffect(() => {
         let ignore = false;
 
         async function startGame() {
+            //return; // DEV
             if (ignore) return;
 
             const state = await player.getCurrentState();
@@ -118,7 +142,7 @@ export default function Game() {
             if (ignore) return;
             setTracks(tracks);
 
-            setupRound(tracks);
+            advanceRound(tracks);
         }
 
         async function fetchAllTracks() {
@@ -165,11 +189,25 @@ export default function Game() {
         return () => {
             ignore = true;
         };
-    }, [game, player, playerID, router]);
+    }, [game, player, playerID, router, advanceRound]);
 
     if (game.playing && !!playerID) {
         return (
-            <button onClick={togglePlay}>{isPlaying ? "STOP" : "START"}</button>
+            <>
+                <div>
+                    Runda: {round} Czas: {roundTimer.totalSeconds}
+                </div>
+                <button onClick={togglePlay}>
+                    {isPlaying ? "STOP" : "START"}
+                </button>
+                <button
+                    onClick={() => {
+                        advanceRound(tracks);
+                    }}
+                >
+                    Next round
+                </button>
+            </>
         );
     } else {
         return <></>;
