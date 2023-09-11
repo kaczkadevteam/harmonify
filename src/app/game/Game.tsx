@@ -28,6 +28,10 @@ function getTimerExpiryTimestamp(seconds: number) {
 }
 
 export default function Game() {
+    const roundTime = 60;
+    const trackTime = 10;
+    const lowerLimit_perc = 0;
+    const upperLimit_perc = 1;
     const router = useRouter();
     const game = useContext(GameContext);
     const [player, setPlayer] = useState<any>(null);
@@ -37,23 +41,50 @@ export default function Game() {
     const [selectedTrack, setSelectedTrack] = useState<string | null>(null);
     const [began, setBegan] = useState(false);
     const [isPlaying, setIsPlaying] = useState(false);
+    const [trackStart_ms, setTrackStart_ms] = useState(0);
+
+    const trackTimer = useTimer({
+        expiryTimestamp: getTimerExpiryTimestamp(trackTime),
+        autoStart: false,
+        onExpire: () => {
+            restartTrackTimer();
+        },
+    });
+
+    function restartTrackTimer() {
+        trackTimer.restart(getTimerExpiryTimestamp(trackTime), false);
+        player.seek(trackStart_ms);
+        player.pause();
+        setIsPlaying(false);
+    }
 
     const advanceRound = useCallback(
         function (tracks: Track[]) {
             const selectedTrack = Math.floor(Math.random() * tracks.length);
+            const trackDuration_ms = tracks[selectedTrack].duration_ms;
+            const lowerLimit = trackDuration_ms * lowerLimit_perc;
+            const upperLimit = trackDuration_ms * upperLimit_perc;
+            const durationRange = upperLimit - lowerLimit;
+            const trackStart_ms = Math.min(
+                Math.floor(Math.random() * durationRange) + lowerLimit,
+                trackDuration_ms - 10 * 1000
+            );
 
+            setTrackStart_ms(trackStart_ms);
+            console.log(`trackStart_ms ${trackStart_ms}`);
             setRound((prev) => prev + 1);
             setSelectedTrack(tracks[selectedTrack].uri);
             setIsPlaying(false);
             setBegan(false);
-            roundTimer.restart(getTimerExpiryTimestamp(10), false);
+            roundTimer.restart(getTimerExpiryTimestamp(roundTime), false);
+            trackTimer.restart(getTimerExpiryTimestamp(trackTime), false);
             player.pause();
         },
         [player]
     );
 
     const roundTimer = useTimer({
-        expiryTimestamp: getTimerExpiryTimestamp(10),
+        expiryTimestamp: getTimerExpiryTimestamp(roundTime),
         autoStart: false,
         onExpire: () => {
             advanceRound(tracks);
@@ -63,6 +94,7 @@ export default function Game() {
     async function togglePlay() {
         if (isPlaying) {
             player.pause();
+            trackTimer.pause();
         } else {
             if (!began) {
                 fetchFromSpotify(
@@ -71,13 +103,17 @@ export default function Game() {
                     router,
                     false,
                     "PUT",
-                    JSON.stringify({ uris: [selectedTrack] })
+                    JSON.stringify({
+                        uris: [selectedTrack],
+                        position_ms: trackStart_ms,
+                    })
                 );
                 setBegan(true);
                 roundTimer.start();
             } else {
                 player.resume();
             }
+            trackTimer.resume();
         }
 
         setIsPlaying(!isPlaying);
@@ -121,7 +157,6 @@ export default function Game() {
         let ignore = false;
 
         async function startGame() {
-            //return; // DEV
             if (ignore) return;
 
             const state = await player.getCurrentState();
@@ -195,7 +230,8 @@ export default function Game() {
         return (
             <>
                 <div>
-                    Runda: {round} Czas: {roundTimer.totalSeconds}
+                    Runda: {round} Czas rundy: {roundTimer.totalSeconds} Czas
+                    muzyki: {trackTimer.totalSeconds}
                 </div>
                 <button onClick={togglePlay}>
                     {isPlaying ? "STOP" : "START"}
