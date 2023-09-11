@@ -14,67 +14,52 @@ import { GameContext } from "./GameContext";
 import { fetchFromSpotify } from "@/fetch";
 import { useRouter } from "next/navigation";
 
-async function fetchAllTracks(tracksHref: string[], router: any) {
-    const tracks = (
-        await Promise.all(
-            tracksHref.map(async (trackHref) => {
-                let next = `${trackHref}?fields=next,items(is_local,track(artists,duration_ms,name,uri))&limit=10`;
-                let safeguard = 0;
-                let tracks = [];
-
-                while (next && safeguard < 10) {
-                    const response = await fetchFromSpotify(
-                        next,
-                        Cookies.get("access_token") ?? "",
-                        router,
-                        true,
-                        "GET"
-                    );
-
-                    const result = await response.json();
-                    next = result.next;
-                    tracks.push(...result.items);
-
-                    safeguard++;
-                }
-
-                return tracks;
-            })
-        )
-    )
-        .flat()
-        .filter((item) => !item.is_local)
-        .map((item) => item.track);
-
-    console.log(tracks);
+interface Track {
+    artists: { name: string; id: string }[];
+    duration_ms: number;
+    name: string;
+    uri: string;
 }
-
-async function startGame(
-    player: any,
-    player_id: string,
-    router: any,
-    tracksHref: string[]
-) {
-    const state = await player.getCurrentState();
-    if (!state && false) {
-        await fetchFromSpotify(
-            "/me/player",
-            Cookies.get("access_token") ?? "",
-            router,
-            false,
-            "PUT",
-            JSON.stringify({ device_ids: [player_id] })
-        );
-    }
-
-    await fetchAllTracks(tracksHref, router);
-}
-
+//artists(name,id),duration_ms,name,uri)
 export default function Game() {
+    const router = useRouter();
     const game = useContext(GameContext);
     const [player, setPlayer] = useState<any>(null);
     const [playerID, setPlayerID] = useState<string | null>(null);
-    const router = useRouter();
+    const [tracks, setTracks] = useState<Track[]>([]);
+    const [round, setRound] = useState(1);
+    const [selectedTrack, setSelectedTrack] = useState<string | null>(null);
+    const [began, setBegan] = useState(false);
+    const [isPlaying, setIsPlaying] = useState(false);
+
+    function setupRound(tracks: Track[]) {
+        setRound((prev) => prev + 1);
+
+        const selectedTrack = Math.floor(Math.random() * tracks.length);
+        setSelectedTrack(tracks[selectedTrack].uri);
+    }
+
+    async function togglePlay() {
+        if (isPlaying) {
+            player.pause();
+        } else {
+            if (!began) {
+                fetchFromSpotify(
+                    "/me/player/play",
+                    Cookies.get("access_token") ?? "",
+                    router,
+                    false,
+                    "PUT",
+                    JSON.stringify({ uris: [selectedTrack] })
+                );
+                setBegan(true);
+            } else {
+                player.resume();
+            }
+        }
+
+        setIsPlaying(!isPlaying);
+    }
 
     useEffect(() => {
         const script = document.createElement("script");
@@ -110,13 +95,82 @@ export default function Game() {
     }, []);
 
     useEffect(() => {
-        if (game.playing && !!playerID) {
-            startGame(player, playerID, router, game.tracksHref);
+        let ignore = false;
+
+        async function startGame() {
+            if (ignore) return;
+
+            const state = await player.getCurrentState();
+            if (!state) {
+                await fetchFromSpotify(
+                    "/me/player",
+                    Cookies.get("access_token") ?? "",
+                    router,
+                    false,
+                    "PUT",
+                    JSON.stringify({ device_ids: [playerID] })
+                );
+            }
+
+            if (ignore) return;
+            const tracks = await fetchAllTracks();
+
+            if (ignore) return;
+            setTracks(tracks);
+
+            setupRound(tracks);
         }
+
+        async function fetchAllTracks() {
+            const tracks: Track[] = (
+                await Promise.all(
+                    game.tracksHref.map(async (trackHref) => {
+                        let next = `${trackHref}?fields=next,items(is_local,track(artists(name,id),duration_ms,name,uri))&limit=10`;
+                        let safeguard = 0;
+                        let tracks = [];
+
+                        while (next && safeguard < 10) {
+                            const response = await fetchFromSpotify(
+                                next,
+                                Cookies.get("access_token") ?? "",
+                                router,
+                                true,
+                                "GET"
+                            );
+
+                            const result = await response.json();
+                            next = result.next;
+                            tracks.push(...result.items);
+
+                            safeguard++;
+                        }
+
+                        return tracks;
+                    })
+                )
+            )
+                .flat()
+                .filter((item) => !item.is_local)
+                .map((item) => item.track);
+
+            console.log(tracks);
+
+            return tracks;
+        }
+
+        if (game.playing && !!playerID) {
+            startGame();
+        }
+
+        return () => {
+            ignore = true;
+        };
     }, [game, player, playerID, router]);
 
     if (game.playing && !!playerID) {
-        return <>Giam</>;
+        return (
+            <button onClick={togglePlay}>{isPlaying ? "STOP" : "START"}</button>
+        );
     } else {
         return <></>;
     }

@@ -18,7 +18,12 @@ export default function PlaylistCard({
         <label htmlFor={playlist.id}>
             <div className={styles["playlist-card"]}>
                 <div className={styles["img-container"]}>
-                    <Image src={imageUrl} alt="Playlist icon" fill />
+                    <Image
+                        src={imageUrl}
+                        alt="Playlist icon"
+                        sizes="100%"
+                        fill
+                    />
                 </div>
                 <span>{playlist.name}</span>
 
