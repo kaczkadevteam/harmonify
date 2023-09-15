@@ -13,3 +13,10 @@ export type ImageObject = {
     height?: number;
     width?: number;
 };
+
+export interface Track {
+    artists: { name: string; id: string }[];
+    duration_ms: number;
+    name: string;
+    uri: string;
+}

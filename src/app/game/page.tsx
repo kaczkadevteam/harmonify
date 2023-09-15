@@ -1,15 +1,15 @@
 import { fetchFromSpotify } from "@/fetch";
 import { cookies } from "next/headers";
 import React from "react";
-import GameProvider from "./GameContext";
+import GameProvider from "./components/GameContext";
 import Image from "next/image";
-import styles from "./page.module.scss";
 import { SimplePlaylistObject } from "../../types";
-import PlaylistCard from "./PlaylistCard";
-import StartButton from "./StartButton";
-import Game from "./Game";
+import PlaylistCard from "./components/PlaylistCard";
+import StartButton from "./components/StartButton";
+import Game from "./components/Game";
+import Quiz from "./components/Quiz";
 
-export default async function Giam() {
+export default async function GamePage() {
     const access_token = cookies().get("access_token")!.value;
 
     const userResponse = await fetchFromSpotify(`/me`, access_token);
@@ -25,20 +25,7 @@ export default async function Giam() {
 
     return (
         <GameProvider>
-            <main className={styles["main"]}>
-                <aside className={styles["playlist-list"]}>
-                    {playlistsResult.items.map((playlist) => {
-                        return (
-                            <PlaylistCard
-                                key={playlist.id}
-                                playlist={playlist}
-                            />
-                        );
-                    })}
-                </aside>
-                <StartButton />
-                {<Game />}
-            </main>
+            <Quiz playlists={playlistsResult} />
         </GameProvider>
     );
 }

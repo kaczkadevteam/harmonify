@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { SimplePlaylistObject } from "../../types";
+import { SimplePlaylistObject } from "@/types";
 import styles from "./playlistCard.module.scss";
 import { useContext, useState } from "react";
 import { GameContext } from "./GameContext";

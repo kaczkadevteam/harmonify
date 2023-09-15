@@ -1,24 +1,25 @@
 "use client";
 
+import { Track } from "@/types";
 import { createContext, useState } from "react";
 
 export const GameContext = createContext<{
-    playing: boolean;
     tracksHref: string[];
     addTracksHref: (id: string) => void;
     removeTracksHref: (id: string) => void;
-    setPlaying: (value: boolean) => void;
+    tracks: Track[];
+    setTracks: (arg: any) => void;
 }>({
-    playing: false,
     tracksHref: [],
-    setPlaying: (value) => {},
     addTracksHref: (playlist) => {},
     removeTracksHref: (playlist) => {},
+    tracks: [],
+    setTracks: (arg) => {},
 });
 
 export default function GameProvider({ children }: React.PropsWithChildren) {
     const [tracksHref, setTracksHref] = useState<string[]>([]);
-    const [playing, setPlaying] = useState(false);
+    const [tracks, setTracks] = useState([]);
 
     function addTracksHref(id: string) {
         setTracksHref([...tracksHref, id]);
@@ -33,11 +34,11 @@ export default function GameProvider({ children }: React.PropsWithChildren) {
     return (
         <GameContext.Provider
             value={{
-                playing,
                 tracksHref,
                 addTracksHref,
                 removeTracksHref,
-                setPlaying,
+                tracks,
+                setTracks,
             }}
         >
             {children}
