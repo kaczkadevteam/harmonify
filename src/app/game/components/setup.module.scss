@@ -2,13 +2,23 @@
     display: grid;
     height: 80vh;
     width: 80vw;
-    grid-template-rows: 1fr 100px;
-    grid-template-columns: 180px 1fr;
+    grid-template-rows: 1fr 50px;
 
-    .playlist-list {
+    .tracks-select {
         display: flex;
         flex-direction: column;
         justify-content: flex-start;
         overflow: auto;
+    }
+
+    .cards-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 20px;
+    }
+
+    .start-button {
+        display: grid;
+        place-items: center;
     }
 }

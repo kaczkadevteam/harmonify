@@ -3,7 +3,10 @@ import queryString from "query-string";
 import { getResponseWithCookies } from "../tokenCookies";
 
 export async function GET(request: NextRequest) {
-    const refresh_token = request.cookies.get("refresh_token")!.value;
+    const refresh_token = request.cookies.get("refresh_token")?.value;
+
+    if (!refresh_token)
+        return NextResponse.redirect(new URL("/token/request", request.url));
 
     const spotifyResponse = await fetch(
         "https://accounts.spotify.com/api/token",

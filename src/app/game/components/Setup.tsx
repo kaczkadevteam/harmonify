@@ -26,17 +26,14 @@ export default function Setup({
     async function startGameHandler() {
         if (!playerObj) return;
 
-        const state = await playerObj.player.getCurrentState();
-        if (!state) {
-            await fetchFromSpotify(
-                "/me/player",
-                Cookies.get("access_token") ?? "",
-                router,
-                false,
-                "PUT",
-                JSON.stringify({ device_ids: [playerObj.playerID] })
-            );
-        }
+        await fetchFromSpotify(
+            "/me/player",
+            Cookies.get("access_token") ?? "",
+            router,
+            false,
+            "PUT",
+            JSON.stringify({ device_ids: [playerObj.playerID] })
+        );
 
         const tracks = await fetchAllTracks();
 
@@ -77,31 +74,36 @@ export default function Setup({
             .filter((item) => !item.is_local)
             .map((item) => item.track);
 
-        console.log(tracks);
-
         return tracks;
     }
 
     return (
         <main className={styles["main"]}>
-            <aside className={styles["playlist-list"]}>
-                {playlists.items.map((playlist) => {
-                    return (
-                        <PlaylistCard key={playlist.id} playlist={playlist} />
-                    );
-                })}
-            </aside>
-            {playerObj ? (
-                <button
-                    onClick={() => {
-                        startGameHandler();
-                    }}
-                >
-                    Start game
-                </button>
-            ) : (
-                <LoadingCircle size="15px" />
-            )}
+            <div className={styles["tracks-select"]}>
+                <h2>Playlists</h2>
+                <div className={styles["cards-container"]}>
+                    {playlists.items.map((playlist) => {
+                        return (
+                            <PlaylistCard
+                                key={playlist.id}
+                                playlist={playlist}
+                            />
+                        );
+                    })}
+                </div>
+                <h2>Albums</h2>
+                <div className={styles["cards-container"]}></div>
+            </div>
+
+            <button
+                className={styles["start-button"]}
+                disabled={!playerObj}
+                onClick={() => {
+                    startGameHandler();
+                }}
+            >
+                {playerObj ? "Start game" : <LoadingCircle size="15px" />}
+            </button>
         </main>
     );
 }

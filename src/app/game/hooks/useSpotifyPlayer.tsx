@@ -1,5 +1,4 @@
-import { useContext, useEffect, useState } from "react";
-import { GameContext } from "./GameContext";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
 

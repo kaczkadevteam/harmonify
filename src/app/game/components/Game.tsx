@@ -40,7 +40,7 @@ export default function Game({
     const lowerLimit_perc = 0;
     const upperLimit_perc = 1;
 
-    const { player } = playerObj!;
+    const { player, playerID } = playerObj!;
     const game = useContext(GameContext);
 
     const randomlySelectedTrack = selectTrack();
@@ -116,7 +116,7 @@ export default function Game({
         } else {
             if (!began) {
                 fetchFromSpotify(
-                    "/me/player/play",
+                    `/me/player/play?device_id=${playerID}`,
                     Cookies.get("access_token") ?? "",
                     router,
                     false,

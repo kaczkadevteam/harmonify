@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import Setup from "./Setup";
 import Game from "./Game";
 import { SimplePlaylistObject } from "@/types";
-import useSpotifyPlayer from "./SpotifyPlayer";
+import useSpotifyPlayer from "../hooks/useSpotifyPlayer";
 
 export default function Quiz({
     playlists,
