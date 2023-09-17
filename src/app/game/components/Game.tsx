@@ -17,6 +17,7 @@ import { useRouter } from "next/navigation";
 import { useTimer } from "react-timer-hook";
 import dayjs from "dayjs";
 import { Track } from "@/types";
+import AutocompleteBar from "./AutocompleteBar";
 
 function getTimerExpiryTimestamp(seconds: number) {
     return dayjs().add(seconds, "seconds").toDate();
@@ -42,7 +43,7 @@ export default function Game({
 
     const router = useRouter();
     const [round, setRound] = useState(1);
-    const [selectedTrack, setSelectedTrack] = useState<Track | null>(
+    const [selectedTrack, setSelectedTrack] = useState<Track>(
         randomlySelectedTrack.track
     );
     const [began, setBegan] = useState(false);
@@ -86,8 +87,9 @@ export default function Game({
         function () {
             const { trackStart_ms, track } = selectTrack();
 
-            setTrackStart_ms(trackStart_ms);
             setRound((prev) => prev + 1);
+
+            setTrackStart_ms(trackStart_ms);
             setSelectedTrack(track);
             setIsPlaying(false);
             setBegan(false);
@@ -147,71 +149,7 @@ export default function Game({
                     console.log(`submitted ${guess}`);
                 }}
             >
-                <div className={styles["autocomplete"]}>
-                    <input
-                        className={styles["autocomplete__input"]}
-                        type="text"
-                        name="track"
-                        value={guess}
-                        onChange={(e) => {
-                            setGuess(e.target.value);
-                        }}
-                    />
-                    <div className={styles["autocomplete__options"]}>
-                        {game.tracks
-                            .filter((track) => {
-                                if (track.guess == null || guess === "")
-                                    return false;
-
-                                return (
-                                    track.guess
-                                        .toLowerCase()
-                                        .includes(guess.toLowerCase()) &&
-                                    track.guess !== guess
-                                );
-                            })
-                            .map((track) => {
-                                return (
-                                    <div
-                                        className={
-                                            styles["autocomplete__option"]
-                                        }
-                                        key={track.uri}
-                                        onClick={() => {
-                                            setGuess(track.guess ?? "");
-                                        }}
-                                    >
-                                        <span
-                                            className={
-                                                styles[
-                                                    "autocomplete__major-title"
-                                                ]
-                                            }
-                                        >
-                                            {track.name}
-                                        </span>
-                                        <span
-                                            className={
-                                                styles[
-                                                    "autocomplete__minor-title"
-                                                ]
-                                            }
-                                        >
-                                            {track.artists
-                                                .reduce((acc, artist) => {
-                                                    return `${acc}, ${artist.name}`;
-                                                }, "")
-                                                .slice(2)}
-                                        </span>
-                                        <input
-                                            type="hidden"
-                                            value={track.uri}
-                                        />
-                                    </div>
-                                );
-                            })}
-                    </div>
-                </div>
+                <AutocompleteBar guess={guess} setGuess={setGuess} />
                 <button type="submit">Submit</button>
                 <span>
                     {selectedTrack?.guess === guess
