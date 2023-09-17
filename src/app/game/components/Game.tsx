@@ -18,6 +18,9 @@ import { useTimer } from "react-timer-hook";
 import dayjs from "dayjs";
 import { Track } from "@/types";
 import AutocompleteBar from "./AutocompleteBar";
+import { default as Modal } from "react-modal";
+
+Modal.setAppElement("#root");
 
 function getTimerExpiryTimestamp(seconds: number) {
     return dayjs().add(seconds, "seconds").toDate();
@@ -65,11 +68,13 @@ export default function Game({
 
     const router = useRouter();
     const [round, setRound] = useState(1);
+
+    const [began, setBegan] = useState(false);
+    const [isPlaying, setIsPlaying] = useState(false);
+
     const [selectedTrack, setSelectedTrack] = useState<Track>(
         randomlySelectedTrack.track
     );
-    const [began, setBegan] = useState(false);
-    const [isPlaying, setIsPlaying] = useState(false);
     const [trackStart_ms, setTrackStart_ms] = useState(
         randomlySelectedTrack.trackStart_ms
     );
@@ -90,19 +95,15 @@ export default function Game({
         setIsPlaying(false);
     }
 
-    const advanceRoundRef = useRef<() => void>();
-
     const roundTimer = useTimer({
         expiryTimestamp: getTimerExpiryTimestamp(roundTime),
         autoStart: false,
         onExpire: () => {
-            if (advanceRoundRef.current) {
-                advanceRoundRef.current();
-            }
+            advanceRound();
         },
     });
 
-    const advanceRound = function () {
+    function advanceRound() {
         const { trackStart_ms, track } = selectTrack(
             game.tracks,
             lowerLimit_perc,
@@ -118,10 +119,7 @@ export default function Game({
         roundTimer.restart(getTimerExpiryTimestamp(roundTime), false);
         trackTimer.restart(getTimerExpiryTimestamp(trackTime), false);
         player.pause();
-    };
-
-    advanceRoundRef.current = advanceRound;
-
+    }
     async function togglePlay() {
         if (isPlaying) {
             player.pause();

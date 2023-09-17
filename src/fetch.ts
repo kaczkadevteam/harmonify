@@ -1,5 +1,4 @@
 import { redirect } from "next/navigation";
-import { useRouter } from "next/navigation";
 
 export async function fetchFromSpotify(
     url: string,
@@ -21,7 +20,7 @@ export async function fetchFromSpotify(
         }
     );
 
-    if (response.status === 401) {
+    if (response.status === 400 || response.status === 401) {
         if (router === null) {
             const result = await response.json();
             console.log(result);
