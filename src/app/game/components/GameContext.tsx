@@ -1,7 +1,15 @@
 "use client";
 
 import { Track } from "@/types";
-import { createContext, useState } from "react";
+import { createContext, useMemo, useState } from "react";
+
+export function trackIntoGuessString(track: Track) {
+    return `${track.name} - ${track.artists
+        .reduce((acc, artist) => {
+            return `${acc}, ${artist.name}`;
+        }, "")
+        .slice(2)}`;
+}
 
 export const GameContext = createContext<{
     tracksHref: string[];
@@ -19,7 +27,7 @@ export const GameContext = createContext<{
 
 export default function GameProvider({ children }: React.PropsWithChildren) {
     const [tracksHref, setTracksHref] = useState<string[]>([]);
-    const [tracks, setTracks] = useState([]);
+    const [tracks, setTracks] = useState<Track[]>([]);
 
     function addTracksHref(id: string) {
         setTracksHref([...tracksHref, id]);
@@ -31,13 +39,33 @@ export default function GameProvider({ children }: React.PropsWithChildren) {
         });
     }
 
+    const tracksWithGuess = useMemo(() => {
+        return (
+            tracks
+                // Remove overlapping tracks
+                .reduce<Track[]>((filteredTracks, track) => {
+                    if (
+                        !filteredTracks.some(
+                            (someTrack) => someTrack.uri === track.uri
+                        )
+                    ) {
+                        filteredTracks.push(track);
+                    }
+                    return filteredTracks;
+                }, [])
+                .map((track) => {
+                    return { ...track, guess: trackIntoGuessString(track) };
+                })
+        );
+    }, [tracks]);
+
     return (
         <GameContext.Provider
             value={{
                 tracksHref,
                 addTracksHref,
                 removeTracksHref,
-                tracks,
+                tracks: tracksWithGuess,
                 setTracks,
             }}
         >

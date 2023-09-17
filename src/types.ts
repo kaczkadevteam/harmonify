@@ -19,4 +19,5 @@ export interface Track {
     duration_ms: number;
     name: string;
     uri: string;
+    guess?: string;
 }
