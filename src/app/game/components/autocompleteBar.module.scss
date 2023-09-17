@@ -24,13 +24,13 @@
             background-color: rgb(186, 186, 186);
         }
     }
+}
 
-    &__major-title {
-        font-weight: 600;
-    }
+.track-display__title {
+    font-weight: 600;
+}
 
-    &__minor-title {
-        margin-left: 10px;
-        color: rgba(0, 0, 0, 0.554);
-    }
+.track-display__author {
+    margin-left: 10px;
+    color: rgba(0, 0, 0, 0.554);
 }

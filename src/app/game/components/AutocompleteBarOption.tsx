@@ -1,5 +1,6 @@
 import { Track } from "@/types";
 import React from "react";
+import TrackDisplay from "./TrackDisplay";
 
 export default function AutocompleteBarOption({
     styles,
@@ -19,16 +20,7 @@ export default function AutocompleteBarOption({
                 setGuess(track.guess ?? "");
             }}
         >
-            <span className={styles["autocomplete__major-title"]}>
-                {track.name}
-            </span>
-            <span className={styles["autocomplete__minor-title"]}>
-                {track.artists
-                    .reduce((acc, artist) => {
-                        return `${acc}, ${artist.name}`;
-                    }, "")
-                    .slice(2)}
-            </span>
+            <TrackDisplay styles={styles} track={track} />
         </div>
     );
 }

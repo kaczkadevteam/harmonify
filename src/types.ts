@@ -15,6 +15,7 @@ export type ImageObject = {
 };
 
 export interface Track {
+    album: { images: ImageObject[] };
     artists: { name: string; id: string }[];
     duration_ms: number;
     name: string;

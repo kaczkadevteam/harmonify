@@ -19,6 +19,8 @@ import dayjs from "dayjs";
 import { Track } from "@/types";
 import AutocompleteBar from "./AutocompleteBar";
 import { default as Modal } from "react-modal";
+import Image from "next/image";
+import TrackDisplay from "./TrackDisplay";
 
 Modal.setAppElement("#root");
 
@@ -41,6 +43,8 @@ function selectTrack(
         duration_ms - 10 * 1000
     );
 
+    console.log(track);
+
     return { trackStart_ms, track };
 }
 
@@ -52,7 +56,7 @@ export default function Game({
         playerID: string;
     } | null;
 }) {
-    const roundTime = 60;
+    const roundTime = 10;
     const trackTime = 10;
     const lowerLimit_perc = 0;
     const upperLimit_perc = 1;
@@ -71,6 +75,7 @@ export default function Game({
 
     const [began, setBegan] = useState(false);
     const [isPlaying, setIsPlaying] = useState(false);
+    const [roundFinished, setRoundFinished] = useState(false);
 
     const [selectedTrack, setSelectedTrack] = useState<Track>(
         randomlySelectedTrack.track
@@ -99,9 +104,18 @@ export default function Game({
         expiryTimestamp: getTimerExpiryTimestamp(roundTime),
         autoStart: false,
         onExpire: () => {
-            advanceRound();
+            finishRound();
         },
     });
+
+    function finishRound() {
+        if (isPlaying) {
+            player.pause();
+            trackTimer.pause();
+        }
+
+        setRoundFinished(true);
+    }
 
     function advanceRound() {
         const { trackStart_ms, track } = selectTrack(
@@ -114,12 +128,15 @@ export default function Game({
 
         setTrackStart_ms(trackStart_ms);
         setSelectedTrack(track);
+        setGuess("");
         setIsPlaying(false);
+        setRoundFinished(false);
         setBegan(false);
         roundTimer.restart(getTimerExpiryTimestamp(roundTime), false);
         trackTimer.restart(getTimerExpiryTimestamp(trackTime), false);
         player.pause();
     }
+
     async function togglePlay() {
         if (isPlaying) {
             player.pause();
@@ -158,25 +175,49 @@ export default function Game({
             <form
                 onSubmit={(e) => {
                     e.preventDefault();
-                    console.log(`submitted ${guess}`);
+                    finishRound();
                 }}
             >
                 <AutocompleteBar guess={guess} setGuess={setGuess} />
                 <button type="submit">Submit</button>
-                <span>
-                    {selectedTrack?.guess === guess
-                        ? "Good guess"
-                        : "Bad guess"}
-                </span>
             </form>
-
-            <button
-                onClick={() => {
-                    advanceRound();
-                }}
+            <Modal
+                isOpen={roundFinished}
+                onRequestClose={advanceRound}
+                className={styles["modal__content"]}
+                overlayClassName={styles["modal__overlay"]}
             >
-                Skip round force
-            </button>
+                <h2
+                    style={{
+                        color:
+                            selectedTrack?.guess === guess
+                                ? "green"
+                                : "#b91c1c",
+                        gridColumn: "1 / -1",
+                    }}
+                >
+                    {selectedTrack?.guess === guess
+                        ? "Correct :)"
+                        : "Incorrect :("}
+                </h2>
+                <Image
+                    style={{
+                        gridColumn: "1 / -1",
+                    }}
+                    alt="Album cover"
+                    src={selectedTrack.album.images[0].url}
+                    width={200}
+                    height={200}
+                />
+                <TrackDisplay styles={styles} track={selectedTrack} />
+                <span>Points</span>
+                <button
+                    className={styles["modal__close-button"]}
+                    onClick={advanceRound}
+                >
+                    Continue
+                </button>
+            </Modal>
         </>
     );
 }

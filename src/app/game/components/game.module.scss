@@ -1,1 +1,43 @@
+.modal {
+    &__content {
+        background-color: var(--main-bkg-color);
+        padding: 20px;
+        width: 350px;
+        display: grid;
+        grid-template-columns: 1fr 80px;
+        grid-template-rows: min-content min-content min-content 50px;
+        gap: 20px;
+        place-items: center;
 
+        border-radius: 20px;
+    }
+
+    &__close-button {
+        grid-column: -2 / -1;
+    }
+
+    &__overlay {
+        position: absolute;
+        display: grid;
+        place-items: center;
+        background-color: rgba(0, 0, 0, 0.496);
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+    }
+}
+
+.track-display {
+    width: 300px;
+    grid-column: 1 / -1;
+
+    &__title {
+        font-weight: 600;
+    }
+
+    &__author {
+        margin-left: 10px;
+        color: rgba(255, 255, 255, 0.554);
+    }
+}

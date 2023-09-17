@@ -46,7 +46,7 @@ export default function Setup({
         const tracks: Track[] = (
             await Promise.all(
                 game.tracksHref.map(async (trackHref) => {
-                    let next = `${trackHref}?fields=next,items(is_local,track(artists(name,id),duration_ms,name,uri))&limit=10`;
+                    let next = `${trackHref}?fields=next,items(is_local,track(album.images,artists(name,id),duration_ms,name,uri))&limit=10`;
                     let safeguard = 0;
                     let tracks = [];
 
@@ -97,12 +97,20 @@ export default function Setup({
 
             <button
                 className={styles["start-button"]}
-                disabled={!playerObj}
+                disabled={!playerObj || game.tracksHref.length === 0}
                 onClick={() => {
                     startGameHandler();
                 }}
             >
-                {playerObj ? "Start game" : <LoadingCircle size="15px" />}
+                {playerObj ? (
+                    game.tracksHref.length !== 0 ? (
+                        "Start game"
+                    ) : (
+                        "Select tracks first"
+                    )
+                ) : (
+                    <LoadingCircle size="15px" />
+                )}
             </button>
         </main>
     );
