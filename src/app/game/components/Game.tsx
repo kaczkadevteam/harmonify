@@ -8,7 +8,7 @@ declare global {
 }
 
 import styles from "./game.module.scss";
-import { useCallback, useContext } from "react";
+import { useCallback, useContext, useRef } from "react";
 import { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import { GameContext } from "./GameContext";
@@ -21,6 +21,24 @@ import AutocompleteBar from "./AutocompleteBar";
 
 function getTimerExpiryTimestamp(seconds: number) {
     return dayjs().add(seconds, "seconds").toDate();
+}
+
+function selectTrack(
+    tracks: Track[],
+    lowerLimit_perc: number,
+    upperLimit_perc: number
+) {
+    const track = tracks[Math.floor(Math.random() * tracks.length)];
+    const { duration_ms } = track;
+    const lowerLimit = duration_ms * lowerLimit_perc;
+    const upperLimit = duration_ms * upperLimit_perc;
+    const durationRange = upperLimit - lowerLimit;
+    const trackStart_ms = Math.min(
+        Math.floor(Math.random() * durationRange) + lowerLimit,
+        duration_ms - 10 * 1000
+    );
+
+    return { trackStart_ms, track };
 }
 
 export default function Game({
@@ -39,7 +57,11 @@ export default function Game({
     const { player, playerID } = playerObj!;
     const game = useContext(GameContext);
 
-    const randomlySelectedTrack = selectTrack();
+    const randomlySelectedTrack = selectTrack(
+        game.tracks,
+        lowerLimit_perc,
+        upperLimit_perc
+    );
 
     const router = useRouter();
     const [round, setRound] = useState(1);
@@ -61,21 +83,6 @@ export default function Game({
         },
     });
 
-    function selectTrack() {
-        const track =
-            game.tracks[Math.floor(Math.random() * game.tracks.length)];
-        const { duration_ms } = track;
-        const lowerLimit = duration_ms * lowerLimit_perc;
-        const upperLimit = duration_ms * upperLimit_perc;
-        const durationRange = upperLimit - lowerLimit;
-        const trackStart_ms = Math.min(
-            Math.floor(Math.random() * durationRange) + lowerLimit,
-            duration_ms - 10 * 1000
-        );
-
-        return { trackStart_ms, track };
-    }
-
     function restartTrackTimer() {
         trackTimer.restart(getTimerExpiryTimestamp(trackTime), false);
         player.seek(trackStart_ms);
@@ -83,30 +90,37 @@ export default function Game({
         setIsPlaying(false);
     }
 
-    const advanceRound = useCallback(
-        function () {
-            const { trackStart_ms, track } = selectTrack();
-
-            setRound((prev) => prev + 1);
-
-            setTrackStart_ms(trackStart_ms);
-            setSelectedTrack(track);
-            setIsPlaying(false);
-            setBegan(false);
-            roundTimer.restart(getTimerExpiryTimestamp(roundTime), false);
-            trackTimer.restart(getTimerExpiryTimestamp(trackTime), false);
-            player.pause();
-        },
-        [player]
-    );
+    const advanceRoundRef = useRef<() => void>();
 
     const roundTimer = useTimer({
         expiryTimestamp: getTimerExpiryTimestamp(roundTime),
         autoStart: false,
         onExpire: () => {
-            advanceRound();
+            if (advanceRoundRef.current) {
+                advanceRoundRef.current();
+            }
         },
     });
+
+    const advanceRound = function () {
+        const { trackStart_ms, track } = selectTrack(
+            game.tracks,
+            lowerLimit_perc,
+            upperLimit_perc
+        );
+
+        setRound((prev) => prev + 1);
+
+        setTrackStart_ms(trackStart_ms);
+        setSelectedTrack(track);
+        setIsPlaying(false);
+        setBegan(false);
+        roundTimer.restart(getTimerExpiryTimestamp(roundTime), false);
+        trackTimer.restart(getTimerExpiryTimestamp(trackTime), false);
+        player.pause();
+    };
+
+    advanceRoundRef.current = advanceRound;
 
     async function togglePlay() {
         if (isPlaying) {
