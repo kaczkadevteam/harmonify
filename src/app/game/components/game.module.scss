@@ -1,6 +1,11 @@
+.game {
+    display: grid;
+    place-items: center;
+}
+
 .modal {
     &__content {
-        background-color: var(--main-bkg-color);
+        background-color: var(--main-dark-color);
         padding: 20px;
         width: 350px;
         display: grid;

@@ -21,6 +21,7 @@ export default function AutocompleteBarOption({
             }}
         >
             <TrackDisplay styles={styles} track={track} />
+            <input type="hidden" name="track" value={track.uri} />
         </div>
     );
 }

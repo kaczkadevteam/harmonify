@@ -17,17 +17,22 @@ export const GameContext = createContext<{
     removeTracksHref: (id: string) => void;
     tracks: Track[];
     setTracks: (arg: any) => void;
+    finalScore: number;
+    setFinalScore: (score: number) => void;
 }>({
     tracksHref: [],
     addTracksHref: (playlist) => {},
     removeTracksHref: (playlist) => {},
     tracks: [],
     setTracks: (arg) => {},
+    finalScore: 0,
+    setFinalScore: (arg) => {},
 });
 
 export default function GameProvider({ children }: React.PropsWithChildren) {
     const [tracksHref, setTracksHref] = useState<string[]>([]);
     const [tracks, setTracks] = useState<Track[]>([]);
+    const [finalScore, setFinalScore] = useState(0);
 
     function addTracksHref(id: string) {
         setTracksHref([...tracksHref, id]);
@@ -67,6 +72,8 @@ export default function GameProvider({ children }: React.PropsWithChildren) {
                 removeTracksHref,
                 tracks: tracksWithGuess,
                 setTracks,
+                finalScore,
+                setFinalScore,
             }}
         >
             {children}

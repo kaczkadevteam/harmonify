@@ -21,4 +21,5 @@ export interface Track {
     name: string;
     uri: string;
     guess?: string;
+    trackStart_ms?: number;
 }

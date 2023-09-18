@@ -1,5 +1,6 @@
 :root {
-    --main-bkg-color: #0f172a;
+    --main-dark-color: #0f172a;
+    --main-light-color: #f59e0b;
 }
 
 h1,
@@ -14,7 +15,7 @@ body {
     margin: 0;
     min-height: 100vh;
     height: 100vh;
-    background-color: var(--main-bkg-color);
+    background-color: var(--main-dark-color);
     color: white;
     overflow: hidden;
 }

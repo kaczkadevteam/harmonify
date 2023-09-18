@@ -7,6 +7,7 @@ import { fetchFromSpotify } from "@/fetch";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 import LoadingCircle from "./LoadingCircle";
+import Button from "@/components/Button";
 
 export default function Setup({
     playlists,
@@ -95,23 +96,25 @@ export default function Setup({
                 <div className={styles["cards-container"]}></div>
             </div>
 
-            <button
-                className={styles["start-button"]}
-                disabled={!playerObj || game.tracksHref.length === 0}
-                onClick={() => {
-                    startGameHandler();
-                }}
-            >
-                {playerObj ? (
-                    game.tracksHref.length !== 0 ? (
-                        "Start game"
+            <div className={styles["button-wrapper"]}>
+                <Button
+                    disabled={!playerObj || game.tracksHref.length === 0}
+                    onClick={() => {
+                        startGameHandler();
+                    }}
+                    size="medium"
+                >
+                    {playerObj ? (
+                        game.tracksHref.length !== 0 ? (
+                            "Start game"
+                        ) : (
+                            "Select tracks first"
+                        )
                     ) : (
-                        "Select tracks first"
-                    )
-                ) : (
-                    <LoadingCircle size="15px" />
-                )}
-            </button>
+                        <LoadingCircle size="15px" />
+                    )}
+                </Button>
+            </div>
         </main>
     );
 }

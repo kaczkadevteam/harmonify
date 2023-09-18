@@ -21,6 +21,7 @@ import AutocompleteBar from "./AutocompleteBar";
 import { default as Modal } from "react-modal";
 import Image from "next/image";
 import TrackDisplay from "./TrackDisplay";
+import Button from "@/components/Button";
 
 Modal.setAppElement("#root");
 
@@ -38,37 +39,34 @@ function selectTrack(
     const lowerLimit = duration_ms * lowerLimit_perc;
     const upperLimit = duration_ms * upperLimit_perc;
     const durationRange = upperLimit - lowerLimit;
-    const trackStart_ms = Math.min(
+    track.trackStart_ms = Math.min(
         Math.floor(Math.random() * durationRange) + lowerLimit,
         duration_ms - 10 * 1000
     );
 
     console.log(track);
 
-    return { trackStart_ms, track };
+    return track;
 }
 
 export default function Game({
     playerObj,
+    finishGame,
 }: {
     playerObj: {
         player: any;
         playerID: string;
     } | null;
+    finishGame: () => void;
 }) {
-    const roundTime = 10;
+    const roundTime = 30;
     const trackTime = 10;
     const lowerLimit_perc = 0;
     const upperLimit_perc = 1;
+    const maxRounds = 10;
 
     const { player, playerID } = playerObj!;
     const game = useContext(GameContext);
-
-    const randomlySelectedTrack = selectTrack(
-        game.tracks,
-        lowerLimit_perc,
-        upperLimit_perc
-    );
 
     const router = useRouter();
     const [round, setRound] = useState(1);
@@ -77,13 +75,11 @@ export default function Game({
     const [isPlaying, setIsPlaying] = useState(false);
     const [roundFinished, setRoundFinished] = useState(false);
 
-    const [selectedTrack, setSelectedTrack] = useState<Track>(
-        randomlySelectedTrack.track
-    );
-    const [trackStart_ms, setTrackStart_ms] = useState(
-        randomlySelectedTrack.trackStart_ms
-    );
+    const [selectedTrack, setSelectedTrack] = useState<Track>(() => {
+        return selectTrack(game.tracks, lowerLimit_perc, upperLimit_perc);
+    });
     const [guess, setGuess] = useState("");
+    const [points, setPoints] = useState(0);
 
     const trackTimer = useTimer({
         expiryTimestamp: getTimerExpiryTimestamp(trackTime),
@@ -93,9 +89,26 @@ export default function Game({
         },
     });
 
+    function getPoints(seconds: number) {
+        const points =
+            seconds < 3
+                ? 300
+                : Math.floor(100 / Math.pow(seconds - 2, 1.1) + 54);
+
+        if (selectedTrack.guess === guess) {
+            return points;
+        } else if (
+            selectedTrack.guess?.split(" - ")?.[1] === guess.split(" - ")?.[1] // compare if the same artist
+        ) {
+            return Math.floor(points / 5);
+        } else {
+            return 0;
+        }
+    }
+
     function restartTrackTimer() {
         trackTimer.restart(getTimerExpiryTimestamp(trackTime), false);
-        player.seek(trackStart_ms);
+        player.seek(selectedTrack.trackStart_ms);
         player.pause();
         setIsPlaying(false);
     }
@@ -113,20 +126,26 @@ export default function Game({
             player.pause();
             trackTimer.pause();
         }
+        roundTimer.pause();
 
         setRoundFinished(true);
     }
 
     function advanceRound() {
-        const { trackStart_ms, track } = selectTrack(
+        const track = selectTrack(
             game.tracks,
             lowerLimit_perc,
             upperLimit_perc
         );
 
+        if (round == maxRounds) {
+            game.setFinalScore(points);
+            finishGame();
+        }
+
+        setPoints((v) => v + getPoints(roundTime - roundTimer.totalSeconds));
         setRound((prev) => prev + 1);
 
-        setTrackStart_ms(trackStart_ms);
         setSelectedTrack(track);
         setGuess("");
         setIsPlaying(false);
@@ -151,7 +170,7 @@ export default function Game({
                     "PUT",
                     JSON.stringify({
                         uris: [selectedTrack?.uri],
-                        position_ms: trackStart_ms,
+                        position_ms: selectedTrack.trackStart_ms,
                     })
                 );
                 setBegan(true);
@@ -166,12 +185,22 @@ export default function Game({
     }
 
     return (
-        <>
+        <div className={styles["game"]}>
+            <div
+                style={{
+                    borderRadius: "50%",
+                    width: "12px",
+                    height: "12px",
+                    backgroundColor: "#f59e0b",
+                }}
+            ></div>
             <div>
                 Runda: {round} Czas rundy: {roundTimer.totalSeconds} Czas
                 muzyki: {trackTimer.totalSeconds}
             </div>
-            <button onClick={togglePlay}>{isPlaying ? "STOP" : "START"}</button>
+            <Button onClick={togglePlay} size="small">
+                {isPlaying ? "STOP" : "START"}
+            </Button>
             <form
                 onSubmit={(e) => {
                     e.preventDefault();
@@ -179,11 +208,12 @@ export default function Game({
                 }}
             >
                 <AutocompleteBar guess={guess} setGuess={setGuess} />
-                <button type="submit">Submit</button>
+                <Button type="submit" size="small">
+                    Submit
+                </Button>
             </form>
             <Modal
                 isOpen={roundFinished}
-                onRequestClose={advanceRound}
                 className={styles["modal__content"]}
                 overlayClassName={styles["modal__overlay"]}
             >
@@ -210,14 +240,16 @@ export default function Game({
                     height={200}
                 />
                 <TrackDisplay styles={styles} track={selectedTrack} />
-                <span>Points</span>
-                <button
-                    className={styles["modal__close-button"]}
-                    onClick={advanceRound}
-                >
+                <span>
+                    Points:{" "}
+                    {`${points} + ${getPoints(
+                        roundTime - roundTimer.totalSeconds
+                    )}`}
+                </span>
+                <Button onClick={advanceRound} size="small">
                     Continue
-                </button>
+                </Button>
             </Modal>
-        </>
+        </div>
     );
 }
