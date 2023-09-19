@@ -19,6 +19,7 @@ export default function AutocompleteBar({
                 type="text"
                 name="track"
                 value={guess}
+                autoComplete="off"
                 onChange={(e) => {
                     setGuess(e.target.value);
                 }}

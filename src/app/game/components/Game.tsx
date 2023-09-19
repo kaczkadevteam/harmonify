@@ -8,7 +8,7 @@ declare global {
 }
 
 import styles from "./game.module.scss";
-import { useCallback, useContext, useRef } from "react";
+import { useContext, useRef } from "react";
 import { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import { GameContext } from "./GameContext";
@@ -152,7 +152,7 @@ export default function Game({
         );
 
         if (round == maxRounds) {
-            game.setFinalScore(points);
+            game.setFinalScore(points + getPoints());
             finishGame();
         }
 
@@ -294,6 +294,12 @@ export default function Game({
                     height={200}
                 />
                 <TrackDisplay styles={styles} track={selectedTrack} />
+                {selectedTrack?.guess !== guess && (
+                    <span style={{ gridColumn: "1 / -1" }}>
+                        <span style={{ color: "#b91c1c" }}>Your guess: </span>
+                        <TrackDisplay styles={styles} guess={guess} />
+                    </span>
+                )}
                 <span>Points: {`${points} + ${getPoints()}`}</span>
                 <Button onClick={advanceRound} size="small">
                     Continue
