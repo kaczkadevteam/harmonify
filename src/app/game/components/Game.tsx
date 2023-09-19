@@ -8,7 +8,7 @@ declare global {
 }
 
 import styles from "./game.module.scss";
-import { useCallback, useContext, useRef } from "react";
+import { useContext, useRef } from "react";
 import { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import { GameContext } from "./GameContext";

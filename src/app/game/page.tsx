@@ -2,11 +2,7 @@ import { fetchFromSpotify } from "@/fetch";
 import { cookies } from "next/headers";
 import React from "react";
 import GameProvider from "./components/GameContext";
-import Image from "next/image";
 import { SimplePlaylistObject } from "../../types";
-import PlaylistCard from "./components/PlaylistCard";
-import StartButton from "./components/StartButton";
-import Game from "./components/Game";
 import Quiz from "./components/Quiz";
 
 export default async function GamePage() {
