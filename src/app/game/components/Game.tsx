@@ -95,11 +95,15 @@ export default function Game({
         },
     });
 
-    function getPoints(seconds: number) {
+    function getPoints() {
+        const seconds =
+            Number.parseInt(
+                playButtonAnimation.current?.currentTime?.toString() ?? "0"
+            ) / 1000;
         const points =
             seconds < 3
                 ? 300
-                : Math.floor(100 / Math.pow(seconds - 2, 1.1) + 54);
+                : Math.floor(100 / Math.pow(seconds - 2, 1.1) + 60);
 
         if (selectedTrack.guess === guess) {
             return points;
@@ -152,7 +156,7 @@ export default function Game({
             finishGame();
         }
 
-        setPoints((v) => v + getPoints(roundTime - roundTimer.totalSeconds));
+        setPoints((v) => v + getPoints());
         setRound((prev) => prev + 1);
         playButtonAnimation.current!.currentTime = 0;
 
@@ -282,12 +286,7 @@ export default function Game({
                     height={200}
                 />
                 <TrackDisplay styles={styles} track={selectedTrack} />
-                <span>
-                    Points:{" "}
-                    {`${points} + ${getPoints(
-                        roundTime - roundTimer.totalSeconds
-                    )}`}
-                </span>
+                <span>Points: {`${points} + ${getPoints()}`}</span>
                 <Button onClick={advanceRound} size="small">
                     Continue
                 </Button>
