@@ -85,6 +85,7 @@ export default function Game({
     const [points, setPoints] = useState(0);
 
     const playButtonRef = useRef<HTMLButtonElement>();
+    const playButtonAnimation = useRef<Animation>();
 
     const trackTimer = useTimer({
         expiryTimestamp: getTimerExpiryTimestamp(trackTime),
@@ -115,6 +116,8 @@ export default function Game({
         trackTimer.restart(getTimerExpiryTimestamp(trackTime), false);
         player.seek(selectedTrack.trackStart_ms);
         player.pause();
+        //playButtonAnimation.current?.finish();
+        playButtonAnimation.current?.pause();
         setIsPlaying(false);
     }
 
@@ -130,6 +133,7 @@ export default function Game({
         if (isPlaying) {
             player.pause();
             trackTimer.pause();
+            playButtonAnimation.current!.pause();
         }
         roundTimer.pause();
 
@@ -150,6 +154,7 @@ export default function Game({
 
         setPoints((v) => v + getPoints(roundTime - roundTimer.totalSeconds));
         setRound((prev) => prev + 1);
+        playButtonAnimation.current!.currentTime = 0;
 
         setSelectedTrack(track);
         setGuess("");
@@ -161,10 +166,29 @@ export default function Game({
         player.pause();
     }
 
+    useEffect(() => {
+        function getPlayButtonAnimation() {
+            const animation = playButtonRef.current?.animate(
+                [
+                    { backgroundPositionX: "100%" },
+                    { backgroundPositionX: "0%" },
+                ],
+                { duration: trackTime * 1000, iterations: Infinity }
+            );
+            animation?.pause();
+            return animation;
+        }
+
+        playButtonAnimation.current = getPlayButtonAnimation();
+    }, []);
+
     async function togglePlay() {
         if (isPlaying) {
             player.pause();
             trackTimer.pause();
+            playButtonAnimation.current!.pause();
+            playButtonAnimation.current!.currentTime =
+                (trackTime - trackTimer.totalSeconds) * 1000;
         } else {
             if (!began) {
                 fetchFromSpotify(
@@ -183,10 +207,7 @@ export default function Game({
             } else {
                 player.resume();
             }
-            playButtonRef.current?.animate(
-                [{ color: "black" }, { color: "red" }],
-                { duration: trackTime * 1000, iterations: Infinity }
-            );
+            playButtonAnimation.current?.play();
             trackTimer.resume();
         }
 
@@ -196,10 +217,6 @@ export default function Game({
     const percentageOfTrackTime = Math.floor(
         ((trackTime - trackTimer.totalSeconds) / trackTime) * 100
     );
-
-    /*backgroundImage: `linear-gradient(0.25turn, gray ${
-                        percentageOfTrackTime - 1
-                    }%,${percentageOfTrackTime}%, transparent)`,*/
 
     return (
         <div className={styles["game"]}>
@@ -214,7 +231,10 @@ export default function Game({
                 ref={playButtonRef}
                 style={{
                     padding: "10px 60px",
-                    backgroundPosition: "100% 50%",
+                    backgroundSize: "200% 200%",
+                    backgroundPositionX: "100%",
+                    backgroundImage: `linear-gradient(0.25turn, #1b3162 49%
+                    ,50%, transparent)`,
                 }}
             >
                 {isPlaying ? (

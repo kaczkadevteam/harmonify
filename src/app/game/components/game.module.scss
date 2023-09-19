@@ -49,18 +49,3 @@
         color: rgba(255, 255, 255, 0.554);
     }
 }
-
-@keyframes play-button {
-    0% {
-        background-image: linear-gradient(0.25turn, gray -1%, 0%, transparent);
-    }
-
-    100% {
-        background-image: linear-gradient(
-            0.25turn,
-            gray 99%,
-            100%,
-            transparent
-        );
-    }
-}
