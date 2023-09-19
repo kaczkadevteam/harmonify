@@ -224,8 +224,14 @@ export default function Game({
 
     return (
         <div className={styles["game"]}>
-            <div>
-                Runda: {round} Czas muzyki: {trackTimer.totalSeconds}
+            <div
+                style={{
+                    alignSelf: "start",
+                    justifySelf: "start",
+                    fontSize: "2.5rem",
+                }}
+            >
+                Runda: {round}
             </div>
             <CircularTimer x={roundTimer.totalSeconds} xMax={roundTime} />
 
@@ -236,6 +242,7 @@ export default function Game({
                 style={{
                     padding: "10px 60px",
                     backgroundSize: "200% 200%",
+                    gridColumn: "1 / -1",
                     backgroundPositionX: "100%",
                     backgroundImage: `linear-gradient(0.25turn, #1b3162 49%
                     ,50%, transparent)`,
@@ -248,6 +255,7 @@ export default function Game({
                 )}
             </Button>
             <form
+                className={styles["game__search-form"]}
                 onSubmit={(e) => {
                     e.preventDefault();
                     finishRound();

@@ -18,6 +18,8 @@ export default function CircularTimer({
                 width: "50px",
                 height: "50px",
                 border: "7px solid transparent",
+                alignSelf: "start",
+                justifySelf: "end",
                 background: `linear-gradient(var(--main-dark-color), var(--main-dark-color)) content-box no-repeat,
                     conic-gradient(transparent ${Math.floor(
                         ((xMax - x) / xMax) * 100
