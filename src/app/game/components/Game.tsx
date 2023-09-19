@@ -152,7 +152,7 @@ export default function Game({
         );
 
         if (round == maxRounds) {
-            game.setFinalScore(points);
+            game.setFinalScore(points + getPoints());
             finishGame();
         }
 
