@@ -1,6 +1,9 @@
 .game {
     display: grid;
     place-items: center;
+
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 3fr 5fr;
 }
 
 .modal {
@@ -44,5 +47,20 @@
     &__author {
         margin-left: 10px;
         color: rgba(255, 255, 255, 0.554);
+    }
+}
+
+@keyframes play-button {
+    0% {
+        background-image: linear-gradient(0.25turn, gray -1%, 0%, transparent);
+    }
+
+    100% {
+        background-image: linear-gradient(
+            0.25turn,
+            gray 99%,
+            100%,
+            transparent
+        );
     }
 }

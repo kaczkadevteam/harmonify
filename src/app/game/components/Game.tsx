@@ -22,6 +22,9 @@ import { default as Modal } from "react-modal";
 import Image from "next/image";
 import TrackDisplay from "./TrackDisplay";
 import Button from "@/components/Button";
+import CircularTimer from "./CircularTimer";
+import Icon from "@mdi/react";
+import { mdiPlay, mdiPause } from "@mdi/js";
 
 Modal.setAppElement("#root");
 
@@ -80,6 +83,8 @@ export default function Game({
     });
     const [guess, setGuess] = useState("");
     const [points, setPoints] = useState(0);
+
+    const playButtonRef = useRef<HTMLButtonElement>();
 
     const trackTimer = useTimer({
         expiryTimestamp: getTimerExpiryTimestamp(trackTime),
@@ -178,28 +183,45 @@ export default function Game({
             } else {
                 player.resume();
             }
+            playButtonRef.current?.animate(
+                [{ color: "black" }, { color: "red" }],
+                { duration: trackTime * 1000, iterations: Infinity }
+            );
             trackTimer.resume();
         }
 
         setIsPlaying(!isPlaying);
     }
 
+    const percentageOfTrackTime = Math.floor(
+        ((trackTime - trackTimer.totalSeconds) / trackTime) * 100
+    );
+
+    /*backgroundImage: `linear-gradient(0.25turn, gray ${
+                        percentageOfTrackTime - 1
+                    }%,${percentageOfTrackTime}%, transparent)`,*/
+
     return (
         <div className={styles["game"]}>
-            <div
-                style={{
-                    borderRadius: "50%",
-                    width: "12px",
-                    height: "12px",
-                    backgroundColor: "#f59e0b",
-                }}
-            ></div>
             <div>
-                Runda: {round} Czas rundy: {roundTimer.totalSeconds} Czas
-                muzyki: {trackTimer.totalSeconds}
+                Runda: {round} Czas muzyki: {trackTimer.totalSeconds}
             </div>
-            <Button onClick={togglePlay} size="small">
-                {isPlaying ? "STOP" : "START"}
+            <CircularTimer x={roundTimer.totalSeconds} xMax={roundTime} />
+
+            <Button
+                onClick={togglePlay}
+                size="large"
+                ref={playButtonRef}
+                style={{
+                    padding: "10px 60px",
+                    backgroundPosition: "100% 50%",
+                }}
+            >
+                {isPlaying ? (
+                    <Icon path={mdiPause} size={3} />
+                ) : (
+                    <Icon path={mdiPlay} size={3} />
+                )}
             </Button>
             <form
                 onSubmit={(e) => {
