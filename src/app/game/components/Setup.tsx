@@ -1,4 +1,4 @@
-import { SimplePlaylistObject, Track } from "@/types";
+import { Album, SimplePlaylistObject, Track } from "@/types";
 import { useContext } from "react";
 import styles from "./setup.module.scss";
 import PlaylistCard from "./PlaylistCard";
@@ -11,10 +11,12 @@ import Button from "@/components/Button";
 
 export default function Setup({
     playlists,
+    albums,
     playerObj,
     startGame,
 }: {
     playlists: { items: SimplePlaylistObject[]; total: number };
+    albums: { items: Album<Track>[]; total: number };
     playerObj: {
         player: any;
         playerID: string;

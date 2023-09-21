@@ -2,7 +2,12 @@ import { fetchFromSpotify } from "@/fetch";
 import { cookies } from "next/headers";
 import React from "react";
 import GameProvider from "./components/GameContext";
-import { SimplePlaylistObject } from "../../types";
+import {
+    Album,
+    SimplePlaylistObject,
+    SimplifiedTrackObject,
+    Track,
+} from "@/types";
 import Quiz from "./components/Quiz";
 
 export default async function GamePage() {
@@ -19,9 +24,34 @@ export default async function GamePage() {
     const playlistsResult: { items: SimplePlaylistObject[]; total: number } =
         await playlistsResponse.json();
 
+    const albumsResponse = await fetchFromSpotify(
+        `/me/albums?limit=50`,
+        access_token
+    );
+    const albumsResult: {
+        items: Album<SimplifiedTrackObject>[];
+        total: number;
+    } = await albumsResponse.json();
+
+    console.log(albumsResult);
+
+    const transformedAlbums = {
+        ...albumsResult,
+        items: albumsResult.items.map<Album<Track>>((a) => {
+            return {
+                ...a,
+                tracks: {
+                    items: (a.tracks.items = a.tracks.items.map<Track>((t) => {
+                        return { ...t, album: { images: a.images } };
+                    })),
+                },
+            };
+        }),
+    };
+
     return (
         <GameProvider>
-            <Quiz playlists={playlistsResult} />
+            <Quiz playlists={playlistsResult} albums={transformedAlbums} />
         </GameProvider>
     );
 }

@@ -3,16 +3,17 @@
 import React, { useState } from "react";
 import Setup from "./Setup";
 import Game from "./Game";
-import { SimplePlaylistObject } from "@/types";
+import { Album, SimplePlaylistObject, Track } from "@/types";
 import useSpotifyPlayer from "../hooks/useSpotifyPlayer";
 import Finish from "./Finish";
 
 export default function Quiz({
     playlists,
+    albums,
 }: {
     playlists: { items: SimplePlaylistObject[]; total: number };
+    albums: { items: Album<Track>[]; total: number };
 }) {
-    const [isPlaying, setIsPlaying] = useState(false);
     const [gameStage, setGameStage] = useState<"setup" | "game" | "finish">(
         "setup"
     );
@@ -37,6 +38,7 @@ export default function Quiz({
             return (
                 <Setup
                     playlists={playlists}
+                    albums={albums}
                     playerObj={playerObj}
                     startGame={() => {
                         advanceStage();
