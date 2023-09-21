@@ -24,34 +24,51 @@ export default async function GamePage() {
     const playlistsResult: { items: SimplePlaylistObject[]; total: number } =
         await playlistsResponse.json();
 
-    const albumsResponse = await fetchFromSpotify(
-        `/me/albums?limit=50`,
-        access_token
-    );
-    const albumsResult: {
-        items: Album<SimplifiedTrackObject>[];
-        total: number;
-    } = await albumsResponse.json();
-
-    console.log(albumsResult);
-
-    const transformedAlbums = {
-        ...albumsResult,
-        items: albumsResult.items.map<Album<Track>>((a) => {
-            return {
-                ...a,
-                tracks: {
-                    items: (a.tracks.items = a.tracks.items.map<Track>((t) => {
-                        return { ...t, album: { images: a.images } };
-                    })),
-                },
-            };
-        }),
+    let nextAlbums = `${process.env.NEXT_PUBLIC_SPOTIFY_URL}/me/albums?limit=50`;
+    let albums: { total: number; items: Album<Track>[] } = {
+        total: 0,
+        items: [],
     };
+    let safeguard = 0;
+
+    while (nextAlbums && safeguard < 10) {
+        const albumsResponse = await fetchFromSpotify(
+            nextAlbums,
+            access_token,
+            undefined,
+            true
+        );
+        const albumsResult: {
+            items: { album: Album<SimplifiedTrackObject> }[];
+            total: number;
+            next: string;
+        } = await albumsResponse.json();
+
+        albums.total += albumsResult.total;
+        albums.items = [
+            ...albums.items,
+            ...albumsResult.items.map<Album<Track>>((i) => {
+                const a = i.album;
+                return {
+                    ...a,
+                    tracks: {
+                        items: (a.tracks.items = a.tracks.items.map<Track>(
+                            (t) => {
+                                return { ...t, album: { images: a.images } };
+                            }
+                        )),
+                    },
+                };
+            }),
+        ];
+        nextAlbums = albumsResult.next;
+
+        safeguard++;
+    }
 
     return (
         <GameProvider>
-            <Quiz playlists={playlistsResult} albums={transformedAlbums} />
+            <Quiz playlists={playlistsResult} albums={albums} />
         </GameProvider>
     );
 }

@@ -8,6 +8,7 @@ import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 import LoadingCircle from "./LoadingCircle";
 import Button from "@/components/Button";
+import AlbumCard from "./AlbumCard";
 
 export default function Setup({
     playlists,
@@ -95,7 +96,11 @@ export default function Setup({
                     })}
                 </div>
                 <h2>Albums</h2>
-                <div className={styles["cards-container"]}></div>
+                <div className={styles["cards-container"]}>
+                    {albums.items.map((album) => {
+                        return <AlbumCard key={album.id} album={album} />;
+                    })}
+                </div>
             </div>
 
             <div className={styles["button-wrapper"]}>
