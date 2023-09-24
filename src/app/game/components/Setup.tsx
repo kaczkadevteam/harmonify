@@ -1,5 +1,5 @@
 import { Album, SimplePlaylistObject, Track } from "@/types";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import styles from "./setup.module.scss";
 import PlaylistCard from "./PlaylistCard";
 import { GameContext } from "./GameContext";
@@ -26,6 +26,7 @@ export default function Setup({
 }) {
     const game = useContext(GameContext);
     const router = useRouter();
+    const [selectedAlbums, setSelectedAlbums] = useState<Album<Track>[]>([]);
 
     async function startGameHandler() {
         if (!playerObj) return;
@@ -81,25 +82,52 @@ export default function Setup({
         return tracks;
     }
 
+    function selectAlbum(album: Album<Track>) {
+        setSelectedAlbums((prevAlbums) => [...prevAlbums, album]);
+    }
+
+    function deselectAlbum(album: Album<Track>) {
+        setSelectedAlbums((prevAlbums) =>
+            prevAlbums.filter((prevAlbum) => prevAlbum.id !== album.id)
+        );
+    }
+
     return (
         <main className={styles["main"]}>
             <div className={styles["tracks-select"]}>
-                <h2>Playlists</h2>
-                <div className={styles["cards-container"]}>
-                    {playlists.items.map((playlist) => {
-                        return (
-                            <PlaylistCard
-                                key={playlist.id}
-                                playlist={playlist}
-                            />
-                        );
-                    })}
+                <div className={styles["tracks-select__type"]}>
+                    <h2 className={styles["tracks-select__header"]}>
+                        Playlists
+                    </h2>
+                    <div className={styles["cards-container"]}>
+                        {playlists.items.map((playlist) => {
+                            return (
+                                <PlaylistCard
+                                    key={playlist.id}
+                                    playlist={playlist}
+                                />
+                            );
+                        })}
+                    </div>
                 </div>
-                <h2>Albums</h2>
-                <div className={styles["cards-container"]}>
-                    {albums.items.map((album) => {
-                        return <AlbumCard key={album.id} album={album} />;
-                    })}
+                <div className={styles["tracks-select__type"]}>
+                    <h2 className={styles["tracks-select__header"]}>Albums</h2>
+                    <div className={styles["cards-container"]}>
+                        {albums.items.map((album) => {
+                            return (
+                                <AlbumCard
+                                    key={album.id}
+                                    album={album}
+                                    selected={selectedAlbums.some(
+                                        (searchedAlbum) =>
+                                            searchedAlbum.id === album.id
+                                    )}
+                                    selectAlbum={selectAlbum}
+                                    deselectAlbum={deselectAlbum}
+                                />
+                            );
+                        })}
+                    </div>
                 </div>
             </div>
 

@@ -1,17 +1,22 @@
 "use client";
 
 import Image from "next/image";
-import { Album, SimplifiedTrackObject } from "@/types";
+import { Album, SimplifiedTrackObject, Track } from "@/types";
 import styles from "./playlistCard.module.scss";
 import { useContext } from "react";
 import { GameContext } from "./GameContext";
 
-export default function PlaylistCard({
+export default function AlbumCard({
     album,
+    selected,
+    selectAlbum,
+    deselectAlbum,
 }: {
-    album: Album<SimplifiedTrackObject>;
+    album: Album<Track>;
+    selected: boolean;
+    selectAlbum: (album: Album<Track>) => void;
+    deselectAlbum: (album: Album<Track>) => void;
 }) {
-    const game = useContext(GameContext);
     const { url: imageUrl } = album.images[0];
 
     return (
@@ -26,6 +31,19 @@ export default function PlaylistCard({
                     />
                 </div>
                 <span>{album.name}</span>
+
+                <input
+                    id={album.id}
+                    type="checkbox"
+                    checked={selected}
+                    onChange={(e) => {
+                        if (e.target.checked) {
+                            selectAlbum(album);
+                        } else {
+                            deselectAlbum(album);
+                        }
+                    }}
+                />
             </div>
         </label>
     );

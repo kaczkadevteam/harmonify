@@ -1,6 +1,6 @@
 "use client";
 
-import { Track } from "@/types";
+import { Album, Track } from "@/types";
 import { createContext, useMemo, useState } from "react";
 
 export function trackIntoGuessString(track: Track) {

@@ -9,6 +9,22 @@
         flex-direction: column;
         justify-content: flex-start;
         overflow: auto;
+
+        &__type {
+            margin: 20px 0;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        &__header {
+            position: sticky;
+            top: 0px;
+            z-index: 1;
+            padding: 5px;
+            text-align: center;
+            background-color: var(--main-dark-color);
+        }
     }
 
     .cards-container {
