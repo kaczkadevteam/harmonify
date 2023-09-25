@@ -1,5 +1,5 @@
-import { SimplePlaylistObject, Track } from "@/types";
-import { useContext } from "react";
+import { Album, SimplePlaylistObject, Track } from "@/types";
+import { useContext, useState } from "react";
 import styles from "./setup.module.scss";
 import PlaylistCard from "./PlaylistCard";
 import { GameContext } from "./GameContext";
@@ -8,13 +8,16 @@ import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 import LoadingCircle from "./LoadingCircle";
 import Button from "@/components/Button";
+import AlbumCard from "./AlbumCard";
 
 export default function Setup({
     playlists,
+    albums,
     playerObj,
     startGame,
 }: {
     playlists: { items: SimplePlaylistObject[]; total: number };
+    albums: { items: Album<Track>[]; total: number };
     playerObj: {
         player: any;
         playerID: string;
@@ -44,7 +47,7 @@ export default function Setup({
     }
 
     async function fetchAllTracks() {
-        const tracks: Track[] = (
+        const playlistsTracks: Track[] = (
             await Promise.all(
                 game.tracksHref.map(async (trackHref) => {
                     let next = `${trackHref}?fields=next,items(is_local,track(album.images,artists(name,id),duration_ms,name,uri))&limit=10`;
@@ -75,37 +78,68 @@ export default function Setup({
             .filter((item) => !item.is_local)
             .map((item) => item.track);
 
-        return tracks;
+        const albumsTracks: Track[] = game.selectedAlbums.reduce<Track[]>(
+            (acc, album) => {
+                return [...acc, ...album.tracks.items];
+            },
+            []
+        );
+
+        return [...playlistsTracks, ...albumsTracks];
     }
+
+    const noTracksSelected =
+        game.tracksHref.length === 0 && game.selectedAlbums.length === 0;
 
     return (
         <main className={styles["main"]}>
             <div className={styles["tracks-select"]}>
-                <h2>Playlists</h2>
-                <div className={styles["cards-container"]}>
-                    {playlists.items.map((playlist) => {
-                        return (
-                            <PlaylistCard
-                                key={playlist.id}
-                                playlist={playlist}
-                            />
-                        );
-                    })}
+                <div className={styles["tracks-select__type"]}>
+                    <h2 className={styles["tracks-select__header"]}>
+                        Playlists
+                    </h2>
+                    <div className={styles["cards-container"]}>
+                        {playlists.items.map((playlist) => {
+                            return (
+                                <PlaylistCard
+                                    key={playlist.id}
+                                    playlist={playlist}
+                                />
+                            );
+                        })}
+                    </div>
                 </div>
-                <h2>Albums</h2>
-                <div className={styles["cards-container"]}></div>
+                <div className={styles["tracks-select__type"]}>
+                    <h2 className={styles["tracks-select__header"]}>Albums</h2>
+                    <div className={styles["cards-container"]}>
+                        {albums.items.map((album) => {
+                            return (
+                                <AlbumCard
+                                    key={album.id}
+                                    album={album}
+                                    selected={game.selectedAlbums.some(
+                                        (searchedAlbum) =>
+                                            searchedAlbum.id === album.id
+                                    )}
+                                    selectAlbum={game.selectAlbum}
+                                    deselectAlbum={game.deselectAlbum}
+                                />
+                            );
+                        })}
+                    </div>
+                </div>
             </div>
 
             <div className={styles["button-wrapper"]}>
                 <Button
-                    disabled={!playerObj || game.tracksHref.length === 0}
+                    disabled={!playerObj || noTracksSelected}
                     onClick={() => {
                         startGameHandler();
                     }}
                     size="medium"
                 >
                     {playerObj ? (
-                        game.tracksHref.length !== 0 ? (
+                        !noTracksSelected ? (
                             "Start game"
                         ) : (
                             "Select tracks first"

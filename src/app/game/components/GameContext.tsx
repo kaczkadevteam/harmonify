@@ -1,6 +1,6 @@
 "use client";
 
-import { Track } from "@/types";
+import { Album, Track } from "@/types";
 import { createContext, useMemo, useState } from "react";
 
 export function trackIntoGuessString(track: Track) {
@@ -15,6 +15,9 @@ export const GameContext = createContext<{
     tracksHref: string[];
     addTracksHref: (id: string) => void;
     removeTracksHref: (id: string) => void;
+    selectedAlbums: Album<Track>[];
+    selectAlbum: (album: Album<Track>) => void;
+    deselectAlbum: (album: Album<Track>) => void;
     tracks: Track[];
     setTracks: (arg: any) => void;
     finalScore: number;
@@ -23,6 +26,9 @@ export const GameContext = createContext<{
     tracksHref: [],
     addTracksHref: (playlist) => {},
     removeTracksHref: (playlist) => {},
+    selectedAlbums: [],
+    selectAlbum: (album) => {},
+    deselectAlbum: (album) => {},
     tracks: [],
     setTracks: (arg) => {},
     finalScore: 0,
@@ -31,6 +37,7 @@ export const GameContext = createContext<{
 
 export default function GameProvider({ children }: React.PropsWithChildren) {
     const [tracksHref, setTracksHref] = useState<string[]>([]);
+    const [selectedAlbums, setSelectedAlbums] = useState<Album<Track>[]>([]);
     const [tracks, setTracks] = useState<Track[]>([]);
     const [finalScore, setFinalScore] = useState(0);
 
@@ -42,6 +49,16 @@ export default function GameProvider({ children }: React.PropsWithChildren) {
         setTracksHref((playlists) => {
             return playlists.filter((playlist) => playlist !== id);
         });
+    }
+
+    function selectAlbum(album: Album<Track>) {
+        setSelectedAlbums((prevAlbums) => [...prevAlbums, album]);
+    }
+
+    function deselectAlbum(album: Album<Track>) {
+        setSelectedAlbums((prevAlbums) =>
+            prevAlbums.filter((prevAlbum) => prevAlbum.id !== album.id)
+        );
     }
 
     const tracksWithGuess = useMemo(() => {
@@ -70,6 +87,9 @@ export default function GameProvider({ children }: React.PropsWithChildren) {
                 tracksHref,
                 addTracksHref,
                 removeTracksHref,
+                selectedAlbums,
+                selectAlbum,
+                deselectAlbum,
                 tracks: tracksWithGuess,
                 setTracks,
                 finalScore,

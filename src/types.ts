@@ -14,12 +14,24 @@ export type ImageObject = {
     width?: number;
 };
 
-export interface Track {
+export type Track = SimplifiedTrackObject & {
     album: { images: ImageObject[] };
+    guess?: string;
+    trackStart_ms?: number;
+};
+
+export interface SimplifiedTrackObject {
     artists: { name: string; id: string }[];
     duration_ms: number;
     name: string;
     uri: string;
-    guess?: string;
-    trackStart_ms?: number;
+}
+
+export interface Album<T> {
+    id: string;
+    images: ImageObject[];
+    name: string;
+    tracks: {
+        items: T[];
+    };
 }
