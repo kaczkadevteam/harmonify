@@ -26,7 +26,6 @@ export default function Setup({
 }) {
     const game = useContext(GameContext);
     const router = useRouter();
-    const [selectedAlbums, setSelectedAlbums] = useState<Album<Track>[]>([]);
 
     async function startGameHandler() {
         if (!playerObj) return;
@@ -48,7 +47,7 @@ export default function Setup({
     }
 
     async function fetchAllTracks() {
-        const tracks: Track[] = (
+        const playlistsTracks: Track[] = (
             await Promise.all(
                 game.tracksHref.map(async (trackHref) => {
                     let next = `${trackHref}?fields=next,items(is_local,track(album.images,artists(name,id),duration_ms,name,uri))&limit=10`;
@@ -79,18 +78,18 @@ export default function Setup({
             .filter((item) => !item.is_local)
             .map((item) => item.track);
 
-        return tracks;
-    }
-
-    function selectAlbum(album: Album<Track>) {
-        setSelectedAlbums((prevAlbums) => [...prevAlbums, album]);
-    }
-
-    function deselectAlbum(album: Album<Track>) {
-        setSelectedAlbums((prevAlbums) =>
-            prevAlbums.filter((prevAlbum) => prevAlbum.id !== album.id)
+        const albumsTracks: Track[] = game.selectedAlbums.reduce<Track[]>(
+            (acc, album) => {
+                return [...acc, ...album.tracks.items];
+            },
+            []
         );
+
+        return [...playlistsTracks, ...albumsTracks];
     }
+
+    const noTracksSelected =
+        game.tracksHref.length === 0 && game.selectedAlbums.length === 0;
 
     return (
         <main className={styles["main"]}>
@@ -118,12 +117,12 @@ export default function Setup({
                                 <AlbumCard
                                     key={album.id}
                                     album={album}
-                                    selected={selectedAlbums.some(
+                                    selected={game.selectedAlbums.some(
                                         (searchedAlbum) =>
                                             searchedAlbum.id === album.id
                                     )}
-                                    selectAlbum={selectAlbum}
-                                    deselectAlbum={deselectAlbum}
+                                    selectAlbum={game.selectAlbum}
+                                    deselectAlbum={game.deselectAlbum}
                                 />
                             );
                         })}
@@ -133,14 +132,14 @@ export default function Setup({
 
             <div className={styles["button-wrapper"]}>
                 <Button
-                    disabled={!playerObj || game.tracksHref.length === 0}
+                    disabled={!playerObj || noTracksSelected}
                     onClick={() => {
                         startGameHandler();
                     }}
                     size="medium"
                 >
                     {playerObj ? (
-                        game.tracksHref.length !== 0 ? (
+                        !noTracksSelected ? (
                             "Start game"
                         ) : (
                             "Select tracks first"

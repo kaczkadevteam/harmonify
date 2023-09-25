@@ -195,7 +195,7 @@ export default function Game({
                 (trackTime - trackTimer.totalSeconds) * 1000;
         } else {
             if (!began) {
-                fetchFromSpotify(
+                await fetchFromSpotify(
                     `/me/player/play?device_id=${playerID}`,
                     Cookies.get("access_token") ?? "",
                     router,

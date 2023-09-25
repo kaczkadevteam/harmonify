@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { Album, SimplifiedTrackObject, Track } from "@/types";
+import { Album, Track } from "@/types";
 import styles from "./playlistCard.module.scss";
 import { useContext } from "react";
 import { GameContext } from "./GameContext";
