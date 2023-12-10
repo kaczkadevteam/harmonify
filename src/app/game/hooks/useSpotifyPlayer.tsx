@@ -1,3 +1,10 @@
+declare global {
+    interface Window {
+        onSpotifyWebPlaybackSDKReady: any;
+        Spotify: any;
+    }
+}
+
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
@@ -10,12 +17,6 @@ export default function useSpotifyPlayer() {
     const router = useRouter();
 
     useEffect(() => {
-        const script = document.createElement("script");
-        script.src = "https://sdk.scdn.co/spotify-player.js";
-        script.async = true;
-
-        document.body.appendChild(script);
-
         window.onSpotifyWebPlaybackSDKReady = () => {
             const player = new window.Spotify.Player({
                 name: "Name that tune!",

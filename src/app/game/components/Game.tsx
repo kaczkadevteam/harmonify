@@ -1,12 +1,5 @@
 "use client";
 
-declare global {
-    interface Window {
-        onSpotifyWebPlaybackSDKReady: any;
-        Spotify: any;
-    }
-}
-
 import styles from "./game.module.scss";
 import { useContext, useRef } from "react";
 import { useEffect, useState } from "react";
