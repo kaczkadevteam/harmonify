@@ -1,6 +1,6 @@
 import { Track } from "@/types";
 import React from "react";
-import TrackDisplay from "./TrackDisplay";
+import TrackDisplay from "../../trackDisplay/TrackDisplay";
 
 export default function AutocompleteBarOption({
     styles,

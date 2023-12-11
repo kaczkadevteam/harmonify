@@ -1,14 +1,14 @@
 import { Album, SimplePlaylistObject, Track } from "@/types";
 import { useContext, useState } from "react";
 import styles from "./setup.module.scss";
-import PlaylistCard from "./PlaylistCard";
-import { GameContext } from "./GameContext";
+import PlaylistCard from "../playlistCard/PlaylistCard";
+import { GameContext } from "../gameContext/GameContext";
 import { fetchFromSpotify } from "@/fetch";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
-import LoadingCircle from "./LoadingCircle";
-import Button from "@/components/Button";
-import AlbumCard from "./AlbumCard";
+import LoadingCircle from "../loadingCircle/LoadingCircle";
+import Button from "@/components/button/Button";
+import AlbumCard from "../albumCard/AlbumCard";
 
 export default function Setup({
     playlists,

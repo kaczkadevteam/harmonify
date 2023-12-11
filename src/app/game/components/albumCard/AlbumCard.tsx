@@ -2,9 +2,9 @@
 
 import Image from "next/image";
 import { Album, Track } from "@/types";
-import styles from "./playlistCard.module.scss";
+import styles from "../playlistCard/playlistCard.module.scss";
 import { useContext } from "react";
-import { GameContext } from "./GameContext";
+import { GameContext } from "../gameContext/GameContext";
 
 export default function AlbumCard({
     album,

@@ -1,14 +1,14 @@
 import { fetchFromSpotify } from "@/fetch";
 import { cookies } from "next/headers";
 import React from "react";
-import GameProvider from "./components/GameContext";
+import GameProvider from "./components/gameContext/GameContext";
 import {
     Album,
     SimplePlaylistObject,
     SimplifiedTrackObject,
     Track,
 } from "@/types";
-import Quiz from "./components/Quiz";
+import Quiz from "./components/quiz/Quiz";
 
 export default async function GamePage() {
     const access_token = cookies().get("access_token")!.value;

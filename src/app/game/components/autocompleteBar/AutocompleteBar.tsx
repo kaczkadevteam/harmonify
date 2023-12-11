@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import styles from "./autocompleteBar.module.scss";
-import { GameContext } from "./GameContext";
-import AutocompleteBarOption from "./AutocompleteBarOption";
+import { GameContext } from "../gameContext/GameContext";
+import AutocompleteBarOption from "./option/AutocompleteBarOption";
 
 export default function AutocompleteBar({
     guess,

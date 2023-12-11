@@ -4,7 +4,7 @@ import Image from "next/image";
 import { SimplePlaylistObject } from "@/types";
 import styles from "./playlistCard.module.scss";
 import { useContext } from "react";
-import { GameContext } from "./GameContext";
+import { GameContext } from "../gameContext/GameContext";
 
 export default function PlaylistCard({
     playlist,
