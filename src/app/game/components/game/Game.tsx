@@ -294,7 +294,7 @@ export default function Game({
                     </span>
                 )}
                 <span>Points: {`${points} + ${getPoints()}`}</span>
-                <Button onClick={advanceRound} size="small">
+                <Button onClick={advanceRound} size="small" autoFocus>
                     Continue
                 </Button>
             </Modal>
