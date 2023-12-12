@@ -12,10 +12,26 @@ export default function AutocompleteBar({
 }) {
     const game = useContext(GameContext);
 
+    const matchingTracks = game.tracks.filter((track) => {
+        if (track.guess == null) return false;
+        if (guess === "") return false;
+        if (track.guess === guess) return false;
+
+        return track.guess.toLowerCase().includes(guess.toLowerCase());
+    });
+
+    let className = styles["autocomplete"];
+
+    let inputClassName = styles["autocomplete__input"];
+    inputClassName +=
+        matchingTracks.length > 0
+            ? ` ${styles["autocomplete__input--open"]}`
+            : "";
+
     return (
-        <div className={styles["autocomplete"]}>
+        <div className={className}>
             <input
-                className={styles["autocomplete__input"]}
+                className={inputClassName}
                 type="text"
                 name="track"
                 value={guess}
@@ -25,24 +41,14 @@ export default function AutocompleteBar({
                 }}
             />
             <div className={styles["autocomplete__options"]}>
-                {game.tracks
-                    .filter((track) => {
-                        if (track.guess == null) return false;
-                        if (guess === "") return false;
-                        if (track.guess === guess) return false;
-
-                        return track.guess
-                            .toLowerCase()
-                            .includes(guess.toLowerCase());
-                    })
-                    .map((track) => (
-                        <AutocompleteBarOption
-                            key={track.uri}
-                            styles={styles}
-                            track={track}
-                            setGuess={setGuess}
-                        />
-                    ))}
+                {matchingTracks.map((track) => (
+                    <AutocompleteBarOption
+                        key={track.uri}
+                        styles={styles}
+                        track={track}
+                        setGuess={setGuess}
+                    />
+                ))}
             </div>
         </div>
     );
