@@ -1,10 +1,7 @@
 "use client";
 
-import Image from "next/image";
 import { Album, Track } from "@/types";
-import styles from "../playlistCard/playlistCard.module.scss";
-import { useContext } from "react";
-import { GameContext } from "../gameContext/GameContext";
+import CheckableCard from "../checkableCard/CheckableCard";
 
 export default function AlbumCard({
     album,
@@ -20,31 +17,14 @@ export default function AlbumCard({
     const { url: imageUrl } = album.images[0];
 
     return (
-        <label htmlFor={album.id}>
-            <div className={styles["playlist-card"]}>
-                <div className={styles["img-container"]}>
-                    <Image
-                        src={imageUrl}
-                        alt="Playlist icon"
-                        sizes="100%"
-                        fill
-                    />
-                </div>
-                <span>{album.name}</span>
-
-                <input
-                    id={album.id}
-                    type="checkbox"
-                    checked={selected}
-                    onChange={(e) => {
-                        if (e.target.checked) {
-                            selectAlbum(album);
-                        } else {
-                            deselectAlbum(album);
-                        }
-                    }}
-                />
-            </div>
-        </label>
+        <CheckableCard
+            id={album.id}
+            title={album.name}
+            imageSrc={imageUrl}
+            imageAlt="Playlist cover"
+            checked={selected}
+            onCheck={() => selectAlbum(album)}
+            onUncheck={() => deselectAlbum(album)}
+        />
     );
 }
