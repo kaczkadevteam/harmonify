@@ -1,7 +1,7 @@
 "use client";
 
 import styles from "./game.module.scss";
-import { useContext, useRef } from "react";
+import { useCallback, useContext, useRef } from "react";
 import { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import { GameContext } from "../gameContext/GameContext";
@@ -80,14 +80,6 @@ export default function Game({
     const playButtonRef = useRef<HTMLButtonElement>();
     const playButtonAnimation = useRef<Animation>();
 
-    const trackTimer = useTimer({
-        expiryTimestamp: getTimerExpiryTimestamp(trackTime),
-        autoStart: false,
-        onExpire: () => {
-            restartTrackTimer();
-        },
-    });
-
     function getPoints() {
         const seconds =
             Number.parseInt(
@@ -109,14 +101,17 @@ export default function Game({
         }
     }
 
-    function restartTrackTimer() {
-        trackTimer.restart(getTimerExpiryTimestamp(trackTime), false);
-        player.seek(selectedTrack.trackStart_ms);
-        player.pause();
-        //playButtonAnimation.current?.finish();
-        playButtonAnimation.current?.pause();
-        setIsPlaying(false);
-    }
+    const restartTrackTimer = useCallback(
+        function () {
+            player.seek(selectedTrack.trackStart_ms);
+            player.pause();
+            //playButtonAnimation.current?.finish();
+            playButtonAnimation.current?.pause();
+            playButtonAnimation.current!.currentTime = 0;
+            setIsPlaying(false);
+        },
+        [player, playButtonAnimation, selectedTrack]
+    );
 
     const roundTimer = useTimer({
         expiryTimestamp: getTimerExpiryTimestamp(roundTime),
@@ -129,7 +124,6 @@ export default function Game({
     function finishRound() {
         if (isPlaying) {
             player.pause();
-            trackTimer.pause();
             playButtonAnimation.current!.pause();
         }
         roundTimer.pause();
@@ -159,7 +153,6 @@ export default function Game({
         setRoundFinished(false);
         setBegan(false);
         roundTimer.restart(getTimerExpiryTimestamp(roundTime), false);
-        trackTimer.restart(getTimerExpiryTimestamp(trackTime), false);
         player.pause();
     }
 
@@ -170,22 +163,24 @@ export default function Game({
                     { backgroundPositionX: "100%" },
                     { backgroundPositionX: "0%" },
                 ],
-                { duration: trackTime * 1000, iterations: Infinity }
+                { duration: trackTime * 1000, iterations: 1 }
             );
-            animation?.pause();
+
+            if (animation) {
+                animation.pause();
+                animation.onfinish = restartTrackTimer;
+            }
+
             return animation;
         }
 
         playButtonAnimation.current = getPlayButtonAnimation();
-    }, []);
+    }, [restartTrackTimer]);
 
     async function togglePlay() {
         if (isPlaying) {
             player.pause();
-            trackTimer.pause();
             playButtonAnimation.current!.pause();
-            playButtonAnimation.current!.currentTime =
-                (trackTime - trackTimer.totalSeconds) * 1000;
         } else {
             if (!began) {
                 await fetchFromSpotify(
@@ -205,15 +200,10 @@ export default function Game({
                 player.resume();
             }
             playButtonAnimation.current?.play();
-            trackTimer.resume();
         }
 
         setIsPlaying(!isPlaying);
     }
-
-    const percentageOfTrackTime = Math.floor(
-        ((trackTime - trackTimer.totalSeconds) / trackTime) * 100
-    );
 
     return (
         <div className={styles["game"]}>
