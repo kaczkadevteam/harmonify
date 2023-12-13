@@ -70,6 +70,7 @@ export default function Game({
     const [began, setBegan] = useState(false);
     const [isPlaying, setIsPlaying] = useState(false);
     const [roundFinished, setRoundFinished] = useState(false);
+    const [secondsPlayingTrack, setSecondsPlayingTrack] = useState(0);
 
     const [selectedTrack, setSelectedTrack] = useState<Track>(() => {
         return selectTrack(game.tracks, lowerLimit_perc, upperLimit_perc);
@@ -84,7 +85,11 @@ export default function Game({
         const seconds =
             Number.parseInt(
                 playButtonAnimation.current?.currentTime?.toString() ?? "0"
-            ) / 1000;
+            ) /
+                1000 +
+            secondsPlayingTrack;
+
+        console.log(seconds);
         let points;
 
         if (seconds === 0) {
@@ -113,9 +118,16 @@ export default function Game({
             //playButtonAnimation.current?.finish();
             playButtonAnimation.current?.pause();
             playButtonAnimation.current!.currentTime = 0;
+            setSecondsPlayingTrack(secondsPlayingTrack + trackTime);
             setIsPlaying(false);
         },
-        [player, playButtonAnimation, selectedTrack]
+        [
+            player,
+            playButtonAnimation,
+            selectedTrack,
+            trackTime,
+            secondsPlayingTrack,
+        ]
     );
 
     const roundTimer = useTimer({
@@ -152,6 +164,7 @@ export default function Game({
         setRound((prev) => prev + 1);
         playButtonAnimation.current!.currentTime = 0;
 
+        setSecondsPlayingTrack(0);
         setSelectedTrack(track);
         setGuess("");
         setIsPlaying(false);
@@ -259,39 +272,45 @@ export default function Game({
                 className={styles["modal__content"]}
                 overlayClassName={styles["modal__overlay"]}
             >
-                <h2
-                    style={{
-                        color:
-                            selectedTrack?.guess === guess
-                                ? "green"
-                                : "#b91c1c",
-                        gridColumn: "1 / -1",
-                    }}
-                >
-                    {selectedTrack?.guess === guess
-                        ? "Correct :)"
-                        : "Incorrect :("}
-                </h2>
-                <Image
-                    style={{
-                        gridColumn: "1 / -1",
-                    }}
-                    alt="Album cover"
-                    src={selectedTrack.album.images[0].url}
-                    width={200}
-                    height={200}
-                />
-                <TrackDisplay styles={styles} track={selectedTrack} />
-                {selectedTrack?.guess !== guess && (
-                    <span style={{ gridColumn: "1 / -1" }}>
-                        <span style={{ color: "#b91c1c" }}>Your guess: </span>
-                        <TrackDisplay styles={styles} guess={guess} />
-                    </span>
+                {roundFinished && (
+                    <>
+                        <h2
+                            style={{
+                                color:
+                                    selectedTrack?.guess === guess
+                                        ? "green"
+                                        : "#b91c1c",
+                                gridColumn: "1 / -1",
+                            }}
+                        >
+                            {selectedTrack?.guess === guess
+                                ? "Correct :)"
+                                : "Incorrect :("}
+                        </h2>
+                        <Image
+                            style={{
+                                gridColumn: "1 / -1",
+                            }}
+                            alt="Album cover"
+                            src={selectedTrack.album.images[0].url}
+                            width={200}
+                            height={200}
+                        />
+                        <TrackDisplay styles={styles} track={selectedTrack} />
+                        {selectedTrack?.guess !== guess && (
+                            <span style={{ gridColumn: "1 / -1" }}>
+                                <span style={{ color: "#b91c1c" }}>
+                                    Your guess:{" "}
+                                </span>
+                                <TrackDisplay styles={styles} guess={guess} />
+                            </span>
+                        )}
+                        <span>Points: {`${points} + ${getPoints()}`}</span>
+                        <Button onClick={advanceRound} size="small" autoFocus>
+                            Continue
+                        </Button>{" "}
+                    </>
                 )}
-                <span>Points: {`${points} + ${getPoints()}`}</span>
-                <Button onClick={advanceRound} size="small" autoFocus>
-                    Continue
-                </Button>
             </Modal>
         </div>
     );
