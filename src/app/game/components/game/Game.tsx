@@ -85,10 +85,15 @@ export default function Game({
             Number.parseInt(
                 playButtonAnimation.current?.currentTime?.toString() ?? "0"
             ) / 1000;
-        const points =
-            seconds < 3
-                ? 300
-                : Math.floor(100 / Math.pow(seconds - 2, 1.1) + 60);
+        let points;
+
+        if (seconds === 0) {
+            points = 295;
+        } else if (seconds < 3) {
+            points = Math.floor(-15 * Math.pow(seconds, 2) + 295);
+        } else {
+            points = Math.floor(100 / Math.pow(seconds - 2, 1.1) + 60);
+        }
 
         if (selectedTrack.guess === guess) {
             return points;
