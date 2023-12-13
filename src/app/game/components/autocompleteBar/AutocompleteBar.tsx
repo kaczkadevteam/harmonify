@@ -2,6 +2,7 @@ import React, { useCallback, useContext, useEffect, useState } from "react";
 import styles from "./autocompleteBar.module.scss";
 import { GameContext } from "../gameContext/GameContext";
 import AutocompleteBarOption from "./option/AutocompleteBarOption";
+import { Track } from "@/types";
 
 export default function AutocompleteBar({
     guess,
@@ -11,7 +12,7 @@ export default function AutocompleteBar({
     setGuess: (guess: string) => void;
 }) {
     const game = useContext(GameContext);
-    const [selectedIndex, setSelectedIndex] = useState<number>();
+    const [selectedTrack, setSelectedTrack] = useState<Track>();
     const [focused, setFocused] = useState(false);
 
     const matchingTracks = game.tracks.filter((track) => {
@@ -22,39 +23,50 @@ export default function AutocompleteBar({
         return track.guess.toLowerCase().includes(guess.toLowerCase());
     });
 
+    if (
+        selectedTrack &&
+        !matchingTracks.includes(selectedTrack) &&
+        matchingTracks.length !== 0
+    ) {
+        setSelectedTrack(matchingTracks[0]);
+    }
+
     const handleSelectionMovement = useCallback(
         (event: KeyboardEvent) => {
             if (event.key === "ArrowDown" || event.key === "ArrowUp") {
                 event.preventDefault();
 
-                if (selectedIndex == undefined) {
-                    setSelectedIndex(0);
+                if (selectedTrack == undefined) {
+                    setSelectedTrack(matchingTracks[0]);
                 } else if (
                     event.key === "ArrowDown" &&
-                    selectedIndex != undefined &&
-                    selectedIndex < matchingTracks.length - 1
+                    selectedTrack != undefined &&
+                    matchingTracks.indexOf(selectedTrack) <
+                        matchingTracks.length - 1
                 ) {
-                    setSelectedIndex(selectedIndex + 1);
+                    const newIndex = matchingTracks.indexOf(selectedTrack) + 1;
+                    setSelectedTrack(matchingTracks[newIndex]);
                 } else if (
                     event.key === "ArrowUp" &&
-                    selectedIndex != undefined &&
-                    selectedIndex > 0
+                    selectedTrack != undefined &&
+                    matchingTracks.indexOf(selectedTrack) > 0
                 ) {
-                    setSelectedIndex(selectedIndex - 1);
+                    const newIndex = matchingTracks.indexOf(selectedTrack) - 1;
+                    setSelectedTrack(matchingTracks[newIndex]);
                 }
             }
         },
-        [selectedIndex, matchingTracks]
+        [selectedTrack, matchingTracks]
     );
 
     const handleSelectionInput = useCallback(
         (event: KeyboardEvent) => {
-            if (event.key === "Enter" && selectedIndex != undefined) {
+            if (event.key === "Enter" && selectedTrack != undefined) {
                 event.preventDefault();
-                setGuess(matchingTracks[selectedIndex].guess ?? "");
+                setGuess(selectedTrack.guess ?? "");
             }
         },
-        [selectedIndex, matchingTracks, setGuess]
+        [selectedTrack, setGuess]
     );
 
     useEffect(() => {
@@ -97,10 +109,10 @@ export default function AutocompleteBar({
                 onBlur={() => setFocused(false)}
             />
             <div className={styles["autocomplete__options"]}>
-                {matchingTracks.map((track, index) => (
+                {matchingTracks.map((track) => (
                     <AutocompleteBarOption
                         key={track.uri}
-                        selected={selectedIndex === index}
+                        selected={selectedTrack === track}
                         track={track}
                         setGuess={setGuess}
                     />
