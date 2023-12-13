@@ -1,21 +1,32 @@
 import { Track } from "@/types";
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import TrackDisplay from "../../trackDisplay/TrackDisplay";
+import styles from "./autocompleteBarOption.module.scss";
 
 export default function AutocompleteBarOption({
-    styles,
     track,
+    selected,
     setGuess,
 }: {
-    styles: {
-        readonly [key: string]: string;
-    };
     track: Track;
+    selected?: boolean;
     setGuess: (guess: string) => void;
 }) {
+    const ref = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        if (selected) {
+            ref.current?.scrollIntoView({ block: "nearest" });
+        }
+    }, [selected]);
+
+    let className = styles["autocomplete-option"];
+    className += selected ? ` ${styles["autocomplete-option--selected"]}` : "";
+
     return (
         <div
-            className={styles["autocomplete__option"]}
+            className={className}
+            ref={ref}
             onClick={() => {
                 setGuess(track.guess ?? "");
             }}
