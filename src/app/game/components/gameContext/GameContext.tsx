@@ -1,15 +1,8 @@
 "use client";
 
+import { trackIntoGuessString } from "@/modules/tracks";
 import { Album, Track } from "@/types";
 import { createContext, useMemo, useState } from "react";
-
-export function trackIntoGuessString(track: Track) {
-    return `${track.name} - ${track.artists
-        .reduce((acc, artist) => {
-            return `${acc}, ${artist.name}`;
-        }, "")
-        .slice(2)}`;
-}
 
 export const GameContext = createContext<{
     tracksHref: string[];
@@ -20,8 +13,15 @@ export const GameContext = createContext<{
     deselectAlbum: (album: Album<Track>) => void;
     tracks: Track[];
     setTracks: (arg: any) => void;
+    drawnTracks: Track[];
+    setDrawnTracks: (arg: any) => void;
     finalScore: number;
     setFinalScore: (score: number) => void;
+    roundsCount: number;
+    roundTime: number;
+    trackTime: number;
+    lowerLimit_perc: number;
+    upperLimit_perc: number;
 }>({
     tracksHref: [],
     addTracksHref: (playlist) => {},
@@ -31,14 +31,22 @@ export const GameContext = createContext<{
     deselectAlbum: (album) => {},
     tracks: [],
     setTracks: (arg) => {},
+    drawnTracks: [],
+    setDrawnTracks: (arg) => {},
     finalScore: 0,
     setFinalScore: (arg) => {},
+    roundsCount: 10,
+    roundTime: 30,
+    trackTime: 10,
+    lowerLimit_perc: 0,
+    upperLimit_perc: 1,
 });
 
 export default function GameProvider({ children }: React.PropsWithChildren) {
     const [tracksHref, setTracksHref] = useState<string[]>([]);
     const [selectedAlbums, setSelectedAlbums] = useState<Album<Track>[]>([]);
     const [tracks, setTracks] = useState<Track[]>([]);
+    const [drawnTracks, setDrawnTracks] = useState<Track[]>([]);
     const [finalScore, setFinalScore] = useState(0);
 
     function addTracksHref(id: string) {
@@ -61,26 +69,6 @@ export default function GameProvider({ children }: React.PropsWithChildren) {
         );
     }
 
-    const tracksWithGuess = useMemo(() => {
-        return (
-            tracks
-                // Remove overlapping tracks
-                .reduce<Track[]>((filteredTracks, track) => {
-                    if (
-                        !filteredTracks.some(
-                            (someTrack) => someTrack.uri === track.uri
-                        )
-                    ) {
-                        filteredTracks.push(track);
-                    }
-                    return filteredTracks;
-                }, [])
-                .map((track) => {
-                    return { ...track, guess: trackIntoGuessString(track) };
-                })
-        );
-    }, [tracks]);
-
     return (
         <GameContext.Provider
             value={{
@@ -90,10 +78,17 @@ export default function GameProvider({ children }: React.PropsWithChildren) {
                 selectedAlbums,
                 selectAlbum,
                 deselectAlbum,
-                tracks: tracksWithGuess,
+                tracks,
                 setTracks,
+                drawnTracks,
+                setDrawnTracks,
                 finalScore,
                 setFinalScore,
+                roundsCount: 10,
+                roundTime: 30,
+                trackTime: 10,
+                lowerLimit_perc: 0,
+                upperLimit_perc: 1,
             }}
         >
             {children}

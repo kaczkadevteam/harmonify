@@ -27,10 +27,11 @@ function getTimerExpiryTimestamp(seconds: number) {
 
 function selectTrack(
     tracks: Track[],
+    round: number,
     lowerLimit_perc: number,
     upperLimit_perc: number
 ) {
-    const track = tracks[Math.floor(Math.random() * tracks.length)];
+    const track = tracks[round - 1];
     const { duration_ms } = track;
     const lowerLimit = duration_ms * lowerLimit_perc;
     const upperLimit = duration_ms * upperLimit_perc;
@@ -39,8 +40,6 @@ function selectTrack(
         Math.floor(Math.random() * durationRange) + lowerLimit,
         duration_ms - 10 * 1000
     );
-
-    console.log(track);
 
     return track;
 }
@@ -55,12 +54,6 @@ export default function Game({
     } | null;
     finishGame: () => void;
 }) {
-    const roundTime = 30;
-    const trackTime = 10;
-    const lowerLimit_perc = 0;
-    const upperLimit_perc = 1;
-    const maxRounds = 10;
-
     const { player, playerID } = playerObj!;
     const game = useContext(GameContext);
 
@@ -73,7 +66,12 @@ export default function Game({
     const [secondsPlayingTrack, setSecondsPlayingTrack] = useState(0);
 
     const [selectedTrack, setSelectedTrack] = useState<Track>(() => {
-        return selectTrack(game.tracks, lowerLimit_perc, upperLimit_perc);
+        return selectTrack(
+            game.drawnTracks,
+            round,
+            game.lowerLimit_perc,
+            game.upperLimit_perc
+        );
     });
     const [guess, setGuess] = useState("");
     const [points, setPoints] = useState(0);
@@ -118,20 +116,20 @@ export default function Game({
             //playButtonAnimation.current?.finish();
             playButtonAnimation.current?.pause();
             playButtonAnimation.current!.currentTime = 0;
-            setSecondsPlayingTrack(secondsPlayingTrack + trackTime);
+            setSecondsPlayingTrack(secondsPlayingTrack + game.trackTime);
             setIsPlaying(false);
         },
         [
             player,
             playButtonAnimation,
             selectedTrack,
-            trackTime,
             secondsPlayingTrack,
+            game.trackTime,
         ]
     );
 
     const roundTimer = useTimer({
-        expiryTimestamp: getTimerExpiryTimestamp(roundTime),
+        expiryTimestamp: getTimerExpiryTimestamp(game.roundTime),
         autoStart: false,
         onExpire: () => {
             finishRound();
@@ -149,19 +147,22 @@ export default function Game({
     }
 
     function advanceRound() {
-        const track = selectTrack(
-            game.tracks,
-            lowerLimit_perc,
-            upperLimit_perc
-        );
-
-        if (round == maxRounds) {
+        if (round == game.roundsCount) {
             game.setFinalScore(points + getPoints());
             finishGame();
+            return;
         }
+        const nextRound = round + 1;
+
+        const track = selectTrack(
+            game.drawnTracks,
+            nextRound,
+            game.lowerLimit_perc,
+            game.upperLimit_perc
+        );
 
         setPoints((v) => v + getPoints());
-        setRound((prev) => prev + 1);
+        setRound(nextRound);
         playButtonAnimation.current!.currentTime = 0;
 
         setSecondsPlayingTrack(0);
@@ -170,7 +171,7 @@ export default function Game({
         setIsPlaying(false);
         setRoundFinished(false);
         setBegan(false);
-        roundTimer.restart(getTimerExpiryTimestamp(roundTime), false);
+        roundTimer.restart(getTimerExpiryTimestamp(game.roundTime), false);
         player.pause();
     }
 
@@ -181,7 +182,7 @@ export default function Game({
                     { backgroundPositionX: "100%" },
                     { backgroundPositionX: "0%" },
                 ],
-                { duration: trackTime * 1000, iterations: 1 }
+                { duration: game.trackTime * 1000, iterations: 1 }
             );
 
             if (animation) {
@@ -193,7 +194,7 @@ export default function Game({
         }
 
         playButtonAnimation.current = getPlayButtonAnimation();
-    }, [restartTrackTimer]);
+    }, [restartTrackTimer, game.trackTime]);
 
     async function togglePlay() {
         if (isPlaying) {
@@ -234,7 +235,7 @@ export default function Game({
             >
                 Runda: {round}
             </div>
-            <CircularTimer x={roundTimer.totalSeconds} xMax={roundTime} />
+            <CircularTimer x={roundTimer.totalSeconds} xMax={game.roundTime} />
 
             <Button
                 onClick={togglePlay}
