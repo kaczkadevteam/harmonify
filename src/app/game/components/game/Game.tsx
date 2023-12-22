@@ -27,10 +27,11 @@ function getTimerExpiryTimestamp(seconds: number) {
 
 function selectTrack(
     tracks: Track[],
+    round: number,
     lowerLimit_perc: number,
     upperLimit_perc: number
 ) {
-    const track = tracks[Math.floor(Math.random() * tracks.length)];
+    const track = tracks[round - 1];
     const { duration_ms } = track;
     const lowerLimit = duration_ms * lowerLimit_perc;
     const upperLimit = duration_ms * upperLimit_perc;
@@ -39,8 +40,6 @@ function selectTrack(
         Math.floor(Math.random() * durationRange) + lowerLimit,
         duration_ms - 10 * 1000
     );
-
-    console.log(track);
 
     return track;
 }
@@ -68,7 +67,8 @@ export default function Game({
 
     const [selectedTrack, setSelectedTrack] = useState<Track>(() => {
         return selectTrack(
-            game.tracks,
+            game.drawnTracks,
+            round,
             game.lowerLimit_perc,
             game.upperLimit_perc
         );
@@ -147,19 +147,22 @@ export default function Game({
     }
 
     function advanceRound() {
+        if (round == game.roundsCount) {
+            game.setFinalScore(points + getPoints());
+            finishGame();
+            return;
+        }
+        const nextRound = round + 1;
+
         const track = selectTrack(
-            game.tracks,
+            game.drawnTracks,
+            nextRound,
             game.lowerLimit_perc,
             game.upperLimit_perc
         );
 
-        if (round == game.roundsCount) {
-            game.setFinalScore(points + getPoints());
-            finishGame();
-        }
-
         setPoints((v) => v + getPoints());
-        setRound((prev) => prev + 1);
+        setRound(nextRound);
         playButtonAnimation.current!.currentTime = 0;
 
         setSecondsPlayingTrack(0);
