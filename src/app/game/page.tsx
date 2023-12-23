@@ -17,21 +17,38 @@ export default async function GamePage() {
     const userResult = await userResponse.json();
     const { id } = userResult;
 
-    const playlistsResponse = await fetchFromSpotify(
-        `/users/${id}/playlists?limit=50`,
-        access_token
-    );
-    const playlistsResult: { items: SimplePlaylistObject[]; total: number } =
-        await playlistsResponse.json();
+    let nextPlaylist = `${process.env.NEXT_PUBLIC_SPOTIFY_URL}/users/${id}/playlists?limit=50`;
+    let playlists: {
+        items: SimplePlaylistObject[];
+        total: number;
+    } = { total: 0, items: [] };
+
+    while (nextPlaylist) {
+        const playlistsResponse = await fetchFromSpotify(
+            nextPlaylist,
+            access_token,
+            undefined,
+            true
+        );
+        const playlistsResult: {
+            items: SimplePlaylistObject[];
+            total: number;
+            next: string;
+        } = await playlistsResponse.json();
+
+        playlists.total += playlistsResult.total;
+        playlists.items = [...playlists.items, ...playlistsResult.items];
+
+        nextPlaylist = playlistsResult.next;
+    }
 
     let nextAlbums = `${process.env.NEXT_PUBLIC_SPOTIFY_URL}/me/albums?limit=50`;
     let albums: { total: number; items: Album<Track>[] } = {
         total: 0,
         items: [],
     };
-    let safeguard = 0;
 
-    while (nextAlbums && safeguard < 10) {
+    while (nextAlbums) {
         const albumsResponse = await fetchFromSpotify(
             nextAlbums,
             access_token,
@@ -62,13 +79,11 @@ export default async function GamePage() {
             }),
         ];
         nextAlbums = albumsResult.next;
-
-        safeguard++;
     }
 
     return (
         <GameProvider>
-            <Quiz playlists={playlistsResult} albums={albums} />
+            <Quiz playlists={playlists} albums={albums} />
         </GameProvider>
     );
 }
