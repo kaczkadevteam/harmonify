@@ -18,6 +18,7 @@ import Button from "@/components/button/Button";
 import CircularTimer from "../circularTimer/CircularTimer";
 import Icon from "@mdi/react";
 import { mdiPlay, mdiPause } from "@mdi/js";
+import VolumeInput from "../volumeInput/VolumeInput";
 
 Modal.setAppElement("#root");
 
@@ -42,6 +43,10 @@ function selectTrack(
     );
 
     return track;
+}
+
+function getSavedVolume() {
+    return Number.parseInt(localStorage.getItem("VOLUME") ?? "5");
 }
 
 export default function Game({
@@ -78,6 +83,19 @@ export default function Game({
 
     const playButtonRef = useRef<HTMLButtonElement>();
     const playButtonAnimation = useRef<Animation>();
+
+    const setVolume = useCallback(
+        (volume: number) => {
+            localStorage.setItem("VOLUME", volume.toString());
+
+            player.setVolume(volume / 100);
+        },
+        [player]
+    );
+
+    useEffect(() => {
+        setVolume(getSavedVolume());
+    }, [setVolume]);
 
     function getPoints() {
         const seconds =
@@ -236,26 +254,31 @@ export default function Game({
                 Runda: {round}
             </div>
             <CircularTimer x={roundTimer.totalSeconds} xMax={game.roundTime} />
-
-            <Button
-                onClick={togglePlay}
-                size="large"
-                ref={playButtonRef}
-                style={{
-                    padding: "10px 60px",
-                    backgroundSize: "200% 200%",
-                    gridColumn: "1 / -1",
-                    backgroundPositionX: "100%",
-                    backgroundImage: `linear-gradient(0.25turn, #1b3162 49%
+            <div className={styles["game__playback-control"]}>
+                <Button
+                    onClick={togglePlay}
+                    size="large"
+                    ref={playButtonRef}
+                    style={{
+                        padding: "10px 60px",
+                        backgroundSize: "200% 200%",
+                        backgroundPositionX: "100%",
+                        backgroundImage: `linear-gradient(0.25turn, #1b3162 49%
                     ,50%, transparent)`,
-                }}
-            >
-                {isPlaying ? (
-                    <Icon path={mdiPause} size={3} />
-                ) : (
-                    <Icon path={mdiPlay} size={3} />
-                )}
-            </Button>
+                    }}
+                >
+                    {isPlaying ? (
+                        <Icon path={mdiPause} size={3} />
+                    ) : (
+                        <Icon path={mdiPlay} size={3} />
+                    )}
+                </Button>
+                <VolumeInput
+                    defaultValue={getSavedVolume()}
+                    onChange={(value) => setVolume(value)}
+                />
+            </div>
+
             <form
                 className={styles["game__search-form"]}
                 onSubmit={(e) => {
