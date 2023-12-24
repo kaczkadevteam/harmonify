@@ -1,11 +1,11 @@
 "use client";
 
 import React, { useState } from "react";
-import Setup from "./Setup";
-import Game from "./Game";
+import Setup from "../setup/Setup";
+import Game from "../game/Game";
 import { Album, SimplePlaylistObject, Track } from "@/types";
-import useSpotifyPlayer from "../hooks/useSpotifyPlayer";
-import Finish from "./Finish";
+import useSpotifyPlayer from "../../hooks/useSpotifyPlayer";
+import Finish from "../finish/Finish";
 
 export default function Quiz({
     playlists,

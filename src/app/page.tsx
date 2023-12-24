@@ -3,7 +3,7 @@ import styles from "./page.module.scss";
 import { cookies } from "next/headers";
 import spotifyLogo from "../../public/Spotify_Logo_RGB_White.png";
 import Link from "next/link";
-import Logo from "@/components/Logo";
+import Logo from "@/components/logo/Logo";
 
 export const revalidate = 3600;
 

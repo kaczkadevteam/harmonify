@@ -1,9 +1,9 @@
 "use client";
 
 import { useContext } from "react";
-import { GameContext } from "./GameContext";
+import { GameContext } from "../gameContext/GameContext";
 import styles from "./finish.module.scss";
-import Button from "@/components/Button";
+import Button from "@/components/button/Button";
 
 export default function Finish({ playAgain }: { playAgain: () => void }) {
     const game = useContext(GameContext);

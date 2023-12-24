@@ -1,14 +1,43 @@
 import { fetchFromSpotify } from "@/fetch";
 import { cookies } from "next/headers";
 import React from "react";
-import GameProvider from "./components/GameContext";
+import GameProvider from "./components/gameContext/GameContext";
 import {
     Album,
     SimplePlaylistObject,
     SimplifiedTrackObject,
     Track,
 } from "@/types";
-import Quiz from "./components/Quiz";
+import Quiz from "./components/quiz/Quiz";
+
+async function getAllPaginatedItems<T>(url: string, accessToken: string) {
+    let next = url;
+    let collected: { total: number; items: T[] } = {
+        total: 0,
+        items: [],
+    };
+
+    while (next) {
+        const response = await fetchFromSpotify(
+            next,
+            accessToken,
+            undefined,
+            true
+        );
+        const result: {
+            total: number;
+            items: T[];
+            next: string;
+        } = await response.json();
+
+        collected.total += result.total;
+        collected.items = [...collected.items, ...result.items];
+
+        next = result.next;
+    }
+
+    return collected;
+}
 
 export default async function GamePage() {
     const access_token = cookies().get("access_token")!.value;
@@ -17,58 +46,35 @@ export default async function GamePage() {
     const userResult = await userResponse.json();
     const { id } = userResult;
 
-    const playlistsResponse = await fetchFromSpotify(
-        `/users/${id}/playlists?limit=50`,
+    let playlistURL = `${process.env.NEXT_PUBLIC_SPOTIFY_URL}/users/${id}/playlists?limit=50`;
+    let playlists = await getAllPaginatedItems<SimplePlaylistObject>(
+        playlistURL,
         access_token
     );
-    const playlistsResult: { items: SimplePlaylistObject[]; total: number } =
-        await playlistsResponse.json();
 
-    let nextAlbums = `${process.env.NEXT_PUBLIC_SPOTIFY_URL}/me/albums?limit=50`;
-    let albums: { total: number; items: Album<Track>[] } = {
-        total: 0,
-        items: [],
+    let albumsURL = `${process.env.NEXT_PUBLIC_SPOTIFY_URL}/me/albums?limit=50`;
+    let rawAlbums = await getAllPaginatedItems<{
+        album: Album<SimplifiedTrackObject>;
+    }>(albumsURL, access_token);
+
+    const albums = {
+        total: rawAlbums.total,
+        items: rawAlbums.items.map<Album<Track>>((i) => {
+            const a = i.album;
+            return {
+                ...a,
+                tracks: {
+                    items: (a.tracks.items = a.tracks.items.map<Track>((t) => {
+                        return { ...t, album: { images: a.images } };
+                    })),
+                },
+            };
+        }),
     };
-    let safeguard = 0;
-
-    while (nextAlbums && safeguard < 10) {
-        const albumsResponse = await fetchFromSpotify(
-            nextAlbums,
-            access_token,
-            undefined,
-            true
-        );
-        const albumsResult: {
-            items: { album: Album<SimplifiedTrackObject> }[];
-            total: number;
-            next: string;
-        } = await albumsResponse.json();
-
-        albums.total += albumsResult.total;
-        albums.items = [
-            ...albums.items,
-            ...albumsResult.items.map<Album<Track>>((i) => {
-                const a = i.album;
-                return {
-                    ...a,
-                    tracks: {
-                        items: (a.tracks.items = a.tracks.items.map<Track>(
-                            (t) => {
-                                return { ...t, album: { images: a.images } };
-                            }
-                        )),
-                    },
-                };
-            }),
-        ];
-        nextAlbums = albumsResult.next;
-
-        safeguard++;
-    }
 
     return (
         <GameProvider>
-            <Quiz playlists={playlistsResult} albums={albums} />
+            <Quiz playlists={playlists} albums={albums} />
         </GameProvider>
     );
 }

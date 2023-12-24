@@ -9,8 +9,12 @@ export default forwardRef<
         size: "small" | "medium" | "large";
         type?: "button" | "reset" | "submit";
         style?: React.CSSProperties;
+        autoFocus?: boolean;
     }>
->(function Button({ children, disabled, size, type, onClick, style }, ref) {
+>(function Button(
+    { children, disabled, size, type, onClick, style, autoFocus },
+    ref
+) {
     return (
         <button
             disabled={disabled}
@@ -19,6 +23,7 @@ export default forwardRef<
             type={type}
             style={style}
             ref={ref}
+            autoFocus={autoFocus}
         >
             {children}
         </button>

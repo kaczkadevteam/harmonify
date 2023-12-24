@@ -1,14 +1,50 @@
 import { Album, SimplePlaylistObject, Track } from "@/types";
 import { useContext, useState } from "react";
 import styles from "./setup.module.scss";
-import PlaylistCard from "./PlaylistCard";
-import { GameContext } from "./GameContext";
+import PlaylistCard from "../playlistCard/PlaylistCard";
+import { GameContext } from "../gameContext/GameContext";
 import { fetchFromSpotify } from "@/fetch";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
-import LoadingCircle from "./LoadingCircle";
-import Button from "@/components/Button";
-import AlbumCard from "./AlbumCard";
+import LoadingCircle from "../loadingCircle/LoadingCircle";
+import Button from "@/components/button/Button";
+import AlbumCard from "../albumCard/AlbumCard";
+import { trackIntoGuessString } from "@/modules/tracks";
+
+function removeDuplicatedTracks(tracks: Track[]) {
+    return tracks.reduce<Track[]>((filteredTracks, track) => {
+        if (!filteredTracks.some((someTrack) => someTrack.uri === track.uri)) {
+            filteredTracks.push(track);
+        }
+        return filteredTracks;
+    }, []);
+}
+
+function addGuessToTracks(tracks: Track[]) {
+    return tracks.map((track) => ({
+        ...track,
+        guess: trackIntoGuessString(track),
+    }));
+}
+
+function selectRandomlyTracks(tracks: Track[], count: number) {
+    const selectedTracks: Track[] = [];
+    let leftTracks = [...tracks];
+
+    for (let i = 0; i < count; i++) {
+        if (leftTracks.length === 0) {
+            leftTracks = [...tracks];
+        }
+
+        const drawnIndex = Math.floor(Math.random() * leftTracks.length);
+        const drawnTrack = leftTracks.splice(drawnIndex, 1)[0];
+        drawnTrack.guess = trackIntoGuessString(drawnTrack);
+
+        selectedTracks.push(drawnTrack);
+    }
+
+    return selectedTracks;
+}
 
 export default function Setup({
     playlists,
@@ -39,8 +75,11 @@ export default function Setup({
             JSON.stringify({ device_ids: [playerObj.playerID] })
         );
 
-        const tracks = await fetchAllTracks();
+        let tracks = await fetchAllTracks();
+        tracks = removeDuplicatedTracks(tracks);
+        tracks = addGuessToTracks(tracks);
 
+        game.setDrawnTracks(selectRandomlyTracks(tracks, game.roundsCount));
         game.setTracks(tracks);
 
         startGame();

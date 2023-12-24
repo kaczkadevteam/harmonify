@@ -13,16 +13,14 @@
         display: flex;
         align-items: center;
         gap: 10px;
+    }
 
-        input {
-            height: 50px;
-            font-size: 1.2rem;
-            border-radius: 10px;
-
-            &:focus {
-                border-radius: 10px 10px 0 0;
-            }
-        }
+    &__playback-control {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 30px;
+        grid-column: 1 / -1;
     }
 }
 

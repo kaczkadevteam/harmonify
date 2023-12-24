@@ -1,9 +1,9 @@
-.playlist-card {
+.checkable-card {
     display: flex;
     flex-direction: column;
     align-items: center;
 
-    .img-container {
+    &__img-wrapper {
         position: relative;
         width: 100%;
         aspect-ratio: 1/1;
