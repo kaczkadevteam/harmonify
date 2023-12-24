@@ -30,11 +30,23 @@ export default function VolumeInput({
     onChange: (v: number) => void;
 }) {
     const [icon, setIcon] = useState(() => getVolumeIcon(defaultValue));
+    const [visible, setVisible] = useState(false);
+
+    let inputClassName = styles["volume-input__input"];
+    inputClassName += visible
+        ? ` ${styles["volume-input__input--selected"]}`
+        : "";
 
     return (
         <div style={style} className={styles["volume-input"]}>
-            <Icon path={icon} className={styles["volume-input__icon"]} />
-            <div className={styles["volume-input__input"]}>
+            <div
+                onClick={() => {
+                    setVisible(!visible);
+                }}
+            >
+                <Icon path={icon} className={styles["volume-input__icon"]} />
+            </div>
+            <div className={inputClassName}>
                 <input
                     className={styles["volume-input__input__inside"]}
                     type="range"
