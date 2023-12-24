@@ -18,6 +18,7 @@ import Button from "@/components/button/Button";
 import CircularTimer from "../circularTimer/CircularTimer";
 import Icon from "@mdi/react";
 import { mdiPlay, mdiPause } from "@mdi/js";
+import VolumeInput from "../volumeInput/VolumeInput";
 
 Modal.setAppElement("#root");
 
@@ -272,15 +273,9 @@ export default function Game({
                         <Icon path={mdiPlay} size={3} />
                     )}
                 </Button>
-                <input
-                    type="range"
-                    min={0}
-                    max={100}
-                    step={1}
+                <VolumeInput
                     defaultValue={getSavedVolume()}
-                    onChange={(e) => {
-                        setVolume(Number.parseInt(e.target.value));
-                    }}
+                    onChange={(value) => setVolume(value)}
                 />
             </div>
 
