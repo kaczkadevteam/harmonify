@@ -5,7 +5,7 @@ import {
     mdiVolumeOff,
 } from "@mdi/js";
 import Icon from "@mdi/react";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import styles from "./volumeInput.module.scss";
 
 function getVolumeIcon(volume: number) {
@@ -23,14 +23,24 @@ function getVolumeIcon(volume: number) {
 export default function VolumeInput({
     style,
     defaultValue,
-    onChange,
+    onChange: _onChange,
 }: {
     style?: React.CSSProperties;
     defaultValue: number;
     onChange: (v: number) => void;
 }) {
+    const scrollDelta = -120;
+    const volumeChangeOnScrollTick = 5;
+
     const [icon, setIcon] = useState(() => getVolumeIcon(defaultValue));
     const [visible, setVisible] = useState(false);
+    const [volume, setVolume] = useState(() => defaultValue);
+
+    function onChange(v: number) {
+        _onChange(v);
+        setIcon(getVolumeIcon(v));
+        setVolume(v);
+    }
 
     let inputClassName = styles["volume-input__input"];
     inputClassName += visible
@@ -38,7 +48,21 @@ export default function VolumeInput({
         : "";
 
     return (
-        <div style={style} className={styles["volume-input"]}>
+        <div
+            style={style}
+            className={styles["volume-input"]}
+            onWheel={(e) => {
+                const volumeChange =
+                    (e.deltaY / scrollDelta) * volumeChangeOnScrollTick;
+
+                const newVolume = Math.min(
+                    Math.max(volume + volumeChange, 0),
+                    100
+                );
+
+                onChange(newVolume);
+            }}
+        >
             <div
                 onClick={() => {
                     setVisible(!visible);
@@ -53,12 +77,11 @@ export default function VolumeInput({
                     min={0}
                     max={100}
                     step={1}
-                    defaultValue={defaultValue}
+                    value={volume}
                     onChange={(e) => {
                         const value = Number.parseInt(e.target.value);
 
                         onChange(value);
-                        setIcon(getVolumeIcon(value));
                     }}
                 />
             </div>
