@@ -11,7 +11,8 @@ export default function PlaylistCard({
     playlist: SimplePlaylistObject;
 }) {
     const game = useContext(GameContext);
-    const { url: imageUrl } = playlist.images[0];
+
+    const { url: imageUrl } = playlist.images[0] ?? { url: undefined };
 
     return (
         <CheckableCard

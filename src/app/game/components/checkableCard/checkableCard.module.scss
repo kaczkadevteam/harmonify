@@ -11,5 +11,11 @@
         img {
             object-fit: contain;
         }
+
+        &__missing-img {
+            height: 100%;
+            display: grid;
+            place-items: center;
+        }
     }
 }

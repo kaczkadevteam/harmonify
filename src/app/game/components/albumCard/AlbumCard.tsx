@@ -14,7 +14,7 @@ export default function AlbumCard({
     selectAlbum: (album: Album<Track>) => void;
     deselectAlbum: (album: Album<Track>) => void;
 }) {
-    const { url: imageUrl } = album.images[0];
+    const { url: imageUrl } = album.images[0] ?? { url: undefined };
 
     return (
         <CheckableCard
