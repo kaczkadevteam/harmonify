@@ -9,7 +9,7 @@ import { fetchFromSpotify } from "@/fetch";
 import { useRouter } from "next/navigation";
 import { useTimer } from "react-timer-hook";
 import dayjs from "dayjs";
-import { Track } from "@/types";
+import { GameData, Track } from "@/types";
 import AutocompleteBar from "../autocompleteBar/AutocompleteBar";
 import { default as Modal } from "react-modal";
 import Image from "next/image";
@@ -51,16 +51,18 @@ function getSavedVolume() {
 
 export default function Game({
     playerObj,
+    gameData,
     finishGame,
 }: {
     playerObj: {
         player: any;
         playerID: string;
     } | null;
+    gameData: Readonly<GameData>;
     finishGame: () => void;
 }) {
     const { player, playerID } = playerObj!;
-    const game = useContext(GameContext);
+    const gameContext = useContext(GameContext);
 
     const router = useRouter();
     const [round, setRound] = useState(1);
@@ -68,14 +70,14 @@ export default function Game({
     const [began, setBegan] = useState(false);
     const [isPlaying, setIsPlaying] = useState(false);
     const [roundFinished, setRoundFinished] = useState(false);
-    const [secondsPlayingTrack, setSecondsPlayingTrack] = useState(0);
+    const [trackPlayRepeats, setTrackPlayRepeats] = useState(0);
 
     const [selectedTrack, setSelectedTrack] = useState<Track>(() => {
         return selectTrack(
-            game.drawnTracks,
+            gameData.selectedTracks,
             round,
-            game.lowerLimit_perc,
-            game.upperLimit_perc
+            gameData.trackLowerLimit_perc,
+            gameData.trackUpperLimit_perc
         );
     });
     const [guess, setGuess] = useState("");
@@ -103,7 +105,7 @@ export default function Game({
                 playButtonAnimation.current?.currentTime?.toString() ?? "0"
             ) /
                 1000 +
-            secondsPlayingTrack;
+            trackPlayRepeats * gameData.trackDuration;
 
         console.log(seconds);
         let points;
@@ -131,23 +133,16 @@ export default function Game({
         function () {
             player.seek(selectedTrack.trackStart_ms);
             player.pause();
-            //playButtonAnimation.current?.finish();
             playButtonAnimation.current?.pause();
             playButtonAnimation.current!.currentTime = 0;
-            setSecondsPlayingTrack(secondsPlayingTrack + game.trackTime);
+            setTrackPlayRepeats(trackPlayRepeats + 1);
             setIsPlaying(false);
         },
-        [
-            player,
-            playButtonAnimation,
-            selectedTrack,
-            secondsPlayingTrack,
-            game.trackTime,
-        ]
+        [player, playButtonAnimation, selectedTrack, trackPlayRepeats]
     );
 
     const roundTimer = useTimer({
-        expiryTimestamp: getTimerExpiryTimestamp(game.roundTime),
+        expiryTimestamp: getTimerExpiryTimestamp(gameData.roundDuration),
         autoStart: false,
         onExpire: () => {
             finishRound();
@@ -165,31 +160,34 @@ export default function Game({
     }
 
     function advanceRound() {
-        if (round == game.roundsCount) {
-            game.setFinalScore(points + getPoints());
+        if (round == gameData.roundCount) {
+            gameContext.setFinalScore(points + getPoints());
             finishGame();
             return;
         }
         const nextRound = round + 1;
 
         const track = selectTrack(
-            game.drawnTracks,
+            gameData.selectedTracks,
             nextRound,
-            game.lowerLimit_perc,
-            game.upperLimit_perc
+            gameData.trackLowerLimit_perc,
+            gameData.trackUpperLimit_perc
         );
 
         setPoints((v) => v + getPoints());
         setRound(nextRound);
         playButtonAnimation.current!.currentTime = 0;
 
-        setSecondsPlayingTrack(0);
+        setTrackPlayRepeats(0);
         setSelectedTrack(track);
         setGuess("");
         setIsPlaying(false);
         setRoundFinished(false);
         setBegan(false);
-        roundTimer.restart(getTimerExpiryTimestamp(game.roundTime), false);
+        roundTimer.restart(
+            getTimerExpiryTimestamp(gameData.roundDuration),
+            false
+        );
         player.pause();
     }
 
@@ -200,7 +198,7 @@ export default function Game({
                     { backgroundPositionX: "100%" },
                     { backgroundPositionX: "0%" },
                 ],
-                { duration: game.trackTime * 1000, iterations: 1 }
+                { duration: gameData.trackDuration * 1000, iterations: 1 }
             );
 
             if (animation) {
@@ -212,7 +210,7 @@ export default function Game({
         }
 
         playButtonAnimation.current = getPlayButtonAnimation();
-    }, [restartTrackTimer, game.trackTime]);
+    }, [restartTrackTimer, gameData.trackDuration]);
 
     async function togglePlay() {
         if (isPlaying) {
@@ -253,7 +251,10 @@ export default function Game({
             >
                 Runda: {round}
             </div>
-            <CircularTimer x={roundTimer.totalSeconds} xMax={game.roundTime} />
+            <CircularTimer
+                x={roundTimer.totalSeconds}
+                xMax={gameData.roundDuration}
+            />
             <div className={styles["game__playback-control"]}>
                 <Button
                     onClick={togglePlay}

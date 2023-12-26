@@ -1,11 +1,12 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import Setup from "../setup/Setup";
 import Game from "../game/Game";
 import { Album, SimplePlaylistObject, Track } from "@/types";
 import useSpotifyPlayer from "../../hooks/useSpotifyPlayer";
 import Finish from "../finish/Finish";
+import { GameContext } from "../gameContext/GameContext";
 
 export default function Quiz({
     playlists,
@@ -14,6 +15,7 @@ export default function Quiz({
     playlists: { items: SimplePlaylistObject[]; total: number };
     albums: { items: Album<Track>[]; total: number };
 }) {
+    const gameContext = useContext(GameContext);
     const [gameStage, setGameStage] = useState<"setup" | "game" | "finish">(
         "setup"
     );
@@ -46,7 +48,21 @@ export default function Quiz({
                 />
             );
         case "game":
-            return <Game playerObj={playerObj} finishGame={advanceStage} />;
+            return (
+                <Game
+                    playerObj={playerObj}
+                    finishGame={advanceStage}
+                    gameData={Object.freeze({
+                        roundCount: 10,
+                        roundDuration: 30,
+                        trackDuration: 10,
+                        trackLowerLimit_perc: 0,
+                        trackUpperLimit_perc: 1,
+                        tracks: gameContext.tracks,
+                        selectedTracks: gameContext.drawnTracks,
+                    })}
+                />
+            );
         case "finish":
             return <Finish playAgain={advanceStage} />;
     }
