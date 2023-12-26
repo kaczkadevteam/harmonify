@@ -9,7 +9,7 @@ import { fetchFromSpotify } from "@/fetch";
 import { useRouter } from "next/navigation";
 import { useTimer } from "react-timer-hook";
 import dayjs from "dayjs";
-import { GameData, Track } from "@/types";
+import { GameData, GameResult, Track } from "@/types";
 import AutocompleteBar from "../autocompleteBar/AutocompleteBar";
 import { default as Modal } from "react-modal";
 import Image from "next/image";
@@ -59,7 +59,7 @@ export default function Game({
         playerID: string;
     } | null;
     gameData: Readonly<GameData>;
-    finishGame: () => void;
+    finishGame: (gameResult: GameResult) => void;
 }) {
     const { player, playerID } = playerObj!;
     const gameContext = useContext(GameContext);
@@ -162,7 +162,10 @@ export default function Game({
     function advanceRound() {
         if (round == gameData.roundCount) {
             gameContext.setFinalScore(points + getPoints());
-            finishGame();
+            finishGame({
+                score: points + getPoints(),
+                guessedTracks: [],
+            });
             return;
         }
         const nextRound = round + 1;

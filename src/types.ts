@@ -45,3 +45,8 @@ export interface GameData {
     tracks: Track[];
     selectedTracks: Track[];
 }
+
+export interface GameResult {
+    score: number;
+    guessedTracks: Track[];
+}

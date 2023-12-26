@@ -1,7 +1,7 @@
 "use client";
 
 import { trackIntoGuessString } from "@/modules/tracks";
-import { Album, Track } from "@/types";
+import { Album, GameResult, Track } from "@/types";
 import { createContext, useMemo, useState } from "react";
 
 export const GameContext = createContext<{
@@ -17,6 +17,8 @@ export const GameContext = createContext<{
     setDrawnTracks: (arg: any) => void;
     finalScore: number;
     setFinalScore: (score: number) => void;
+    lastGameResult: GameResult | undefined;
+    setLastGameResult: (result: GameResult) => void;
     roundsCount: number;
     roundTime: number;
     trackTime: number;
@@ -35,6 +37,8 @@ export const GameContext = createContext<{
     setDrawnTracks: (arg) => {},
     finalScore: 0,
     setFinalScore: (arg) => {},
+    lastGameResult: { score: 0, guessedTracks: [] },
+    setLastGameResult: (arg) => {},
     roundsCount: 10,
     roundTime: 30,
     trackTime: 10,
@@ -48,6 +52,9 @@ export default function GameProvider({ children }: React.PropsWithChildren) {
     const [tracks, setTracks] = useState<Track[]>([]);
     const [drawnTracks, setDrawnTracks] = useState<Track[]>([]);
     const [finalScore, setFinalScore] = useState(0);
+    const [lastGameResult, setLastGameResult] = useState<
+        GameResult | undefined
+    >(undefined);
 
     function addTracksHref(id: string) {
         setTracksHref([...tracksHref, id]);
@@ -84,6 +91,8 @@ export default function GameProvider({ children }: React.PropsWithChildren) {
                 setDrawnTracks,
                 finalScore,
                 setFinalScore,
+                lastGameResult,
+                setLastGameResult,
                 roundsCount: 10,
                 roundTime: 30,
                 trackTime: 10,

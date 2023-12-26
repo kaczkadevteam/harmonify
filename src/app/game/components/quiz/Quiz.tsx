@@ -3,7 +3,7 @@
 import React, { useContext, useState } from "react";
 import Setup from "../setup/Setup";
 import Game from "../game/Game";
-import { Album, SimplePlaylistObject, Track } from "@/types";
+import { Album, GameResult, SimplePlaylistObject, Track } from "@/types";
 import useSpotifyPlayer from "../../hooks/useSpotifyPlayer";
 import Finish from "../finish/Finish";
 import { GameContext } from "../gameContext/GameContext";
@@ -35,6 +35,11 @@ export default function Quiz({
         }
     }
 
+    function onGameFinish(gameResult: GameResult) {
+        gameContext.setLastGameResult(gameResult);
+        advanceStage();
+    }
+
     switch (gameStage) {
         case "setup":
             return (
@@ -51,7 +56,7 @@ export default function Quiz({
             return (
                 <Game
                     playerObj={playerObj}
-                    finishGame={advanceStage}
+                    finishGame={onGameFinish}
                     gameData={Object.freeze({
                         roundCount: 10,
                         roundDuration: 30,
