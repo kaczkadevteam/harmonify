@@ -69,6 +69,13 @@ export default function Quiz({
                 />
             );
         case "finish":
-            return <Finish playAgain={advanceStage} />;
+            return (
+                gameContext.lastGameResult && (
+                    <Finish
+                        gameResult={gameContext.lastGameResult}
+                        playAgain={advanceStage}
+                    />
+                )
+            );
     }
 }

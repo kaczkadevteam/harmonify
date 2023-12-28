@@ -30,7 +30,8 @@ function selectTrack(
     tracks: Track[],
     round: number,
     lowerLimit_perc: number,
-    upperLimit_perc: number
+    upperLimit_perc: number,
+    trackPlayDuration: number
 ) {
     const track = tracks[round - 1];
     const { duration_ms } = track;
@@ -39,7 +40,7 @@ function selectTrack(
     const durationRange = upperLimit - lowerLimit;
     track.trackStart_ms = Math.min(
         Math.floor(Math.random() * durationRange) + lowerLimit,
-        duration_ms - 10 * 1000
+        duration_ms - trackPlayDuration * 1000
     );
 
     return track;
@@ -77,7 +78,8 @@ export default function Game({
             gameData.selectedTracks,
             round,
             gameData.trackLowerLimit_perc,
-            gameData.trackUpperLimit_perc
+            gameData.trackUpperLimit_perc,
+            gameData.trackDuration
         );
     });
     const [guess, setGuess] = useState("");
@@ -161,7 +163,6 @@ export default function Game({
 
     function advanceRound() {
         if (round == gameData.roundCount) {
-            gameContext.setFinalScore(points + getPoints());
             finishGame({
                 score: points + getPoints(),
                 guessedTracks: [],
@@ -174,7 +175,8 @@ export default function Game({
             gameData.selectedTracks,
             nextRound,
             gameData.trackLowerLimit_perc,
-            gameData.trackUpperLimit_perc
+            gameData.trackUpperLimit_perc,
+            gameData.trackDuration
         );
 
         setPoints((v) => v + getPoints());
