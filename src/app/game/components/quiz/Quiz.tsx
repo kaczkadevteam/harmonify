@@ -7,6 +7,7 @@ import { Album, GameResult, SimplePlaylistObject, Track } from "@/types";
 import useSpotifyPlayer from "../../hooks/useSpotifyPlayer";
 import Finish from "../finish/Finish";
 import { GameContext } from "../gameContext/GameContext";
+import Script from "next/script";
 
 export default function Quiz({
     playlists,
@@ -40,9 +41,11 @@ export default function Quiz({
         advanceStage();
     }
 
+    let pageContent: any;
+
     switch (gameStage) {
         case "setup":
-            return (
+            pageContent = (
                 <Setup
                     playlists={playlists}
                     albums={albums}
@@ -52,8 +55,9 @@ export default function Quiz({
                     }}
                 />
             );
+            break;
         case "game":
-            return (
+            pageContent = (
                 <Game
                     playerObj={playerObj}
                     finishGame={onGameFinish}
@@ -68,14 +72,21 @@ export default function Quiz({
                     })}
                 />
             );
+            break;
         case "finish":
-            return (
-                gameContext.lastGameResult && (
-                    <Finish
-                        gameResult={gameContext.lastGameResult}
-                        playAgain={advanceStage}
-                    />
-                )
+            pageContent = gameContext.lastGameResult && (
+                <Finish
+                    gameResult={gameContext.lastGameResult}
+                    playAgain={advanceStage}
+                />
             );
+            break;
     }
+
+    return (
+        <>
+            {pageContent}
+            <Script src="https://sdk.scdn.co/spotify-player.js" />
+        </>
+    );
 }
