@@ -17,7 +17,7 @@ import TrackDisplay from "../trackDisplay/TrackDisplay";
 import Button from "@/components/button/Button";
 import CircularTimer from "../circularTimer/CircularTimer";
 import Icon from "@mdi/react";
-import { mdiPlay, mdiPause } from "@mdi/js";
+import { mdiPlay, mdiPause, mdiArrowLeft, mdiArrowRight } from "@mdi/js";
 import VolumeInput from "../volumeInput/VolumeInput";
 
 Modal.setAppElement("#root");
@@ -109,7 +109,6 @@ export default function Game({
                 1000 +
             trackPlayRepeats * gameData.trackDuration;
 
-        console.log(seconds);
         let points;
 
         if (seconds === 0) {
@@ -152,10 +151,7 @@ export default function Game({
     });
 
     function finishRound() {
-        if (isPlaying) {
-            player.pause();
-            playButtonAnimation.current!.pause();
-        }
+        stopPlaying();
         roundTimer.pause();
 
         setRoundFinished(true);
@@ -217,10 +213,15 @@ export default function Game({
         playButtonAnimation.current = getPlayButtonAnimation();
     }, [restartTrackTimer, gameData.trackDuration]);
 
+    function stopPlaying() {
+        player.pause();
+        playButtonAnimation.current!.pause();
+        setIsPlaying(false);
+    }
+
     async function togglePlay() {
         if (isPlaying) {
-            player.pause();
-            playButtonAnimation.current!.pause();
+            stopPlaying();
         } else {
             if (!began) {
                 await fetchFromSpotify(
@@ -254,12 +255,40 @@ export default function Game({
                     fontSize: "2.5rem",
                 }}
             >
-                Runda: {round}
+                <span>Runda: {round}</span>
             </div>
-            <CircularTimer
-                x={roundTimer.totalSeconds}
-                xMax={gameData.roundDuration}
-            />
+            <div
+                style={{
+                    alignSelf: "start",
+                    justifySelf: "end",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "30px",
+                }}
+            >
+                <CircularTimer
+                    x={roundTimer.totalSeconds}
+                    xMax={gameData.roundDuration}
+                />
+                <Button
+                    onClick={() => {
+                        finishRound();
+                        finishGame({
+                            score: points + getPoints(),
+                            guessedTracks: [],
+                        });
+                    }}
+                    size="small"
+                    style={{
+                        display: "flex",
+                        fontSize: "1rem",
+                        alignItems: "center",
+                    }}
+                >
+                    End <Icon path={mdiArrowRight} size={1} />
+                </Button>
+            </div>
+
             <div className={styles["game__playback-control"]}>
                 <Button
                     onClick={togglePlay}
