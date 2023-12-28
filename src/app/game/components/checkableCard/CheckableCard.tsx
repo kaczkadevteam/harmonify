@@ -21,10 +21,15 @@ export default function CheckableCard({
     onCheck: () => void;
     onUncheck: () => void;
 }) {
+    let imgWrapperClass = styles["checkable-card__img-wrapper"];
+    imgWrapperClass += checked
+        ? ` ${styles["checkable-card__img-wrapper--checked"]}`
+        : "";
+
     return (
         <label htmlFor={id}>
             <div className={styles["checkable-card"]}>
-                <div className={styles["checkable-card__img-wrapper"]}>
+                <div className={imgWrapperClass}>
                     {imageSrc ? (
                         <Image
                             src={imageSrc}
@@ -47,6 +52,7 @@ export default function CheckableCard({
                 <span>{title}</span>
 
                 <input
+                    hidden
                     id={id}
                     type="checkbox"
                     checked={checked}

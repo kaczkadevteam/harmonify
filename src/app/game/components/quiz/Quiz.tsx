@@ -1,11 +1,13 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import Setup from "../setup/Setup";
 import Game from "../game/Game";
-import { Album, SimplePlaylistObject, Track } from "@/types";
+import { Album, GameResult, SimplePlaylistObject, Track } from "@/types";
 import useSpotifyPlayer from "../../hooks/useSpotifyPlayer";
 import Finish from "../finish/Finish";
+import { GameContext } from "../gameContext/GameContext";
+import Script from "next/script";
 
 export default function Quiz({
     playlists,
@@ -14,6 +16,7 @@ export default function Quiz({
     playlists: { items: SimplePlaylistObject[]; total: number };
     albums: { items: Album<Track>[]; total: number };
 }) {
+    const gameContext = useContext(GameContext);
     const [gameStage, setGameStage] = useState<"setup" | "game" | "finish">(
         "setup"
     );
@@ -33,9 +36,16 @@ export default function Quiz({
         }
     }
 
+    function onGameFinish(gameResult: GameResult) {
+        gameContext.setLastGameResult(gameResult);
+        advanceStage();
+    }
+
+    let pageContent: any;
+
     switch (gameStage) {
         case "setup":
-            return (
+            pageContent = (
                 <Setup
                     playlists={playlists}
                     albums={albums}
@@ -45,9 +55,38 @@ export default function Quiz({
                     }}
                 />
             );
+            break;
         case "game":
-            return <Game playerObj={playerObj} finishGame={advanceStage} />;
+            pageContent = (
+                <Game
+                    playerObj={playerObj}
+                    finishGame={onGameFinish}
+                    gameData={Object.freeze({
+                        roundCount: 10,
+                        roundDuration: 30,
+                        trackDuration: 10,
+                        trackLowerLimit_perc: 0,
+                        trackUpperLimit_perc: 1,
+                        tracks: gameContext.tracks,
+                        selectedTracks: gameContext.drawnTracks,
+                    })}
+                />
+            );
+            break;
         case "finish":
-            return <Finish playAgain={advanceStage} />;
+            pageContent = gameContext.lastGameResult && (
+                <Finish
+                    gameResult={gameContext.lastGameResult}
+                    playAgain={advanceStage}
+                />
+            );
+            break;
     }
+
+    return (
+        <>
+            {pageContent}
+            <Script src="https://sdk.scdn.co/spotify-player.js" />
+        </>
+    );
 }
