@@ -189,6 +189,7 @@ export default function Game({
             getTimerExpiryTimestamp(gameData.roundDuration),
             false
         );
+
         player.pause();
     }
 
@@ -291,6 +292,7 @@ export default function Game({
 
             <div className={styles["game__playback-control"]}>
                 <Button
+                    autoFocus
                     onClick={togglePlay}
                     size="large"
                     ref={playButtonRef}
@@ -318,11 +320,13 @@ export default function Game({
                 className={styles["game__search-form"]}
                 onSubmit={(e) => {
                     e.preventDefault();
+                    if (guess === "") return;
+
                     finishRound();
                 }}
             >
                 <AutocompleteBar guess={guess} setGuess={setGuess} />
-                <Button type="submit" size="small">
+                <Button disabled={guess === ""} type="submit" size="small">
                     Submit
                 </Button>
             </form>
