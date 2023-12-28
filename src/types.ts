@@ -35,3 +35,18 @@ export interface Album<T> {
         items: T[];
     };
 }
+
+export interface GameData {
+    roundCount: number;
+    roundDuration: number;
+    trackDuration: number;
+    trackLowerLimit_perc: number;
+    trackUpperLimit_perc: number;
+    tracks: Track[];
+    selectedTracks: Track[];
+}
+
+export interface GameResult {
+    score: number;
+    guessedTracks: Track[];
+}

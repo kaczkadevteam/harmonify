@@ -9,7 +9,7 @@ import { fetchFromSpotify } from "@/fetch";
 import { useRouter } from "next/navigation";
 import { useTimer } from "react-timer-hook";
 import dayjs from "dayjs";
-import { Track } from "@/types";
+import { GameData, GameResult, Track } from "@/types";
 import AutocompleteBar from "../autocompleteBar/AutocompleteBar";
 import { default as Modal } from "react-modal";
 import Image from "next/image";
@@ -17,7 +17,7 @@ import TrackDisplay from "../trackDisplay/TrackDisplay";
 import Button from "@/components/button/Button";
 import CircularTimer from "../circularTimer/CircularTimer";
 import Icon from "@mdi/react";
-import { mdiPlay, mdiPause } from "@mdi/js";
+import { mdiPlay, mdiPause, mdiArrowLeft, mdiArrowRight } from "@mdi/js";
 import VolumeInput from "../volumeInput/VolumeInput";
 
 Modal.setAppElement("#root");
@@ -30,7 +30,8 @@ function selectTrack(
     tracks: Track[],
     round: number,
     lowerLimit_perc: number,
-    upperLimit_perc: number
+    upperLimit_perc: number,
+    trackPlayDuration: number
 ) {
     const track = tracks[round - 1];
     const { duration_ms } = track;
@@ -39,7 +40,7 @@ function selectTrack(
     const durationRange = upperLimit - lowerLimit;
     track.trackStart_ms = Math.min(
         Math.floor(Math.random() * durationRange) + lowerLimit,
-        duration_ms - 10 * 1000
+        duration_ms - trackPlayDuration * 1000
     );
 
     return track;
@@ -51,16 +52,18 @@ function getSavedVolume() {
 
 export default function Game({
     playerObj,
+    gameData,
     finishGame,
 }: {
     playerObj: {
         player: any;
         playerID: string;
     } | null;
-    finishGame: () => void;
+    gameData: Readonly<GameData>;
+    finishGame: (gameResult: GameResult) => void;
 }) {
     const { player, playerID } = playerObj!;
-    const game = useContext(GameContext);
+    const gameContext = useContext(GameContext);
 
     const router = useRouter();
     const [round, setRound] = useState(1);
@@ -68,14 +71,15 @@ export default function Game({
     const [began, setBegan] = useState(false);
     const [isPlaying, setIsPlaying] = useState(false);
     const [roundFinished, setRoundFinished] = useState(false);
-    const [secondsPlayingTrack, setSecondsPlayingTrack] = useState(0);
+    const [trackPlayRepeats, setTrackPlayRepeats] = useState(0);
 
     const [selectedTrack, setSelectedTrack] = useState<Track>(() => {
         return selectTrack(
-            game.drawnTracks,
+            gameData.selectedTracks,
             round,
-            game.lowerLimit_perc,
-            game.upperLimit_perc
+            gameData.trackLowerLimit_perc,
+            gameData.trackUpperLimit_perc,
+            gameData.trackDuration
         );
     });
     const [guess, setGuess] = useState("");
@@ -103,9 +107,8 @@ export default function Game({
                 playButtonAnimation.current?.currentTime?.toString() ?? "0"
             ) /
                 1000 +
-            secondsPlayingTrack;
+            trackPlayRepeats * gameData.trackDuration;
 
-        console.log(seconds);
         let points;
 
         if (seconds === 0) {
@@ -131,23 +134,16 @@ export default function Game({
         function () {
             player.seek(selectedTrack.trackStart_ms);
             player.pause();
-            //playButtonAnimation.current?.finish();
             playButtonAnimation.current?.pause();
             playButtonAnimation.current!.currentTime = 0;
-            setSecondsPlayingTrack(secondsPlayingTrack + game.trackTime);
+            setTrackPlayRepeats(trackPlayRepeats + 1);
             setIsPlaying(false);
         },
-        [
-            player,
-            playButtonAnimation,
-            selectedTrack,
-            secondsPlayingTrack,
-            game.trackTime,
-        ]
+        [player, playButtonAnimation, selectedTrack, trackPlayRepeats]
     );
 
     const roundTimer = useTimer({
-        expiryTimestamp: getTimerExpiryTimestamp(game.roundTime),
+        expiryTimestamp: getTimerExpiryTimestamp(gameData.roundDuration),
         autoStart: false,
         onExpire: () => {
             finishRound();
@@ -155,41 +151,45 @@ export default function Game({
     });
 
     function finishRound() {
-        if (isPlaying) {
-            player.pause();
-            playButtonAnimation.current!.pause();
-        }
+        stopPlaying();
         roundTimer.pause();
 
         setRoundFinished(true);
     }
 
     function advanceRound() {
-        if (round == game.roundsCount) {
-            game.setFinalScore(points + getPoints());
-            finishGame();
+        if (round == gameData.roundCount) {
+            finishGame({
+                score: points + getPoints(),
+                guessedTracks: [],
+            });
             return;
         }
         const nextRound = round + 1;
 
         const track = selectTrack(
-            game.drawnTracks,
+            gameData.selectedTracks,
             nextRound,
-            game.lowerLimit_perc,
-            game.upperLimit_perc
+            gameData.trackLowerLimit_perc,
+            gameData.trackUpperLimit_perc,
+            gameData.trackDuration
         );
 
         setPoints((v) => v + getPoints());
         setRound(nextRound);
         playButtonAnimation.current!.currentTime = 0;
 
-        setSecondsPlayingTrack(0);
+        setTrackPlayRepeats(0);
         setSelectedTrack(track);
         setGuess("");
         setIsPlaying(false);
         setRoundFinished(false);
         setBegan(false);
-        roundTimer.restart(getTimerExpiryTimestamp(game.roundTime), false);
+        roundTimer.restart(
+            getTimerExpiryTimestamp(gameData.roundDuration),
+            false
+        );
+
         player.pause();
     }
 
@@ -200,7 +200,7 @@ export default function Game({
                     { backgroundPositionX: "100%" },
                     { backgroundPositionX: "0%" },
                 ],
-                { duration: game.trackTime * 1000, iterations: 1 }
+                { duration: gameData.trackDuration * 1000, iterations: 1 }
             );
 
             if (animation) {
@@ -212,12 +212,17 @@ export default function Game({
         }
 
         playButtonAnimation.current = getPlayButtonAnimation();
-    }, [restartTrackTimer, game.trackTime]);
+    }, [restartTrackTimer, gameData.trackDuration]);
+
+    function stopPlaying() {
+        player.pause();
+        playButtonAnimation.current!.pause();
+        setIsPlaying(false);
+    }
 
     async function togglePlay() {
         if (isPlaying) {
-            player.pause();
-            playButtonAnimation.current!.pause();
+            stopPlaying();
         } else {
             if (!began) {
                 await fetchFromSpotify(
@@ -251,11 +256,43 @@ export default function Game({
                     fontSize: "2.5rem",
                 }}
             >
-                Runda: {round}
+                <span>Runda: {round}</span>
             </div>
-            <CircularTimer x={roundTimer.totalSeconds} xMax={game.roundTime} />
+            <div
+                style={{
+                    alignSelf: "start",
+                    justifySelf: "end",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "30px",
+                }}
+            >
+                <CircularTimer
+                    x={roundTimer.totalSeconds}
+                    xMax={gameData.roundDuration}
+                />
+                <Button
+                    onClick={() => {
+                        finishRound();
+                        finishGame({
+                            score: points + getPoints(),
+                            guessedTracks: [],
+                        });
+                    }}
+                    size="small"
+                    style={{
+                        display: "flex",
+                        fontSize: "1rem",
+                        alignItems: "center",
+                    }}
+                >
+                    End <Icon path={mdiArrowRight} size={1} />
+                </Button>
+            </div>
+
             <div className={styles["game__playback-control"]}>
                 <Button
+                    autoFocus
                     onClick={togglePlay}
                     size="large"
                     ref={playButtonRef}
@@ -283,11 +320,13 @@ export default function Game({
                 className={styles["game__search-form"]}
                 onSubmit={(e) => {
                     e.preventDefault();
+                    if (guess === "") return;
+
                     finishRound();
                 }}
             >
                 <AutocompleteBar guess={guess} setGuess={setGuess} />
-                <Button type="submit" size="small">
+                <Button disabled={guess === ""} type="submit" size="small">
                     Submit
                 </Button>
             </form>

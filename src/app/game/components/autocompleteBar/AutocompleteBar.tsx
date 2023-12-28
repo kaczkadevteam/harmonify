@@ -15,13 +15,20 @@ export default function AutocompleteBar({
     const [selectedTrack, setSelectedTrack] = useState<Track>();
     const [focused, setFocused] = useState(false);
 
-    const matchingTracks = game.tracks.filter((track) => {
+    let exactMatchFound = false;
+    let matchingTracks = game.tracks.filter((track) => {
         if (track.guess == null) return false;
         if (guess === "") return false;
-        if (track.guess === guess) return false;
+        if (track.guess === guess) {
+            exactMatchFound = true;
+            return false;
+        }
 
         return track.guess.toLowerCase().includes(guess.toLowerCase());
     });
+    if (exactMatchFound) {
+        matchingTracks = [];
+    }
 
     if (
         selectedTrack &&
