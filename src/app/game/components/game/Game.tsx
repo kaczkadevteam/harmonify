@@ -318,15 +318,24 @@ export default function Game({
 
             <form
                 className={styles["game__search-form"]}
+                onKeyDown={(e) => {
+                    if (guess === "" && e.key === " ") {
+                        e.preventDefault();
+                        togglePlay();
+                    }
+                }}
                 onSubmit={(e) => {
                     e.preventDefault();
-                    if (guess === "") return;
+                    if (guess === "") {
+                        togglePlay();
+                        return;
+                    }
 
                     finishRound();
                 }}
             >
                 <AutocompleteBar guess={guess} setGuess={setGuess} />
-                <Button disabled={guess === ""} type="submit" size="small">
+                <Button type="submit" size="small">
                     Submit
                 </Button>
             </form>
