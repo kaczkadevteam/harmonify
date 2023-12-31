@@ -5,6 +5,8 @@ import { createContext, useState } from "react";
 
 export const GameContext = createContext<{
     tracksHref: string[];
+    favouritesSelected: boolean;
+    setFavouritesSelected: (v: boolean) => void;
     addTracksHref: (id: string) => void;
     removeTracksHref: (id: string) => void;
     selectedAlbums: Album<Track>[];
@@ -23,6 +25,8 @@ export const GameContext = createContext<{
     upperLimit_perc: number;
 }>({
     tracksHref: [],
+    favouritesSelected: false,
+    setFavouritesSelected: (v) => {},
     addTracksHref: (playlist) => {},
     removeTracksHref: (playlist) => {},
     selectedAlbums: [],
@@ -49,6 +53,7 @@ export default function GameProvider({ children }: React.PropsWithChildren) {
     const [lastGameResult, setLastGameResult] = useState<
         GameResult | undefined
     >(undefined);
+    const [favouritesSelected, setFavouritesSelected] = useState(false);
 
     function addTracksHref(id: string) {
         setTracksHref([...tracksHref, id]);
@@ -74,6 +79,8 @@ export default function GameProvider({ children }: React.PropsWithChildren) {
         <GameContext.Provider
             value={{
                 tracksHref,
+                favouritesSelected,
+                setFavouritesSelected,
                 addTracksHref,
                 removeTracksHref,
                 selectedAlbums,

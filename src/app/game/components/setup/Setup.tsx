@@ -10,6 +10,8 @@ import LoadingCircle from "../loadingCircle/LoadingCircle";
 import Button from "@/components/button/Button";
 import AlbumCard from "../albumCard/AlbumCard";
 import { trackIntoGuessString } from "@/modules/tracks";
+import CheckableCard from "../checkableCard/CheckableCard";
+import { mdiHeart } from "@mdi/js";
 
 function removeDuplicatedTracks(tracks: Track[]) {
     return tracks.reduce<Track[]>((filteredTracks, track) => {
@@ -86,14 +88,42 @@ export default function Setup({
     }
 
     async function fetchAllTracks() {
+        const favouriteTracks: Track[] = [];
+
+        if (game.favouritesSelected) {
+            let next =
+                "https://api.spotify.com/v1/me/tracks?fields=next,items(track(album.images,artists(name,id),duration_ms,name,uri))&limit=50";
+
+            while (next) {
+                const response = await fetchFromSpotify(
+                    next,
+                    Cookies.get("access_token") ?? "",
+                    router,
+                    true,
+                    "GET"
+                );
+
+                const result = await response.json();
+                next = result.next;
+                favouriteTracks.push(
+                    ...result.items
+                        .map(
+                            (it: { added_at: string; track: Track }) => it.track
+                        )
+                        .filter(
+                            (t: Track & { is_local: boolean }) => !t.is_local
+                        )
+                );
+            }
+        }
+
         const playlistsTracks: Track[] = (
             await Promise.all(
                 game.tracksHref.map(async (trackHref) => {
-                    let next = `${trackHref}?fields=next,items(is_local,track(album.images,artists(name,id),duration_ms,name,uri))&limit=10`;
-                    let safeguard = 0;
+                    let next = `${trackHref}?fields=next,items(is_local,track(album.images,artists(name,id),duration_ms,name,uri))&limit=50`;
                     let tracks = [];
 
-                    while (next && safeguard < 10) {
+                    while (next) {
                         const response = await fetchFromSpotify(
                             next,
                             Cookies.get("access_token") ?? "",
@@ -105,8 +135,6 @@ export default function Setup({
                         const result = await response.json();
                         next = result.next;
                         tracks.push(...result.items);
-
-                        safeguard++;
                     }
 
                     return tracks;
@@ -124,11 +152,13 @@ export default function Setup({
             []
         );
 
-        return [...playlistsTracks, ...albumsTracks];
+        return [...favouriteTracks, ...playlistsTracks, ...albumsTracks];
     }
 
     const noTracksSelected =
-        game.tracksHref.length === 0 && game.selectedAlbums.length === 0;
+        game.tracksHref.length === 0 &&
+        game.selectedAlbums.length === 0 &&
+        !game.favouritesSelected;
 
     return (
         <main className={styles["main"]}>
@@ -138,6 +168,15 @@ export default function Setup({
                         Playlists
                     </h2>
                     <div className={styles["cards-container"]}>
+                        <CheckableCard
+                            id="favourites"
+                            title="Favourites"
+                            iconSrc={mdiHeart}
+                            imageAlt="Favourites"
+                            checked={game.favouritesSelected}
+                            onCheck={() => game.setFavouritesSelected(true)}
+                            onUncheck={() => game.setFavouritesSelected(false)}
+                        />
                         {playlists.items.map((playlist) => {
                             return (
                                 <PlaylistCard

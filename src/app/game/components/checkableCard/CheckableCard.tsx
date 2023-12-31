@@ -8,6 +8,7 @@ export default function CheckableCard({
     id,
     title,
     imageSrc,
+    iconSrc,
     imageAlt,
     checked,
     onCheck,
@@ -16,6 +17,7 @@ export default function CheckableCard({
     id: string;
     title: string;
     imageSrc?: string;
+    iconSrc?: string;
     imageAlt: string;
     checked: boolean;
     onCheck: () => void;
@@ -45,7 +47,11 @@ export default function CheckableCard({
                                 ]
                             }
                         >
-                            <Icon path={mdiImageOff} size={3} />
+                            {iconSrc ? (
+                                <Icon path={iconSrc} size={3} color="#f59e0b" />
+                            ) : (
+                                <Icon path={mdiImageOff} size={3} />
+                            )}
                         </div>
                     )}
                 </div>
