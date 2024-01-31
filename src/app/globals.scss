@@ -1,6 +1,16 @@
 :root {
+    --main-dark-color-d1: #020617;
     --main-dark-color: #0f172a;
+    --main-dark-color-l1: #1e293b;
     --main-light-color: #f59e0b;
+    --page-background: linear-gradient(
+        220deg,
+        var(--main-dark-color-l1),
+        5%,
+        var(--main-dark-color),
+        90%,
+        var(--main-dark-color-d1)
+    );
 }
 
 h1,
@@ -15,7 +25,7 @@ body {
     margin: 0;
     min-height: 100vh;
     height: 100vh;
-    background-color: var(--main-dark-color);
+    background: var(--page-background);
     color: white;
     overflow: hidden;
 }
