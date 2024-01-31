@@ -1,34 +1,47 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+![Name that tune](./public/baner.png)
 
-## Getting Started
+![Vercel](https://vercelbadge.vercel.app/api/marcinskic/name-that-tune)
+![License](https://img.shields.io/github/license/marcinskic/name-that-tune.svg)
+![Release](https://img.shields.io/github/release/marcinskic/name-that-tune.svg)
 
-First, run the development server:
+## Description
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-```
+Web app for playing "Name that tune" game on playlists and albums from user Spotify collection.
+**Usage is heavily limited, see [Notice](#notice).**
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Features
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+-   Loading all of player's playlists and albums
+-   Player can select tracks from multiple albums and playlists
+-   Game consists of multiple rounds, in each one track to guess
+-   Guessing done with autocomplete bar where user can search by title or author
+-   Ability to play comfortably with keyboard only
+-   Points calculated based on how fast player guessed
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+## Showcase
 
-## Learn More
+![Selecting playlists and albums window](/public/showcase/selection.png)
 
-To learn more about Next.js, take a look at the following resources:
+</br>
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+![Game UI](/public/showcase/game.png)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+</br>
 
-## Deploy on Vercel
+![Guessed track modal](/public/showcase/guessed.png)
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Notice
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+The app, unfortunately, will never leave development mode due to Spotify's ToS (unless I change API in the future 🫣). Therefore, if you would like to try it out, you are required to send me your email associated with Spotify Premium account.
+
+---
+
+### Used technologies
+
+[<img align="left" width="26" alt="Next.js" src="https://raw.githubusercontent.com/MarcinSkic/marcinskic/main/icons/next-official-dark.svg" style="padding: 0 20px 16px 0">][next]
+[<img align="left" width="26" alt="Next.js" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/typescript/typescript-original.svg" style="padding: 0 20px 16px 0">][ts]
+[<img align="left" width="26" alt="SCSS" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/sass/sass-original.svg" style="padding: 0 20px 16px 0">][scss]
+
+[next]: https://nextjs.org
+[ts]: https://www.typescriptlang.org
+[scss]: https://sass-lang.com
