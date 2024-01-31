@@ -256,7 +256,7 @@ export default function Game({
                     fontSize: "2.5rem",
                 }}
             >
-                <span>Runda: {round}</span>
+                <span>Round: {round}</span>
             </div>
             <div
                 style={{

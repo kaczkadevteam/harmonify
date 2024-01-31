@@ -4,7 +4,7 @@ import styles from "./layout.module.scss";
 export default function layout({ children }: React.PropsWithChildren) {
     return (
         <div className={styles.layout}>
-            <header className={styles.header}>Header</header>
+            <header className={styles.header}></header>
             {children}
         </div>
     );
