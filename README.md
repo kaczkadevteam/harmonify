@@ -6,7 +6,7 @@
 
 ## Description
 
-Web app for playing "Name that tune" game on playlists and albums from user Spotify collection.
+Web app for playing the "Name that tune" game with playlists and albums from user's Spotify collection.
 **Usage is heavily limited, see [Notice](#notice).**
 
 ## Features
