@@ -38,10 +38,7 @@ The app, unfortunately, will never leave development mode due to Spotify's ToS (
 
 ### Used technologies
 
-[<img align="left" width="26" alt="Next.js" src="https://raw.githubusercontent.com/MarcinSkic/marcinskic/main/icons/next-official-dark.svg" style="padding: 0 20px 16px 0">][next]
-[<img align="left" width="26" alt="Next.js" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/typescript/typescript-original.svg" style="padding: 0 20px 16px 0">][ts]
-[<img align="left" width="26" alt="SCSS" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/sass/sass-original.svg" style="padding: 0 20px 16px 0">][scss]
+[<img align="left" width="26" height="26" alt="Next.js" src="https://api.iconify.design/logos:nextjs-icon.svg" style="padding: 0 20px 16px 0">](https://nextjs.org "Next.js")
+[<img align="left" width="26" height="26" alt="Typescript" src="https://api.iconify.design/devicon:typescript.svg" style="padding: 0 20px 16px 0">](https://www.typescriptlang.org "Typescript")
+[<img align="left" width="26" height="26" alt="Sass" src="https://api.iconify.design/devicon:sass.svg" style="padding: 0 20px 16px 0">](https://sass-lang.com "Sass")
 
-[next]: https://nextjs.org
-[ts]: https://www.typescriptlang.org
-[scss]: https://sass-lang.com
