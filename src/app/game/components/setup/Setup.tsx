@@ -1,5 +1,5 @@
 import { Album, SimplePlaylistObject, Track } from "@/types";
-import { useContext, useState } from "react";
+import { useContext } from "react";
 import styles from "./setup.module.scss";
 import PlaylistCard from "../playlistCard/PlaylistCard";
 import { GameContext } from "../gameContext/GameContext";
@@ -120,7 +120,7 @@ export default function Setup({
         const playlistsTracks: Track[] = (
             await Promise.all(
                 game.tracksHref.map(async (trackHref) => {
-                    let next = `${trackHref}?fields=next,items(is_local,track(album.images,artists(name,id),duration_ms,name,uri))&limit=50`;
+                    let next = `${trackHref}?fields=next,items(is_local,track(album(name,images),artists(name,id),duration_ms,name,uri))&limit=50`;
                     let tracks = [];
 
                     while (next) {

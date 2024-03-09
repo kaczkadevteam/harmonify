@@ -65,7 +65,10 @@ export default async function GamePage() {
                 ...a,
                 tracks: {
                     items: (a.tracks.items = a.tracks.items.map<Track>((t) => {
-                        return { ...t, album: { images: a.images } };
+                        return {
+                            ...t,
+                            album: { name: a.name, images: a.images },
+                        };
                     })),
                 },
             };

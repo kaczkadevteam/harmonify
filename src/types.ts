@@ -15,7 +15,7 @@ export type ImageObject = {
 };
 
 export type Track = SimplifiedTrackObject & {
-    album: { images: ImageObject[] };
+    album: { name: string; images: ImageObject[] };
     guess?: string;
     trackStart_ms?: number;
 };

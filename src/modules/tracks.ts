@@ -5,5 +5,5 @@ export function trackIntoGuessString(track: Track) {
         .reduce((acc, artist) => {
             return `${acc}, ${artist.name}`;
         }, "")
-        .slice(2)}`;
+        .slice(2)} - ${track.album.name}`;
 }

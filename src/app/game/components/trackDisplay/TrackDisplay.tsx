@@ -21,6 +21,9 @@ export default function TrackDisplay({
                 <span className={styles["track-display__author"]}>
                     {guess.split(" - ")[1]}
                 </span>
+                <span className={styles["track-display__album"]}>
+                    {guess.split(" - ")[2]}
+                </span>
             </span>
         );
     } else if (track) {
@@ -35,6 +38,9 @@ export default function TrackDisplay({
                             return `${acc}, ${artist.name}`;
                         }, "")
                         .slice(2)}
+                </span>
+                <span className={styles["track-display__album"]}>
+                    {track.album.name}
                 </span>
             </span>
         );
