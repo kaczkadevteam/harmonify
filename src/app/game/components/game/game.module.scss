@@ -10,9 +10,14 @@
     &__search-form {
         grid-column: 1 / -1;
         align-self: start;
-        display: flex;
-        align-items: center;
-        gap: 10px;
+        display: grid;
+        place-items: center;
+        grid-template-columns: 1fr 1fr;
+        gap: 30px 0;
+
+        > :first-child {
+            grid-column: 1 / -1;
+        }
     }
 
     &__playback-control {
@@ -21,6 +26,7 @@
         align-items: center;
         gap: 30px;
         grid-column: 1 / -1;
+        margin-left: 70px;
     }
 }
 

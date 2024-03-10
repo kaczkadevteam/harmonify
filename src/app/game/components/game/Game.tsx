@@ -1,10 +1,9 @@
 "use client";
 
 import styles from "./game.module.scss";
-import { useCallback, useContext, useRef } from "react";
+import { SyntheticEvent, useCallback, useContext, useRef } from "react";
 import { useEffect, useState } from "react";
 import Cookies from "js-cookie";
-import { GameContext } from "../gameContext/GameContext";
 import { fetchFromSpotify } from "@/fetch";
 import { useRouter } from "next/navigation";
 import { useTimer } from "react-timer-hook";
@@ -17,7 +16,7 @@ import TrackDisplay from "../trackDisplay/TrackDisplay";
 import Button from "@/components/button/Button";
 import CircularTimer from "../circularTimer/CircularTimer";
 import Icon from "@mdi/react";
-import { mdiPlay, mdiPause, mdiArrowLeft, mdiArrowRight } from "@mdi/js";
+import { mdiPlay, mdiPause, mdiArrowRight } from "@mdi/js";
 import VolumeInput from "../volumeInput/VolumeInput";
 
 Modal.setAppElement("#root");
@@ -349,9 +348,14 @@ export default function Game({
                         togglePlay();
                     }
                 }}
-                onSubmit={(e) => {
+                onSubmit={(e: SyntheticEvent<HTMLFormElement, SubmitEvent>) => {
                     e.preventDefault();
-                    if (guess === "") {
+
+                    const submittionType = (
+                        e.nativeEvent.submitter as HTMLButtonElement
+                    ).value;
+
+                    if (guess === "" && submittionType === "submit") {
                         togglePlay();
                         return;
                     }
@@ -360,8 +364,11 @@ export default function Game({
                 }}
             >
                 <AutocompleteBar guess={guess} setGuess={setGuess} />
-                <Button type="submit" size="small">
+                <Button type="submit" value="submit" size="medium">
                     Submit
+                </Button>
+                <Button type="submit" value="skip" size="medium">
+                    Skip
                 </Button>
             </form>
             <Modal

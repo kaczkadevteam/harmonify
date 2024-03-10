@@ -6,19 +6,23 @@ export default forwardRef<
     React.PropsWithChildren<{
         onClick?: () => void;
         disabled?: boolean;
+        name?: string;
+        value?: string;
         size: "small" | "medium" | "large";
         type?: "button" | "reset" | "submit";
         style?: React.CSSProperties;
         autoFocus?: boolean;
     }>
 >(function Button(
-    { children, disabled, size, type, onClick, style, autoFocus },
+    { children, disabled, name, value, size, type, onClick, style, autoFocus },
     ref
 ) {
     return (
         <button
             disabled={disabled}
             className={`${styles["button"]} ${styles[`button--${size}`]}`}
+            name={name}
+            value={value}
             onClick={onClick}
             type={type}
             style={style}
