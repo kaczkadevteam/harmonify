@@ -371,11 +371,11 @@ export default function Game({
                 }}
             >
                 <AutocompleteBar guess={guess} setGuess={setGuess} />
-                <Button type="submit" value="skip" size="medium">
-                    Skip
-                </Button>
                 <Button type="submit" value="submit" size="medium">
                     Submit
+                </Button>
+                <Button type="submit" value="skip" size="medium">
+                    Skip
                 </Button>
             </form>
             <Modal

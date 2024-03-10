@@ -1,5 +1,5 @@
-import { Album, SimplePlaylistObject, Track } from "@/types";
-import { useContext } from "react";
+import { Album, GameData, SimplePlaylistObject, Track } from "@/types";
+import { useContext, useState } from "react";
 import styles from "./setup.module.scss";
 import PlaylistCard from "../playlistCard/PlaylistCard";
 import { GameContext } from "../gameContext/GameContext";
@@ -60,10 +60,20 @@ export default function Setup({
         player: any;
         playerID: string;
     } | null;
-    startGame: () => void;
+    startGame: (gameData: GameData) => void;
 }) {
     const game = useContext(GameContext);
     const router = useRouter();
+
+    const [gameData, setGameData] = useState<GameData>({
+        roundCount: 76,
+        roundDuration: 20,
+        trackDuration: 30,
+        trackLowerLimit_perc: 0.2,
+        trackUpperLimit_perc: 0.8,
+        tracks: [],
+        selectedTracks: [],
+    });
 
     async function startGameHandler() {
         if (!playerObj) return;
@@ -81,10 +91,19 @@ export default function Setup({
         tracks = removeDuplicatedTracks(tracks);
         tracks = addGuessToTracks(tracks);
 
-        game.setDrawnTracks(selectRandomlyTracks(tracks, game.roundsCount));
-        game.setTracks(tracks);
+        const selectedTracks = selectRandomlyTracks(
+            tracks,
+            gameData.roundCount
+        );
 
-        startGame();
+        startGame({
+            ...gameData,
+            tracks: tracks,
+            selectedTracks: selectedTracks,
+        });
+
+        game.setTracks(tracks);
+        game.setDrawnTracks(selectedTracks);
     }
 
     async function fetchAllTracks() {
@@ -205,6 +224,56 @@ export default function Setup({
                             );
                         })}
                     </div>
+                </div>
+            </div>
+            <div className={styles["game-data"]}>
+                <div className={styles["game-data__setting"]}>
+                    <label htmlFor="roundCount">Rounds</label>
+                    <input
+                        id="roundCount"
+                        className={styles["game-data__setting__input"]}
+                        style={{ width: "3rem" }}
+                        type="number"
+                        value={gameData.roundCount}
+                        onChange={(e) => {
+                            setGameData((prev) => ({
+                                ...prev,
+                                roundCount: Number.parseInt(e.target.value),
+                            }));
+                        }}
+                    />
+                </div>
+                <div className={styles["game-data__setting"]}>
+                    <label htmlFor="roundDuration">Round duration</label>
+                    <input
+                        id="roundDuration"
+                        className={styles["game-data__setting__input"]}
+                        style={{ width: "3rem" }}
+                        type="number"
+                        value={gameData.roundDuration}
+                        onChange={(e) => {
+                            setGameData((prev) => ({
+                                ...prev,
+                                roundDuration: Number.parseInt(e.target.value),
+                            }));
+                        }}
+                    />
+                </div>
+                <div className={styles["game-data__setting"]}>
+                    <label htmlFor="trackDuration">Track duration</label>
+                    <input
+                        id="trackDuration"
+                        className={styles["game-data__setting__input"]}
+                        style={{ width: "3rem" }}
+                        type="number"
+                        value={gameData.trackDuration}
+                        onChange={(e) => {
+                            setGameData((prev) => ({
+                                ...prev,
+                                trackDuration: Number.parseInt(e.target.value),
+                            }));
+                        }}
+                    />
                 </div>
             </div>
 

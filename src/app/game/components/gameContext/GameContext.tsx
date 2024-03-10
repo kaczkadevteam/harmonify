@@ -18,11 +18,6 @@ export const GameContext = createContext<{
     setDrawnTracks: (arg: any) => void;
     lastGameResult: GameResult | undefined;
     setLastGameResult: (result: GameResult) => void;
-    roundsCount: number;
-    roundTime: number;
-    trackTime: number;
-    lowerLimit_perc: number;
-    upperLimit_perc: number;
 }>({
     tracksHref: [],
     favouritesSelected: false,
@@ -38,11 +33,6 @@ export const GameContext = createContext<{
     setDrawnTracks: (arg) => {},
     lastGameResult: { score: 0, playedTracks: [] },
     setLastGameResult: (arg) => {},
-    roundsCount: 10,
-    roundTime: 30,
-    trackTime: 10,
-    lowerLimit_perc: 0,
-    upperLimit_perc: 1,
 });
 
 export default function GameProvider({ children }: React.PropsWithChildren) {
@@ -92,11 +82,6 @@ export default function GameProvider({ children }: React.PropsWithChildren) {
                 setDrawnTracks,
                 lastGameResult,
                 setLastGameResult,
-                roundsCount: 10,
-                roundTime: 30,
-                trackTime: 10,
-                lowerLimit_perc: 0,
-                upperLimit_perc: 1,
             }}
         >
             {children}

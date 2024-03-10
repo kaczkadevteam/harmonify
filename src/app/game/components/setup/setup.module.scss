@@ -2,7 +2,9 @@
     display: grid;
     height: 80vh;
     width: 80vw;
+    grid-template-columns: 1fr auto;
     grid-template-rows: 1fr 50px;
+    gap: 20px;
 
     .tracks-select {
         display: flex;
@@ -32,6 +34,28 @@
         }
     }
 
+    .game-data {
+        display: grid;
+        gap: 10px;
+        justify-content: center;
+        align-items: start;
+        align-content: start;
+
+        &__setting {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+
+            &__input {
+                height: 1.5rem;
+                font-size: 1.4rem;
+                background: transparent;
+                color: white;
+                border: none;
+            }
+        }
+    }
+
     .cards-container {
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
@@ -41,5 +65,6 @@
 
     .button-wrapper {
         justify-self: center;
+        grid-column: 1 / -1;
     }
 }
