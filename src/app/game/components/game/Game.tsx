@@ -52,7 +52,7 @@ function getSavedVolume() {
 export default function Game({
     playerObj,
     gameData,
-    finishGame,
+    finishGame: _finishGame,
 }: {
     playerObj: {
         player: any;
@@ -115,13 +115,16 @@ export default function Game({
         }
     }
 
-    function getPointsForRound(guessLevel: GuessLevel) {
+    function getPlayDuration() {
         const trackPlayDuration =
             Number.parseInt(
                 playButtonAnimation.current?.currentTime?.toString() ?? "0"
             ) / 1000;
-        const seconds =
-            trackPlayDuration + trackPlayRepeats * gameData.trackDuration;
+        return trackPlayDuration + trackPlayRepeats * gameData.trackDuration;
+    }
+
+    function getPointsForRound(guessLevel: GuessLevel) {
+        const seconds = getPlayDuration();
 
         let points;
         if (seconds === 0) {
@@ -147,6 +150,7 @@ export default function Game({
             track: selectedTrack,
             userGuess: guess,
             isGuessed: guessLevel === "full",
+            playDuration: getPlayDuration(),
         };
     }
 
@@ -177,16 +181,22 @@ export default function Game({
         setRoundFinished(true);
     }
 
-    function advanceRound() {
+    function finishGame() {
         const guessLevel = getGuessLevel();
         const totalPoints = points + getPointsForRound(guessLevel);
+
+        _finishGame({
+            score: totalPoints,
+            playedTracks: playedTracks.current,
+        });
+    }
+
+    function advanceRound() {
+        const guessLevel = getGuessLevel();
         playedTracks.current.push(getPlayedTrack(guessLevel));
 
         if (round == gameData.roundCount) {
-            finishGame({
-                score: totalPoints,
-                playedTracks: playedTracks.current,
-            });
+            finishGame();
             return;
         }
         const nextRound = round + 1;
@@ -199,7 +209,7 @@ export default function Game({
             gameData.trackDuration
         );
 
-        setPoints(totalPoints);
+        setPoints((prev) => prev + getPointsForRound(guessLevel));
         setRound(nextRound);
         playButtonAnimation.current!.currentTime = 0;
 
@@ -298,10 +308,7 @@ export default function Game({
                 <Button
                     onClick={() => {
                         finishRound();
-                        finishGame({
-                            score: points + getPointsForRound(getGuessLevel()),
-                            playedTracks: [],
-                        });
+                        finishGame();
                     }}
                     size="small"
                     style={{
@@ -364,11 +371,11 @@ export default function Game({
                 }}
             >
                 <AutocompleteBar guess={guess} setGuess={setGuess} />
-                <Button type="submit" value="submit" size="medium">
-                    Submit
-                </Button>
                 <Button type="submit" value="skip" size="medium">
                     Skip
+                </Button>
+                <Button type="submit" value="submit" size="medium">
+                    Submit
                 </Button>
             </form>
             <Modal

@@ -26,6 +26,7 @@ export type PlayedTrack = {
     track: Track;
     userGuess: string;
     isGuessed: boolean;
+    playDuration: number;
 };
 
 export interface SimplifiedTrackObject {
