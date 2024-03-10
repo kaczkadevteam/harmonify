@@ -9,7 +9,7 @@ import { fetchFromSpotify } from "@/fetch";
 import { useRouter } from "next/navigation";
 import { useTimer } from "react-timer-hook";
 import dayjs from "dayjs";
-import { GameData, GameResult, Track } from "@/types";
+import { GameData, GameResult, GuessLevel, PlayedTrack, Track } from "@/types";
 import AutocompleteBar from "../autocompleteBar/AutocompleteBar";
 import { default as Modal } from "react-modal";
 import Image from "next/image";
@@ -63,7 +63,6 @@ export default function Game({
     finishGame: (gameResult: GameResult) => void;
 }) {
     const { player, playerID } = playerObj!;
-    const gameContext = useContext(GameContext);
 
     const router = useRouter();
     const [round, setRound] = useState(1);
@@ -82,6 +81,7 @@ export default function Game({
             gameData.trackDuration
         );
     });
+    const playedTracks = useRef<PlayedTrack[]>([]);
     const [guess, setGuess] = useState("");
     const [points, setPoints] = useState(0);
 
@@ -101,16 +101,30 @@ export default function Game({
         setVolume(getSavedVolume());
     }, [setVolume]);
 
-    function getPoints() {
-        const seconds =
+    function getGuessLevel(): GuessLevel {
+        const trackGuess = selectedTrack.guess ?? "";
+        const userGuess = guess;
+
+        if (trackGuess === userGuess) {
+            return "full";
+        } else if (
+            trackGuess.split(" - ")?.[1] === userGuess.split(" - ")?.[1] // compare if the same artist
+        ) {
+            return "author";
+        } else {
+            return "none";
+        }
+    }
+
+    function getPointsForRound(guessLevel: GuessLevel) {
+        const trackPlayDuration =
             Number.parseInt(
                 playButtonAnimation.current?.currentTime?.toString() ?? "0"
-            ) /
-                1000 +
-            trackPlayRepeats * gameData.trackDuration;
+            ) / 1000;
+        const seconds =
+            trackPlayDuration + trackPlayRepeats * gameData.trackDuration;
 
         let points;
-
         if (seconds === 0) {
             points = 295;
         } else if (seconds < 3) {
@@ -119,15 +133,22 @@ export default function Game({
             points = Math.floor(100 / Math.pow(seconds - 2, 1.1) + 60);
         }
 
-        if (selectedTrack.guess === guess) {
-            return points;
-        } else if (
-            selectedTrack.guess?.split(" - ")?.[1] === guess.split(" - ")?.[1] // compare if the same artist
-        ) {
-            return Math.floor(points / 5);
-        } else {
-            return 0;
+        switch (guessLevel) {
+            case "full":
+                return points;
+            case "author":
+                return Math.floor(points / 5);
+            case "none":
+                return 0;
         }
+    }
+
+    function getPlayedTrack(guessLevel: GuessLevel): PlayedTrack {
+        return {
+            track: selectedTrack,
+            userGuess: guess,
+            isGuessed: guessLevel === "full",
+        };
     }
 
     const restartTrackTimer = useCallback(
@@ -158,10 +179,14 @@ export default function Game({
     }
 
     function advanceRound() {
+        const guessLevel = getGuessLevel();
+        const totalPoints = points + getPointsForRound(guessLevel);
+        playedTracks.current.push(getPlayedTrack(guessLevel));
+
         if (round == gameData.roundCount) {
             finishGame({
-                score: points + getPoints(),
-                guessedTracks: [],
+                score: totalPoints,
+                playedTracks: playedTracks.current,
             });
             return;
         }
@@ -175,7 +200,7 @@ export default function Game({
             gameData.trackDuration
         );
 
-        setPoints((v) => v + getPoints());
+        setPoints(totalPoints);
         setRound(nextRound);
         playButtonAnimation.current!.currentTime = 0;
 
@@ -275,8 +300,8 @@ export default function Game({
                     onClick={() => {
                         finishRound();
                         finishGame({
-                            score: points + getPoints(),
-                            guessedTracks: [],
+                            score: points + getPointsForRound(getGuessLevel()),
+                            playedTracks: [],
                         });
                     }}
                     size="small"
@@ -377,7 +402,12 @@ export default function Game({
                                 <TrackDisplay styles={styles} guess={guess} />
                             </span>
                         )}
-                        <span>Points: {`${points} + ${getPoints()}`}</span>
+                        <span>
+                            Points:{" "}
+                            {`${points} + ${getPointsForRound(
+                                getGuessLevel()
+                            )}`}
+                        </span>
                         <Button onClick={advanceRound} size="small" autoFocus>
                             Continue
                         </Button>{" "}

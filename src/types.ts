@@ -1,3 +1,5 @@
+export type GuessLevel = "full" | "author" | "none";
+
 export type SimplePlaylistObject = {
     id: string;
     images: ImageObject[];
@@ -18,6 +20,12 @@ export type Track = SimplifiedTrackObject & {
     album: { name: string; images: ImageObject[] };
     guess?: string;
     trackStart_ms?: number;
+};
+
+export type PlayedTrack = {
+    track: Track;
+    userGuess: string;
+    isGuessed: boolean;
 };
 
 export interface SimplifiedTrackObject {
@@ -48,5 +56,5 @@ export interface GameData {
 
 export interface GameResult {
     score: number;
-    guessedTracks: Track[];
+    playedTracks: PlayedTrack[];
 }

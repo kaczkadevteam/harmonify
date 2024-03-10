@@ -36,7 +36,7 @@ export const GameContext = createContext<{
     setTracks: (arg) => {},
     drawnTracks: [],
     setDrawnTracks: (arg) => {},
-    lastGameResult: { score: 0, guessedTracks: [] },
+    lastGameResult: { score: 0, playedTracks: [] },
     setLastGameResult: (arg) => {},
     roundsCount: 10,
     roundTime: 30,
