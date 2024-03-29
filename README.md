@@ -41,4 +41,3 @@ The app, unfortunately, will never leave development mode due to Spotify's ToS (
 [<img align="left" width="26" height="26" alt="Next.js" src="https://api.iconify.design/logos:nextjs-icon.svg" style="padding: 0 20px 16px 0">](https://nextjs.org "Next.js")
 [<img align="left" width="26" height="26" alt="Typescript" src="https://api.iconify.design/devicon:typescript.svg" style="padding: 0 20px 16px 0">](https://www.typescriptlang.org "Typescript")
 [<img align="left" width="26" height="26" alt="Sass" src="https://api.iconify.design/devicon:sass.svg" style="padding: 0 20px 16px 0">](https://sass-lang.com "Sass")
-
