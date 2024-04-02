@@ -2,6 +2,7 @@ import { URL, fileURLToPath } from 'node:url'
 
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
+import vercel from 'vite-plugin-vercel'
 
 import tailwind from 'tailwindcss'
 import autoprefixer from 'autoprefixer'
@@ -15,6 +16,7 @@ export default defineConfig({
   },
   plugins: [
     vue(),
+    vercel(),
   ],
   resolve: {
     alias: {

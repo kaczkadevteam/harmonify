@@ -16,6 +16,7 @@
     "lint:fix": "eslint . --fix"
   },
   "dependencies": {
+    "@vueuse/integrations": "^10.9.0",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
     "lucide-vue-next": "^0.363.0",
@@ -23,6 +24,7 @@
     "radix-vue": "^1.5.3",
     "tailwind-merge": "^2.2.2",
     "tailwindcss-animate": "^1.0.7",
+    "universal-cookie": "^6",
     "vue": "^3.4.21",
     "vue-router": "^4.3.0"
   },
@@ -33,6 +35,7 @@
     "@tsconfig/node20": "^20.1.2",
     "@types/jsdom": "^21.1.6",
     "@types/node": "^20.11.28",
+    "@vercel/node": "^3.0.25",
     "@vitejs/plugin-vue": "^5.0.4",
     "@vue/test-utils": "^2.4.5",
     "@vue/tsconfig": "^0.5.1",
@@ -48,6 +51,7 @@
     "tailwindcss": "^3.4.3",
     "typescript": "~5.4.0",
     "vite": "^5.1.6",
+    "vite-plugin-vercel": "^5.0.2",
     "vitest": "^1.4.0",
     "vue-tsc": "^2.0.6"
   }
