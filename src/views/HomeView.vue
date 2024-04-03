@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import { useCookies } from '@vueuse/integrations/useCookies'
+import { onMounted, ref } from 'vue'
 import { RouterLink } from 'vue-router'
 
 const cookies = useCookies()
 
-const isLogged = !!cookies.get('access_token') || !!cookies.get('refresh_token')
+const isLogged = ref(!!cookies.get('access_token') || !!cookies.get('refresh_token'))
 </script>
 
 <template>
