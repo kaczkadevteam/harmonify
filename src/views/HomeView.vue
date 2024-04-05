@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useCookies } from '@vueuse/integrations/useCookies'
-import { onMounted, ref } from 'vue'
+import { ref } from 'vue'
 import { RouterLink } from 'vue-router'
 
 const cookies = useCookies()
