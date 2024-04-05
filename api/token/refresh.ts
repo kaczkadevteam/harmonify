@@ -1,6 +1,3 @@
-import process from 'node:process'
-import { Buffer } from 'node:buffer'
-import queryString from 'query-string'
 import type { VercelRequest, VercelResponse } from '@vercel/node'
 import { z } from 'zod'
 import { attachCookiesToResponse, fetchSpotifyAuth } from './common.js'
