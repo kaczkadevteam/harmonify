@@ -1,21 +1,21 @@
-import Cookies from 'universal-cookie'
+import type { Router } from 'vue-router'
+import { z } from 'zod'
 
 export async function fetchFromSpotify(
   url: string,
-  router: any = null,
+  access_token: string,
+  router: Router,
   isURLFull: boolean = false,
   method = 'GET',
   body: string | undefined = undefined,
 ) {
-  const cookies = new Cookies(null, { path: '/' })
-
   const response = await fetch(
     isURLFull ? url : `${import.meta.env.VITE_SPOTIFY_URL}${url}`,
     {
       method,
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${cookies.get('access_token')}`,
+        'Authorization': `Bearer ${access_token}`,
       },
       body,
     },
@@ -25,4 +25,38 @@ export async function fetchFromSpotify(
     router.push('/token/expired')
 
   return response
+}
+
+export async function getAllPaginatedItems<T>(url: string, access_token: string, router: Router, itemSchema: z.ZodType<T>) {
+  let next: string | null = url
+  const collected: { total: number, items: T[] } = {
+    total: 0,
+    items: [],
+  }
+
+  const schema = z.object({
+    total: z.number(),
+    items: z.array(itemSchema),
+    next: z.string().nullable(),
+  })
+
+  while (next) {
+    const response = await fetchFromSpotify(
+      next,
+      access_token,
+      router,
+      true,
+    )
+
+    const da = await response.json()
+
+    const result = schema.parse(da)
+
+    collected.total += result.total
+    collected.items = [...collected.items, ...result.items]
+
+    next = result.next
+  }
+
+  return collected
 }
