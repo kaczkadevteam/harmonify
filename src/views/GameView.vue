@@ -6,6 +6,8 @@ const settings = useSettingsStore()
 </script>
 
 <template>
-  <SpotifyPlayer v-if="settings.player === 'spotify'" />
-  <RouterView />
+  <div class="grid min-h-screen place-content-center">
+    <RouterView />
+    <SpotifyPlayer v-if="settings.player === 'spotify'" />
+  </div>
 </template>

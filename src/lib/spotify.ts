@@ -29,10 +29,7 @@ export async function fetchFromSpotify(
 
 export async function getAllPaginatedItems<T>(url: string, access_token: string, router: Router, itemSchema: z.ZodType<T>) {
   let next: string | null = url
-  const collected: { total: number, items: T[] } = {
-    total: 0,
-    items: [],
-  }
+  const collected: T[] = []
 
   const schema = z.object({
     total: z.number(),
@@ -52,8 +49,7 @@ export async function getAllPaginatedItems<T>(url: string, access_token: string,
 
     const result = schema.parse(da)
 
-    collected.total += result.total
-    collected.items = [...collected.items, ...result.items]
+    collected.push(...result.items)
 
     next = result.next
   }
