@@ -24,7 +24,7 @@ function createSpotifyPlayer() {
     name: 'Harmonify',
     getOAuthToken: (cb: any) => {
       if (!access_token)
-        router.push('/token/refresh')
+        router.push('/api/token/refresh')
 
       cb(access_token)
     },
