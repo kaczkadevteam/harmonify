@@ -15,6 +15,7 @@ declare global {
 const scriptTag = ref<HTMLDivElement | null>(null)
 const cookies = useCookies()
 const router = useRouter()
+const access_token = cookies.get('access_token')
 
 const playerStore = usePlayerStore()
 
@@ -22,10 +23,10 @@ function createSpotifyPlayer() {
   return new window.Spotify.Player({
     name: 'Harmonify',
     getOAuthToken: (cb: any) => {
-      if (!cookies.get('access_token'))
-        router.push('/token/refresh')
+      if (!access_token)
+        router.push('/api/token/refresh')
 
-      cb(cookies.get('access_token'))
+      cb(access_token)
     },
     volume: 0.05,
   })
@@ -56,6 +57,7 @@ function getWrapperForSpotifyPlayer(player: any, device_id: string): Player {
     play: async (track) => {
       await fetchFromSpotify(
             `/me/player/play?device_id=${device_id}`,
+            access_token,
             router,
             false,
             'PUT',
