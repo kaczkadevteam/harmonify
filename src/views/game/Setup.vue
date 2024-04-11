@@ -15,7 +15,9 @@ function onLoaded(playlists: SelectablePlaylist[], albums: SelectableAlbum[]) {
 }
 
 const selectedAnything = computed(() => {
-  return userLibraryStore.playlists?.some(i => i.selected) || userLibraryStore.albums?.some(i => i.selected)
+  return userLibraryStore.playlists?.some(i => i.selected)
+    || userLibraryStore.albums?.some(i => i.selected)
+    || userLibraryStore.favouritesSelected
 })
 </script>
 
