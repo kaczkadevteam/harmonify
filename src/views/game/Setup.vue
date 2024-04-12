@@ -4,8 +4,8 @@ import { useCookies } from '@vueuse/integrations/useCookies'
 import { useRouter } from 'vue-router'
 import { usePlayerStore } from '@/stores/player'
 import { useSpotifyLibraryStore } from '@/stores/spotifyLibrary'
-import LibraryLoading from '@/components/setup/LibraryLoading.vue'
-import LibraryDisplay from '@/components/setup/LibraryDisplay.vue'
+import SpotifyLibraryLoading from '@/components/setup/SpotifyLibraryLoading.vue'
+import SpotifyLibraryDisplay from '@/components/setup/SpotifyLibraryDisplay.vue'
 import { Button } from '@/components/ui/button'
 import GameDataForm from '@/components/setup/GameDataForm.vue'
 import type { SelectableAlbum, SelectablePlaylist, Track } from '@/types'
@@ -14,9 +14,9 @@ import { useGameDataStore } from '@/stores/gameData'
 const playerStore = usePlayerStore()
 const spotifyLibraryStore = useSpotifyLibraryStore()
 const gameDataStore = useGameDataStore()
+const router = useRouter()
 const cookies = useCookies()
 const access_token = cookies.get('access_token')
-const router = useRouter()
 
 function onLoaded(playlists: SelectablePlaylist[], albums: SelectableAlbum[]) {
   spotifyLibraryStore.playlists = playlists
@@ -49,9 +49,9 @@ const startButtonText = computed(() => {
 </script>
 
 <template>
-  <LibraryLoading v-if="!spotifyLibraryStore.playlists || !spotifyLibraryStore.albums" @loaded="onLoaded" />
+  <SpotifyLibraryLoading v-if="!spotifyLibraryStore.playlists || !spotifyLibraryStore.albums" @loaded="onLoaded" />
   <main v-else class="grid h-[80vh] w-[80vw] grid-cols-[1fr_auto] grid-rows-[1fr_50px] items-start gap-5">
-    <LibraryDisplay
+    <SpotifyLibraryDisplay
       v-model:favourites-selected="spotifyLibraryStore.favouritesSelected"
       :playlists="spotifyLibraryStore.playlists"
       :albums="spotifyLibraryStore.albums"
