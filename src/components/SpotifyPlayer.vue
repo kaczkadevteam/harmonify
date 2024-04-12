@@ -54,6 +54,16 @@ function addSpotifyPlayerNotReadyListener(player: any) {
 
 function getWrapperForSpotifyPlayer(player: any, device_id: string): Player {
   return {
+    turnOn: async () => {
+      await fetchFromSpotify(
+        '/me/player',
+        access_token,
+        router,
+        false,
+        'PUT',
+        JSON.stringify({ device_ids: [device_id] }),
+      )
+    },
     play: async (track) => {
       await fetchFromSpotify(
             `/me/player/play?device_id=${device_id}`,

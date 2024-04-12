@@ -12,19 +12,6 @@ export const imageObjectSchema = z.object({
 
 export type ImageObject = z.infer<typeof imageObjectSchema>
 
-export const simplifiedTrackObjectSchema = z.object({
-  artists: z.array(
-    z.object({
-      name: z.string(),
-      id: z.string(),
-    }),
-  ),
-  duration_ms: z.number(),
-  name: z.string(),
-  uri: z.string(),
-})
-export type SimplifiedTrackObject = z.infer<typeof simplifiedTrackObjectSchema>
-
 export function getAlbumSchema<T>(schema: z.ZodType<T>) {
   return z.object({
     id: z.string(),
@@ -54,6 +41,19 @@ export const simplePlaylistObjectSchema = z.object({
   }),
 })
 export type SimplePlaylistObject = z.infer<typeof simplePlaylistObjectSchema>
+
+export const simplifiedTrackObjectSchema = z.object({
+  artists: z.array(
+    z.object({
+      name: z.string(),
+      id: z.string(),
+    }),
+  ),
+  duration_ms: z.number(),
+  name: z.string(),
+  uri: z.string(),
+})
+export type SimplifiedTrackObject = z.infer<typeof simplifiedTrackObjectSchema>
 
 /**
  * Spotify types extended with game logic
