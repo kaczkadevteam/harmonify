@@ -30,7 +30,7 @@ async function onStartGame() {
   await playerStore.player.turnOn()
   const tracks = await spotifyLibraryStore.getTracksFromSelectedSets(access_token, router)
   gameDataStore.prepareGame(tracks)
-  // redirect to game
+  router.push({ name: 'round', params: { id: '7734' } })
 }
 
 const selectedAnything = computed(() => {

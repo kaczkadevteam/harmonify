@@ -15,7 +15,18 @@ const router = createRouter({
       children: [
         {
           path: '',
+          name: 'setup',
           component: () => import('@/views/game/Setup.vue'),
+        },
+        {
+          path: ':id',
+          name: 'round',
+          component: () => import(`@/views/game/Round.vue`),
+        },
+        {
+          path: ':id/result',
+          name: 'result',
+          component: () => import(`@/views/game/Result.vue`),
         },
       ],
     },
