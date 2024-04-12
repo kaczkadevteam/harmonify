@@ -58,6 +58,7 @@ const startButtonText = computed(() => {
     />
     <GameDataForm />
     <Button
+      class=" w-28 place-self-center"
       :disabled="!playerStore.player || !selectedAnything"
       @click="onStartGame"
     >

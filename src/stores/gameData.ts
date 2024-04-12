@@ -2,7 +2,7 @@ import { ref } from 'vue'
 import { defineStore } from 'pinia'
 import type { GameData, Track } from '@/types'
 
-function selectRandomlyTracks(tracks: Track[], count: number) {
+export function selectRandomlyTracks(tracks: Track[], count: number) {
   const selectedTracks: Track[] = []
   let leftTracks = [...tracks]
 

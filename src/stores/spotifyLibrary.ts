@@ -5,7 +5,7 @@ import { z } from 'zod'
 import { type SelectableAlbum, type SelectablePlaylist, type Track, trackSchema } from '@/types'
 import { getAllPaginatedItems } from '@/lib/spotify'
 
-function removeDuplicatedTracks(tracks: Track[]) {
+export function removeDuplicatedTracks(tracks: Track[]) {
   return tracks.reduce<Track[]>((filteredTracks, track) => {
     if (!filteredTracks.some(someTrack => someTrack.uri === track.uri))
       filteredTracks.push(track)
@@ -14,14 +14,14 @@ function removeDuplicatedTracks(tracks: Track[]) {
   }, [])
 }
 
-function addGuessToTracks(tracks: Track[]) {
+export function addGuessToTracks(tracks: Track[]) {
   return tracks.map(track => ({
     ...track,
     guess: trackIntoGuessString(track),
   }))
 }
 
-function trackIntoGuessString(track: Track) {
+export function trackIntoGuessString(track: Track) {
   return `${track.name} - ${track.artists
       .reduce((acc, artist) => {
           return `${acc}, ${artist.name}`
