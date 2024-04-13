@@ -1,43 +1,68 @@
 <script setup lang="ts">
 import { computed } from 'vue'
+import { useCookies } from '@vueuse/integrations/useCookies'
+import { useRouter } from 'vue-router'
 import { usePlayerStore } from '@/stores/player'
-import { useTracksStore } from '@/stores/tracks'
-import LibraryLoading from '@/components/LibraryLoading.vue'
-import LibraryDisplay from '@/components/LibraryDisplay.vue'
-import type { SelectableAlbum, SelectablePlaylist } from '@/types'
+import { useSpotifyLibraryStore } from '@/stores/spotifyLibrary'
+import SpotifyLibraryLoading from '@/components/setup/SpotifyLibraryLoading.vue'
+import SpotifyLibraryDisplay from '@/components/setup/SpotifyLibraryDisplay.vue'
+import { Button } from '@/components/ui/button'
+import GameDataForm from '@/components/setup/GameDataForm.vue'
+import type { SelectableAlbum, SelectablePlaylist, Track } from '@/types'
+import { useGameDataStore } from '@/stores/gameData'
 
 const playerStore = usePlayerStore()
-const userLibraryStore = useTracksStore()
+const spotifyLibraryStore = useSpotifyLibraryStore()
+const gameDataStore = useGameDataStore()
+const router = useRouter()
+const cookies = useCookies()
+const access_token = cookies.get('access_token')
 
 function onLoaded(playlists: SelectablePlaylist[], albums: SelectableAlbum[]) {
-  userLibraryStore.playlists = playlists
-  userLibraryStore.albums = albums
+  spotifyLibraryStore.playlists = playlists
+  spotifyLibraryStore.albums = albums
+}
+
+async function onStartGame() {
+  if (!playerStore.player)
+    return
+
+  await playerStore.player.turnOn()
+  const tracks = await spotifyLibraryStore.getTracksFromSelectedSets(access_token, router)
+  gameDataStore.prepareGame(tracks)
+  router.push({ name: 'round', params: { id: '7734' } })
 }
 
 const selectedAnything = computed(() => {
-  return userLibraryStore.playlists?.some(i => i.selected)
-    || userLibraryStore.albums?.some(i => i.selected)
-    || userLibraryStore.favouritesSelected
+  return spotifyLibraryStore.playlists?.some(i => i.selected)
+    || spotifyLibraryStore.albums?.some(i => i.selected)
+    || spotifyLibraryStore.favouritesSelected
+})
+
+const startButtonText = computed(() => {
+  if (!playerStore.player)
+    return 'Connecting...'
+  else if (!selectedAnything.value)
+    return 'Select tracks'
+  else return 'Play!'
 })
 </script>
 
 <template>
-  <LibraryLoading v-if="!userLibraryStore.playlists || !userLibraryStore.albums" @loaded="onLoaded" />
-  <main v-else class="grid h-[80vh] w-[80vw] grid-cols-[1fr_auto] grid-rows-[1fr_50px] gap-5">
-    <LibraryDisplay
-      v-model:favourites-selected="userLibraryStore.favouritesSelected"
-      :playlists="userLibraryStore.playlists"
-      :albums="userLibraryStore.albums"
+  <SpotifyLibraryLoading v-if="!spotifyLibraryStore.playlists || !spotifyLibraryStore.albums" @loaded="onLoaded" />
+  <main v-else class="grid h-[80vh] w-[80vw] grid-cols-[1fr_auto] grid-rows-[1fr_50px] items-start gap-5">
+    <SpotifyLibraryDisplay
+      v-model:favourites-selected="spotifyLibraryStore.favouritesSelected"
+      :playlists="spotifyLibraryStore.playlists"
+      :albums="spotifyLibraryStore.albums"
     />
-    <div />
-    <div v-if="!playerStore.player">
-      Connecting
-    </div>
-    <div v-else-if="!selectedAnything">
-      Select track
-    </div>
-    <div v-else>
-      Play!
-    </div>
+    <GameDataForm />
+    <Button
+      class=" w-28 place-self-center"
+      :disabled="!playerStore.player || !selectedAnything"
+      @click="onStartGame"
+    >
+      {{ startButtonText }}
+    </Button>
   </main>
 </template>

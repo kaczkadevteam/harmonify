@@ -3,6 +3,7 @@ import { defineStore } from 'pinia'
 import type { Track } from '@/types'
 
 export interface Player {
+  turnOn: () => Promise<void>
   play: (track: Track) => Promise<void>
   resume: () => Promise<void>
   pause: () => Promise<void>

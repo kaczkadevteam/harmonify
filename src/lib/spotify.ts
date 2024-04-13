@@ -45,12 +45,8 @@ export async function getAllPaginatedItems<T>(url: string, access_token: string,
       true,
     )
 
-    const da = await response.json()
-
-    const result = schema.parse(da)
-
+    const result = schema.parse(await response.json())
     collected.push(...result.items)
-
     next = result.next
   }
 
