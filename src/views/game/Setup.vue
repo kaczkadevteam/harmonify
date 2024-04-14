@@ -8,7 +8,7 @@ import SpotifyLibraryLoading from '@/components/setup/SpotifyLibraryLoading.vue'
 import SpotifyLibraryDisplay from '@/components/setup/SpotifyLibraryDisplay.vue'
 import { Button } from '@/components/ui/button'
 import GameDataForm from '@/components/setup/GameDataForm.vue'
-import type { SelectableAlbum, SelectablePlaylist, Track } from '@/types'
+import type { SelectableAlbum, SelectablePlaylist } from '@/types'
 import { useGameDataStore } from '@/stores/gameData'
 
 const playerStore = usePlayerStore()
@@ -24,10 +24,10 @@ function onLoaded(playlists: SelectablePlaylist[], albums: SelectableAlbum[]) {
 }
 
 async function onStartGame() {
-  if (!playerStore.player)
+  if (!playerStore.ready)
     return
 
-  await playerStore.player.turnOn()
+  await playerStore.turnOn()
   const tracks = await spotifyLibraryStore.getTracksFromSelectedSets(access_token, router)
   gameDataStore.prepareGame(tracks)
   router.push({ name: 'round', params: { id: '7734' } })
@@ -40,7 +40,7 @@ const selectedAnything = computed(() => {
 })
 
 const startButtonText = computed(() => {
-  if (!playerStore.player)
+  if (!playerStore.ready)
     return 'Connecting...'
   else if (!selectedAnything.value)
     return 'Select tracks'

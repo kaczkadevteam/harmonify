@@ -2,7 +2,8 @@
 import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useCookies } from '@vueuse/integrations/useCookies'
-import { type Player, usePlayerStore } from '../stores/player'
+import { useStorage } from '@vueuse/core'
+import { type Player, VOLUME_KEY, usePlayerStore } from '@/stores/player'
 import { fetchFromSpotify } from '@/lib/spotify'
 
 declare global {
@@ -16,6 +17,7 @@ const scriptTag = ref<HTMLDivElement | null>(null)
 const cookies = useCookies()
 const router = useRouter()
 const access_token = cookies.get('access_token')
+const volume = useStorage(VOLUME_KEY, 0.05)
 
 const playerStore = usePlayerStore()
 
@@ -28,7 +30,7 @@ function createSpotifyPlayer() {
 
       cb(access_token)
     },
-    volume: 0.05,
+    volume: volume.value,
   })
 }
 
@@ -54,7 +56,7 @@ function addSpotifyPlayerNotReadyListener(player: any) {
 
 function getWrapperForSpotifyPlayer(player: any, device_id: string): Player {
   return {
-    turnOn: async () => {
+    _turnOn: async () => {
       await fetchFromSpotify(
         '/me/player',
         access_token,
@@ -64,7 +66,7 @@ function getWrapperForSpotifyPlayer(player: any, device_id: string): Player {
         JSON.stringify({ device_ids: [device_id] }),
       )
     },
-    play: async (track) => {
+    _play: async (track) => {
       await fetchFromSpotify(
             `/me/player/play?device_id=${device_id}`,
             access_token,
@@ -77,9 +79,9 @@ function getWrapperForSpotifyPlayer(player: any, device_id: string): Player {
             }),
       )
     },
-    pause: player.pause,
-    resume: player.resume,
-    setVolume: player.setVolume,
+    _pause: player.pause,
+    _resume: player.resume,
+    _setVolume: player.setVolume,
   }
 }
 
