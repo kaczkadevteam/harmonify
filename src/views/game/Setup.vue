@@ -8,7 +8,7 @@ import SpotifyLibraryLoading from '@/components/setup/SpotifyLibraryLoading.vue'
 import SpotifyLibraryDisplay from '@/components/setup/SpotifyLibraryDisplay.vue'
 import { Button } from '@/components/ui/button'
 import GameDataForm from '@/components/setup/GameDataForm.vue'
-import type { SelectableAlbum, SelectablePlaylist, Track } from '@/types'
+import type { SelectableAlbum, SelectablePlaylist } from '@/types'
 import { useGameDataStore } from '@/stores/gameData'
 
 const playerStore = usePlayerStore()

@@ -1,4 +1,3 @@
-import { ref } from 'vue'
 import { defineStore } from 'pinia'
 import { type RemovableRef, useStorage } from '@vueuse/core'
 import type { Track } from '@/types'

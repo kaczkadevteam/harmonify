@@ -213,7 +213,7 @@ describe('selectRandomlyTracks', () => {
     for (let i = 0; i < 10; i++) {
       const selected = selectRandomlyTracks(rawTracks, 4)
       selected.forEach((t, i) => {
-        if (selected.some((t2, i2) => { return t.uri === t2.uri && i !== i2 }))
+        if (selected.some((t2, i2) => t.uri === t2.uri && i !== i2))
           noDuplicates = false
       })
     }
