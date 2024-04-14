@@ -11,22 +11,22 @@ const router = createRouter({
     },
     {
       path: '/game',
-      component: () => import('@/views/GameView.vue'),
+      component: () => import('@/views/GameLayout.vue'),
       children: [
         {
           path: '',
           name: 'setup',
-          component: () => import('@/views/game/Setup.vue'),
+          component: () => import('@/views/game/SetupView.vue'),
         },
         {
           path: ':id',
           name: 'round',
-          component: () => import(`@/views/game/Round.vue`),
+          component: () => import(`@/views/game/RoundView.vue`),
         },
         {
           path: ':id/result',
           name: 'result',
-          component: () => import(`@/views/game/Result.vue`),
+          component: () => import(`@/views/game/ResultView.vue`),
         },
       ],
     },
