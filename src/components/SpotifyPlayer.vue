@@ -30,7 +30,7 @@ function createSpotifyPlayer() {
 
       cb(access_token)
     },
-    volume,
+    volume: volume.value,
   })
 }
 
