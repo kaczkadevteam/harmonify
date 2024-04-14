@@ -13,7 +13,7 @@ const gameDataStore = useGameDataStore()
       <Input
         id="roundCount"
         v-model="gameDataStore.roundCount"
-        class="w-20 text-base"
+        class="w-20 border-none text-base"
         type="number"
       />
     </div>
@@ -22,7 +22,7 @@ const gameDataStore = useGameDataStore()
       <Input
         id="roundDuration"
         v-model="gameDataStore.roundDuration"
-        class="w-20 text-base"
+        class="w-20 border-none text-base"
         type="number"
       />
     </div>
@@ -31,7 +31,7 @@ const gameDataStore = useGameDataStore()
       <Input
         id="trackDuration"
         v-model="gameDataStore.trackDuration"
-        class="w-20 text-base"
+        class="w-20 border-none text-base"
         type="number"
       />
     </div>
