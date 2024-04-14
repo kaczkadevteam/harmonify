@@ -22,11 +22,15 @@ export function addGuessToTracks(tracks: Track[]) {
 }
 
 export function trackIntoGuessString(track: Track) {
-  return `${track.name} - ${track.artists
-      .reduce((acc, artist) => {
-          return `${acc}, ${artist.name}`
-      }, '')
-      .slice(2)} - ${track.album.name}`
+  return `${track.name} - ${getArtistsAsString(track)} - ${track.album.name}`
+}
+
+export function getArtistsAsString(track: Track) {
+  return track.artists
+    .reduce((acc, artist) => {
+      return `${acc}, ${artist.name}`
+    }, '')
+    .slice(2)
 }
 
 export const useSpotifyLibraryStore = defineStore('spotifyLibrary', () => {
