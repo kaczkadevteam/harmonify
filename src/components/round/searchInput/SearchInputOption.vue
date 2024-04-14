@@ -3,6 +3,7 @@ import { ref, watch } from 'vue'
 import type { Track } from '@/types'
 import TrackDisplay from '@/components/TrackDisplay.vue'
 import { cn } from '@/lib/utils'
+import { getArtistsAsString } from '@/stores/spotifyLibrary'
 
 const props = defineProps<{
   track: Track
@@ -27,7 +28,11 @@ watch(() => props.selected, (selected) => {
     :class="cn('px-5 py-3 hover:bg-accent hover:text-accent-foreground', selected && 'bg-accent text-accent-foreground')"
     @click="emit('click', track.guess ?? '')"
   >
-    <TrackDisplay :track />
+    <TrackDisplay
+      :title="track.name"
+      :author="getArtistsAsString(track)"
+      :album="props.track.album.name"
+    />
     <input type="hidden" name="track" :value="track.uri">
   </div>
 </template>
