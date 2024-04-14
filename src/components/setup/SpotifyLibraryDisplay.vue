@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { SelectableAlbum, SelectablePlaylist } from '@/types'
 import CheckableCard from '@/components/CheckableCard.vue'
+import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area'
 
 defineProps<{
   playlists: SelectablePlaylist[]
@@ -11,7 +12,7 @@ const favouritesSelected = defineModel<boolean>('favouritesSelected', { required
 </script>
 
 <template>
-  <div class="flex max-h-full flex-col justify-start space-y-5 overflow-auto">
+  <ScrollArea class="flex max-h-full flex-col justify-start space-y-5 rounded-lg border p-4">
     <div class="flex flex-col gap-3">
       <h2 class="sticky -top-1 z-10 bg-gradient bg-fixed p-1 py-2 text-center text-3xl font-semibold tracking-tight">
         Playlists
@@ -54,5 +55,6 @@ const favouritesSelected = defineModel<boolean>('favouritesSelected', { required
         />
       </div>
     </div>
-  </div>
+    <ScrollBar class=" z-30" />
+  </ScrollArea>
 </template>
