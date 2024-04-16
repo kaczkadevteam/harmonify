@@ -7,6 +7,7 @@ export const VOLUME_KEY = 'volume'
 export interface Player {
   _turnOn: () => Promise<void>
   _play: (track: Track) => Promise<void>
+  _seek: (time_ms: number) => Promise<void>
   _resume: () => Promise<void>
   _pause: () => Promise<void>
   /**
@@ -37,6 +38,9 @@ export const usePlayerStore = defineStore('player', {
     },
     async play(track: Track) {
       await this.player?._play(track)
+    },
+    async seek(time_ms: number) {
+      await this.player?._seek(time_ms)
     },
     async resume() {
       await this.player?._resume()
