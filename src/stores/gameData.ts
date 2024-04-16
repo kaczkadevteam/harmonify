@@ -35,5 +35,20 @@ export const useGameDataStore = defineStore('gameData', {
       this.tracks = selectedTracks
       this.selectedTracks = selectRandomlyTracks(selectedTracks, this.roundCount)
     },
+    getTrackForRound(round: number): Track & { trackStart_ms: number } {
+      const track = this.selectedTracks[round - 1]
+      const { duration_ms } = track
+      const lowerLimit = duration_ms * this.trackLowerLimit_perc
+      const upperLimit = duration_ms * this.trackUpperLimit_perc
+      const durationRange = upperLimit - lowerLimit
+
+      return {
+        ...track,
+        trackStart_ms: Math.min(
+          Math.floor(Math.random() * durationRange) + lowerLimit,
+          duration_ms - this.trackDuration * 1000,
+        ),
+      }
+    },
   },
 })
