@@ -35,10 +35,10 @@ const matchingTracks = computed(() => {
   return matchingTracks
 })
 
-/**
- * Select the first track on the list if a selected track no longer matches the query and there are still tracks that do match the query
- */
 watchEffect(() => {
+  /**
+   * Select the first track on the list if a selected track no longer matches the query and there are still tracks that do match the query
+   */
   if (selectedTrack.value && !matchingTracks.value.includes(selectedTrack.value) && matchingTracks.value.length !== 0)
     selectedTrack.value = matchingTracks.value[0]
 })
@@ -71,7 +71,7 @@ function handleSelectionMovement(event: KeyboardEvent) {
 }
 
 function handleSelectionInput(event: KeyboardEvent) {
-  if (event.key === 'Enter' && selectedTrack.value !== undefined) {
+  if (event.key === 'Enter' && selectedTrack.value !== undefined && focused.value && matchingTracks.value.length !== 0) {
     event.preventDefault()
     guess.value = selectedTrack.value.guess ?? ''
   }
@@ -97,6 +97,7 @@ function onOptionClick(_guess: string) {
 <template>
   <div class="relative w-80 ">
     <Input
+      id="searchInput"
       v-model="guess"
       :class="cn(`focus-visible:ring-0 focus-visible:ring-offset-0 box-border text-lg h-12`, matchingTracks.length > 0 && 'rounded-b-none border-b-0')"
       placeholder="Guess"
