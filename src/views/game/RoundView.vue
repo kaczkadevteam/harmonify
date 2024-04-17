@@ -1,18 +1,17 @@
 <script setup lang="ts">
 import { useRoute, useRouter } from 'vue-router'
-import { computed, onBeforeMount, ref, watch } from 'vue'
-import { useIntervalFn } from '@vueuse/core'
+import { computed, onBeforeMount, onMounted, ref, watch } from 'vue'
+import { useAnimate, useIntervalFn, watchOnce } from '@vueuse/core'
 import { ArrowRight } from 'lucide-vue-next'
 import { Button } from '@/components/ui/button'
 import { useGameResultStore } from '@/stores/gameResult'
 import { useGameDataStore } from '@/stores/gameData'
 import SearchInput from '@/components/round/SearchInput.vue'
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog'
-import { cn } from '@/lib/utils'
+import { cn, cssNumberishToInt } from '@/lib/utils'
 import CircularTimer from '@/components/round/CircularTimer.vue'
 import PlaybackControls from '@/components/round/PlaybackControls.vue'
 import { GuessDisplay, TrackDisplay } from '@/components/trackDisplay'
-import { useSimpleTimer } from '@/composables/useSimpleTimer'
 
 const route = useRoute()
 const router = useRouter()
@@ -34,7 +33,13 @@ const roundTimer = useIntervalFn(() => {
   if (roundCounter.value <= 0)
     finishRound()
 }, 1000, { immediate: false })
-const trackTimer = useSimpleTimer(gameDataStore.trackDuration, restartTrackTimer)
+
+const playButton = ref<HTMLButtonElement | null>(null)
+const trackTimer = useAnimate(
+  playButton,
+  [{ backgroundPositionX: '100%' }, { backgroundPositionX: '0%' }],
+  { duration: gameDataStore.trackDuration * 1000, iterations: 1, immediate: false },
+)
 
 const guessLevel = computed(() => {
   const trackGuess = selectedTrack.value.guess ?? ''
@@ -57,7 +62,7 @@ onBeforeMount(() => {
 })
 
 function getTrackPlayDuration() {
-  const trackPlayDuration = trackTimer.getTime()
+  const trackPlayDuration = cssNumberishToInt(trackTimer.currentTime.value) / 1000
   return trackPlayDuration + trackPlayRepeats.value * gameDataStore.trackDuration
 }
 
@@ -97,6 +102,7 @@ function advanceRound() {
   trackPlayRepeats.value = 0
   guess.value = ''
   isPlaying.value = false
+  trackTimer.currentTime.value = 0
 }
 
 function finishRound() {
@@ -148,6 +154,28 @@ function quitGame() {
   finishRound()
   finishGame()
 }
+
+onMounted(() => {
+  playButton.value = document.getElementById('playbackButton')! as HTMLButtonElement
+})
+
+watchOnce(() => trackTimer.animate.value, (value) => {
+  if (value)
+    value.onfinish = restartTrackTimer
+})
+
+watch(isPlaying, (newValue) => {
+  if (newValue)
+    trackTimer.play()
+
+  else
+    trackTimer.pause()
+})
+
+watch(() => trackPlayRepeats.value, (newValue, oldValue) => {
+  if (newValue > oldValue)
+    trackTimer.finish()
+})
 
 watch(isRoundFinished, (newValue) => {
   if (!newValue)
