@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useRoute, useRouter } from 'vue-router'
-import { computed, onBeforeMount, onMounted, ref, watch } from 'vue'
+import { computed, nextTick, onBeforeMount, onMounted, ref, watch } from 'vue'
 import { computedWithControl, useAnimate, useIntervalFn, watchOnce } from '@vueuse/core'
 import { ArrowRight } from 'lucide-vue-next'
 import { Button } from '@/components/ui/button'
@@ -33,6 +33,7 @@ const roundTimer = useIntervalFn(() => {
     finishRound()
 }, 1000, { immediate: false })
 
+const searchInput = ref<HTMLInputElement | null>(null)
 const playButton = ref<HTMLButtonElement | null>(null)
 const trackTimer = useAnimate(
   playButton,
@@ -156,6 +157,7 @@ function quitGame() {
 
 onMounted(() => {
   playButton.value = document.getElementById('playbackButton')! as HTMLButtonElement
+  searchInput.value = document.getElementById('searchInput')! as HTMLInputElement
 })
 
 watchOnce(() => trackTimer.animate.value, (value) => {
@@ -170,9 +172,13 @@ watch(isPlaying, (newValue) => {
     trackTimer.pause()
 })
 
-watch(isRoundFinished, (newValue) => {
-  if (!newValue)
+watch(isRoundFinished, async (newValue) => {
+  if (!newValue) {
     advanceRound()
+
+    await nextTick()
+    searchInput.value?.focus()
+  }
 })
 </script>
 
