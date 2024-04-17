@@ -11,8 +11,7 @@ import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '
 import { cn } from '@/lib/utils'
 import CircularTimer from '@/components/round/CircularTimer.vue'
 import PlaybackControls from '@/components/round/PlaybackControls.vue'
-import TrackDisplay from '@/components/TrackDisplay.vue'
-import { getArtistsAsString } from '@/stores/spotifyLibrary'
+import { GuessDisplay, TrackDisplay } from '@/components/trackDisplay'
 import { useSimpleTimer } from '@/composables/useSimpleTimer'
 
 const route = useRoute()
@@ -186,16 +185,15 @@ const roundFinishedTitle = computed(() => isFullyGuessed.value ? 'Correct :)' : 
       </DialogHeader>
       <div>
         <img :src="selectedTrack.album.images[0].url" alt="Album cover" width="200" height="200">
-        <!-- TODO: EXTRACT AS COMPONENT -->
-        <TrackDisplay :title="selectedTrack.name" :author="getArtistsAsString(selectedTrack)" :album="selectedTrack.album.name" />
+        <TrackDisplay :track="selectedTrack" />
         <span v-if="!isFullyGuessed">
           <span>Your guess: </span>
-          <!-- TODO: EXTRACT AS COMPONENT -->
-          <TrackDisplay :title="guess.split(' - ')[0]" :author="guess.split(' - ')[1]" :album="guess.split(' - ')[2]" />
-          <span>
-            <span>Points </span>
-            <span>{{ `${points} + ${getPointsForRound()}` }}</span>
-          </span>
+          <GuessDisplay :guess="guess" />
+
+        </span>
+        <span>
+          <span>Points </span>
+          <span>{{ `${points} + ${getPointsForRound()}` }}</span>
         </span>
       </div>
       <DialogFooter>
