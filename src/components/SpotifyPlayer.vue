@@ -4,7 +4,7 @@ import { useRouter } from 'vue-router'
 import { useCookies } from '@vueuse/integrations/useCookies'
 import { useStorage } from '@vueuse/core'
 import { usePlayerStore } from '@/stores'
-import * as SpotifyService from '@/services/spotify'
+import { SpotifyService } from '@/services'
 import { VOLUME_KEY } from '@/consts'
 import type { Player } from '@/types'
 

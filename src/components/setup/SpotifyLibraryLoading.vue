@@ -4,7 +4,7 @@ import { useRouter } from 'vue-router'
 import { z } from 'zod'
 import LoadingCircle from '@/components/LoadingCircle.vue'
 import type { SelectableAlbum, SelectablePlaylist } from '@/types'
-import * as SpotifyService from '@/services/spotify'
+import { SpotifyService } from '@/services'
 
 const emit = defineEmits<{
   loaded: [

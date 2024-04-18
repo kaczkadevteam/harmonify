@@ -2,7 +2,7 @@ import { ref } from 'vue'
 import { defineStore } from 'pinia'
 import type { Router } from 'vue-router'
 import type { SelectableAlbum, SelectablePlaylist, Track } from '@/types'
-import * as SpotifyService from '@/services/spotify'
+import { SpotifyService } from '@/services'
 import { addGuessToTracks, removeDuplicatedTracks } from '@/lib/track'
 
 export const useSpotifyLibraryStore = defineStore('spotifyLibrary', () => {
