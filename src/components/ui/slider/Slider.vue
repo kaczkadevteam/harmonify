@@ -14,22 +14,17 @@ const delegatedProps = computed(() => {
 })
 
 const forwarded = useForwardPropsEmits(delegatedProps, emits)
-
-// ROOT: flex-col w-fit h-full
-// TRACK: w-2 h-full
-//
 </script>
 
 <template>
   <SliderRoot
     :class="cn(
       'relative flex w-full touch-none select-none items-center',
-      props.orientation === 'vertical' && '',
       props.class,
     )"
     v-bind="forwarded"
   >
-    <SliderTrack :class="cn('relative h-2 w-full grow overflow-hidden rounded-full bg-secondary', props.orientation === 'vertical' && '')">
+    <SliderTrack class="relative h-2 w-full grow overflow-hidden rounded-full bg-secondary">
       <SliderRange class="absolute h-full bg-primary" />
     </SliderTrack>
     <SliderThumb
