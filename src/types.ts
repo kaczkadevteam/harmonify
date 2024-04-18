@@ -33,7 +33,7 @@ export interface Album<T> {
 
 export const simplePlaylistObjectSchema = z.object({
   id: z.string(),
-  images: z.array(imageObjectSchema),
+  images: z.array(imageObjectSchema).nullable(),
   name: z.string(),
   tracks: z.object({
     href: z.string(),

@@ -35,7 +35,7 @@ const favouritesSelected = defineModel<boolean>('favouritesSelected', { required
           v-model="playlist.selected"
           art-type="image"
           :title="playlist.name"
-          :src="playlist.images[0].url"
+          :src="playlist?.images?.[0].url"
           alt="Playlist cover"
         />
       </div>
