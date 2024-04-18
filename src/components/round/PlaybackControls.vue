@@ -73,9 +73,9 @@ watch(() => props.trackPlayRepeats, (newValue, oldValue) => {
 <template>
   <div>
     <!-- eslint-disable-next-line tailwindcss/no-contradicting-classname -->
-    <Button id="playbackButton" class="bg-[linear-gradient(0.25turn,#1b3162_49%,50%,transparent)] bg-[length:200%_200%] bg-[position:100%_0]" @click="togglePlay">
-      <Play v-if="isPlaying" />
-      <Pause v-else />
+    <Button id="playbackButton" class="h-20 w-32 rounded-xl bg-[linear-gradient(0.25turn,#1b3162_49%,50%,transparent)] bg-[length:200%_200%] bg-[position:100%_0]" @click="togglePlay">
+      <Play v-if="isPlaying" class="size-12" />
+      <Pause v-else class="size-12" />
     </Button>
     <!-- volume input here -->
   </div>

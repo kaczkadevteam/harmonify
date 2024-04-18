@@ -183,24 +183,33 @@ watch(isRoundFinished, async (newValue) => {
 </script>
 
 <template>
-  <span>Round: {{ round }}</span>
+  <div class="mb-32 grid grid-cols-2 place-items-center gap-x-40 gap-y-10">
+    <span class=" justify-self-start text-xl">Round: {{ round }}</span>
 
-  <div>
-    <CircularTimer :x="roundTimeLeft" :x-max="gameDataStore.roundDuration" />
-    <Button @click="quitGame">
-      End <ArrowRight />
-    </Button>
+    <div class=" flex items-center gap-6 justify-self-end">
+      <CircularTimer :x="roundTimeLeft" :x-max="gameDataStore.roundDuration" />
+      <Button @click="quitGame">
+        Quit<ArrowRight class="ml-1 size-4" />
+      </Button>
+    </div>
+    <PlaybackControls
+      class="col-span-2 mt-20"
+      :is-playing
+      :selected-track
+      :track-play-repeats
+      @play-change="onPlayingChange"
+      @play-start="onPlayingStart"
+    />
+    <form class="col-span-2 grid grid-cols-2 place-items-center gap-y-4" @keydown="onGuessKeyDown" @submit="onGuessSubmit">
+      <SearchInput v-model="guess" :tracks="gameDataStore.tracks" class=" col-span-2" />
+      <Button type="submit" value="submit">
+        Submit
+      </Button>
+      <Button type="submit" value="skip" variant="destructive" class="col-start-1 row-start-2">
+        Skip
+      </Button>
+    </form>
   </div>
-  <PlaybackControls :is-playing :selected-track :track-play-repeats @play-change="onPlayingChange" @play-start="onPlayingStart" />
-  <form @keydown="onGuessKeyDown" @submit="onGuessSubmit">
-    <SearchInput v-model="guess" :tracks="gameDataStore.tracks" />
-    <Button type="submit" value="submit">
-      Submit
-    </Button>
-    <Button type="submit" value="skip">
-      Skip
-    </Button>
-  </form>
   <FinishedRoundDialog
     v-model:open="isRoundFinished"
     :selected-track

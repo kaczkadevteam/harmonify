@@ -23,24 +23,23 @@ const roundFinishedTitle = computed(() => props.isFullyGuessed ? 'Correct :)' : 
   <Dialog v-model:open="isOpen">
     <DialogContent v-if="isOpen">
       <DialogHeader>
-        <DialogTitle :class="cn(isFullyGuessed ? 'text-green-600' : 'text-red-600')">
+        <DialogTitle :class="cn('text-xl', isFullyGuessed ? 'text-green-600' : 'text-red-600')">
           {{ roundFinishedTitle }}
         </DialogTitle>
       </DialogHeader>
-      <div>
+      <div class="mb-2 grid justify-items-center gap-1 text-center">
         <img :src="selectedTrack.album.images[0].url" alt="Album cover" width="200" height="200">
         <TrackDisplay :track="selectedTrack" />
-        <span v-if="!isFullyGuessed">
-          <span>Your guess: </span>
+        <div v-if="!isFullyGuessed" class="mt-4">
+          <span class="mr-3">Your guess:</span>
           <GuessDisplay :guess="guess" />
-
-        </span>
-        <span>
+        </div>
+      </div>
+      <DialogFooter class="flex items-center sm:justify-between">
+        <div class="text-lg">
           <span>Points </span>
           <span>{{ `${points} + ${pointsForRound}` }}</span>
-        </span>
-      </div>
-      <DialogFooter>
+        </div>
         <Button autofocus @click="isOpen = false">
           Continue
         </Button>
