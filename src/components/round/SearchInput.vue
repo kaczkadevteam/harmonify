@@ -47,23 +47,19 @@ function handleSelectionMovement(event: KeyboardEvent) {
   if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
     event.preventDefault()
 
-    if (selectedTrack.value === undefined) {
+    const moveDown = event.key === 'ArrowDown'
+    const moveUp = event.key === 'ArrowUp'
+    const selectedTrackExistsAndIsNotLast = selectedTrack.value && matchingTracks.value.indexOf(selectedTrack.value) < matchingTracks.value.length - 1
+    const selectedTrackExistsAndIsNotFirst = selectedTrack.value && matchingTracks.value.indexOf(selectedTrack.value) > 0
+
+    if (!selectedTrack.value) {
       selectedTrack.value = matchingTracks.value[0]
     }
-    else if (
-      event.key === 'ArrowDown'
-      && selectedTrack.value !== undefined
-      && matchingTracks.value.indexOf(selectedTrack.value)
-      < matchingTracks.value.length - 1
-    ) {
+    else if (moveDown && selectedTrackExistsAndIsNotLast) {
       const newIndex = matchingTracks.value.indexOf(selectedTrack.value) + 1
       selectedTrack.value = matchingTracks.value[newIndex]
     }
-    else if (
-      event.key === 'ArrowUp'
-      && selectedTrack.value !== undefined
-      && matchingTracks.value.indexOf(selectedTrack.value) > 0
-    ) {
+    else if (moveUp && selectedTrackExistsAndIsNotFirst) {
       const newIndex = matchingTracks.value.indexOf(selectedTrack.value) - 1
       selectedTrack.value = matchingTracks.value[newIndex]
     }
@@ -71,9 +67,15 @@ function handleSelectionMovement(event: KeyboardEvent) {
 }
 
 function handleSelectionInput(event: KeyboardEvent) {
-  if (event.key === 'Enter' && selectedTrack.value !== undefined && focused.value && matchingTracks.value.length !== 0) {
+  const inputIsFocused = focused.value
+  const clickedEnter = event.key === 'Enter'
+  const selectedAnyTrack = selectedTrack.value
+  const selectedTrackMatchesGuess = matchingTracks.value.length !== 0
+  const selectedVisibleTrack = selectedAnyTrack && selectedTrackMatchesGuess
+
+  if (inputIsFocused && clickedEnter && selectedVisibleTrack) {
     event.preventDefault()
-    guess.value = selectedTrack.value.guess ?? ''
+    guess.value = selectedTrack.value!.guess ?? ''
   }
 }
 
