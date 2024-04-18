@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { addGuessToTracks, removeDuplicatedTracks, trackIntoGuessString } from '../spotifyLibrary'
+import { addGuessToTracks, removeDuplicatedTracks, selectRandomlyTracks, trackIntoGuessString } from '../track'
 
 const rawTracks = [{
   artists: [{ name: 'Michael Hunter', id: '4J86DBDnC5acWsN0dpZe3j' }],
@@ -232,7 +232,7 @@ const tracksWithGuesses = [{
     ],
   },
   guess:
-            'Soviet Connection — The Theme from Grand Theft Auto IV - Michael Hunter - Grand Theft Auto IV — The Theme Song Collection',
+              'Soviet Connection — The Theme from Grand Theft Auto IV - Michael Hunter - Grand Theft Auto IV — The Theme Song Collection',
 }, {
   artists: [{ name: 'Kristofer Maddigan', id: '2jR6Lr47O21Iq7l5Bs2mig' }],
   duration_ms: 195720,
@@ -285,7 +285,7 @@ const tracksWithGuesses = [{
     ],
   },
   guess:
-            'Infestation - DM DOKURO - The Tale of a Cruel World (Calamity Original Game Soundtrack)',
+              'Infestation - DM DOKURO - The Tale of a Cruel World (Calamity Original Game Soundtrack)',
 }, {
   artists: [{ name: 'George Strezov', id: '2DNnA9F0OrEmC80UWEwrMi' }],
   duration_ms: 162089,
@@ -312,7 +312,7 @@ const tracksWithGuesses = [{
     ],
   },
   guess:
-            'Main Theme - George Strezov - Surviving Mars (Original Game Soundtrack)',
+              'Main Theme - George Strezov - Surviving Mars (Original Game Soundtrack)',
 }, {
   artists: [{ name: 'Arnaud Roy', id: '4DfwOelzJtTBZiXZ1tYo8D' }],
   duration_ms: 292339,
@@ -339,7 +339,7 @@ const tracksWithGuesses = [{
     ],
   },
   guess:
-            'Humankind (Main Title) - Arnaud Roy - HUMANKIND (Original Game Soundtrack)',
+              'Humankind (Main Title) - Arnaud Roy - HUMANKIND (Original Game Soundtrack)',
 }, {
   artists: [
     { name: 'Johan Skugge', id: '0cxIE0a4SKHitNEvJ9rAXm' },
@@ -369,7 +369,7 @@ const tracksWithGuesses = [{
     ],
   },
   guess:
-            'Battlefield 3 Main Theme - Johan Skugge, Jukka Rintamäki - Battlefield 3 (Original Soundtrack)',
+              'Battlefield 3 Main Theme - Johan Skugge, Jukka Rintamäki - Battlefield 3 (Original Soundtrack)',
 }, {
   artists: [{ name: 'Chris Tilton', id: '0E7PdEWOAW6t5k9qKSwQxF' }],
   duration_ms: 171000,
@@ -422,7 +422,7 @@ const tracksWithGuesses = [{
     ],
   },
   guess:
-            'Earth - Hyper Hippo Entertainment - AdVenture Capitalist (Original Game Soundtrack)',
+              'Earth - Hyper Hippo Entertainment - AdVenture Capitalist (Original Game Soundtrack)',
 }]
 
 const duplicatedTracks = [{
@@ -785,5 +785,34 @@ describe('removeDuplicatedTracks', () => {
 
   it('should return tracks without duplicates given duplicated tracks', () => {
     expect(removeDuplicatedTracks(duplicatedTracks)).toEqual(rawTracks)
+  })
+})
+
+describe('selectRandomlyTracks', () => {
+  it('should not duplicate tracks given count lower than tracks array length', () => {
+    let noDuplicates = true
+
+    for (let i = 0; i < 10; i++) {
+      const selected = selectRandomlyTracks(rawTracks, 4)
+      selected.forEach((t, i) => {
+        if (selected.some((t2, i2) => t.uri === t2.uri && i !== i2))
+          noDuplicates = false
+      })
+    }
+
+    expect(noDuplicates).toBe(true)
+  })
+
+  it('should array of count length given count higher than tracks array length', () => {
+    let noDuplicates = true
+
+    const selected = selectRandomlyTracks(rawTracks, 10)
+    selected.forEach((t, i) => {
+      if (selected.some((t2, i2) => t.uri === t2.uri && i !== i2))
+        noDuplicates = false
+    })
+
+    expect(noDuplicates).toBe(false)
+    expect(selected.length).toBe(10)
   })
 })

@@ -3,34 +3,7 @@ import { defineStore } from 'pinia'
 import type { Router } from 'vue-router'
 import type { SelectableAlbum, SelectablePlaylist, Track } from '@/types'
 import * as SpotifyService from '@/services/spotify'
-
-export function removeDuplicatedTracks(tracks: Track[]) {
-  return tracks.reduce<Track[]>((filteredTracks, track) => {
-    if (!filteredTracks.some(someTrack => someTrack.uri === track.uri))
-      filteredTracks.push(track)
-
-    return filteredTracks
-  }, [])
-}
-
-export function addGuessToTracks(tracks: Track[]) {
-  return tracks.map(track => ({
-    ...track,
-    guess: trackIntoGuessString(track),
-  }))
-}
-
-export function trackIntoGuessString(track: Track) {
-  return `${track.name} - ${getArtistsAsString(track)} - ${track.album.name}`
-}
-
-export function getArtistsAsString(track: Track) {
-  return track.artists
-    .reduce((acc, artist) => {
-      return `${acc}, ${artist.name}`
-    }, '')
-    .slice(2)
-}
+import { addGuessToTracks, removeDuplicatedTracks } from '@/lib/track'
 
 export const useSpotifyLibraryStore = defineStore('spotifyLibrary', () => {
   const favouritesSelected = ref(false)

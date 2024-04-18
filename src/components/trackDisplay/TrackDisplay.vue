@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import BaseDisplay from './BaseDisplay.vue'
 import type { Track } from '@/types'
-import { getArtistsAsString } from '@/stores/spotifyLibrary'
+import { getArtistsAsString } from '@/lib/track'
 
 defineProps<{
   track: Track

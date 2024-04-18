@@ -2,14 +2,12 @@
 import { computed } from 'vue'
 import { useCookies } from '@vueuse/integrations/useCookies'
 import { useRouter } from 'vue-router'
-import { usePlayerStore } from '@/stores/player'
-import { useSpotifyLibraryStore } from '@/stores/spotifyLibrary'
+import { useGameDataStore, usePlayerStore, useSpotifyLibraryStore } from '@/stores'
 import SpotifyLibraryLoading from '@/components/setup/SpotifyLibraryLoading.vue'
 import SpotifyLibraryDisplay from '@/components/setup/SpotifyLibraryDisplay.vue'
 import { Button } from '@/components/ui/button'
 import GameDataForm from '@/components/setup/GameDataForm.vue'
 import type { SelectableAlbum, SelectablePlaylist } from '@/types'
-import { useGameDataStore } from '@/stores/gameData'
 
 const playerStore = usePlayerStore()
 const spotifyLibraryStore = useSpotifyLibraryStore()

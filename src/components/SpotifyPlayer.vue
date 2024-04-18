@@ -3,8 +3,10 @@ import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useCookies } from '@vueuse/integrations/useCookies'
 import { useStorage } from '@vueuse/core'
-import { type Player, VOLUME_KEY, usePlayerStore } from '@/stores/player'
+import { usePlayerStore } from '@/stores'
 import * as SpotifyService from '@/services/spotify'
+import { VOLUME_KEY } from '@/consts'
+import type { Player } from '@/types'
 
 declare global {
   interface Window {

@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import { onMounted, ref, watch } from 'vue'
 import { Pause, Play } from 'lucide-vue-next'
-import { useGameDataStore } from '@/stores/gameData'
-import { usePlayerStore } from '@/stores/player'
+import { usePlayerStore } from '@/stores'
 import type { Track } from '@/types'
 import { Button } from '@/components/ui/button'
 

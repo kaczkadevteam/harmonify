@@ -1,21 +1,7 @@
 import { defineStore } from 'pinia'
 import { type RemovableRef, useStorage } from '@vueuse/core'
-import type { Track } from '@/types'
-
-export const VOLUME_KEY = 'volume'
-
-export interface Player {
-  _turnOn: () => Promise<void>
-  _play: (track: Track) => Promise<void>
-  _seek: (time_ms: number) => Promise<void>
-  _resume: () => Promise<void>
-  _pause: () => Promise<void>
-  /**
-   * @param volume in range 0 to 1
-   * @returns
-   */
-  _setVolume: (volume: number) => Promise<void>
-}
+import type { Player, Track } from '@/types'
+import { VOLUME_KEY } from '@/consts'
 
 export const usePlayerStore = defineStore('player', {
   state: (): {

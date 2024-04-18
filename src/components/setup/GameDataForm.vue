@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
-import { useGameDataStore } from '@/stores/gameData'
+import { useGameDataStore } from '@/stores'
 
 const gameDataStore = useGameDataStore()
 </script>
