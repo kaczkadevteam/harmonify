@@ -69,9 +69,7 @@ function handleSelectionMovement(event: KeyboardEvent) {
 function handleSelectionInput(event: KeyboardEvent) {
   const inputIsFocused = focused.value
   const clickedEnter = event.key === 'Enter'
-  const selectedAnyTrack = selectedTrack.value
-  const selectedTrackMatchesGuess = matchingTracks.value.length !== 0
-  const selectedVisibleTrack = selectedAnyTrack && selectedTrackMatchesGuess
+  const selectedVisibleTrack = selectedTrack.value && matchingTracks.value.length !== 0
 
   if (inputIsFocused && clickedEnter && selectedVisibleTrack) {
     event.preventDefault()
