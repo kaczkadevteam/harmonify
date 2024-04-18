@@ -77,6 +77,7 @@ const pointsForRound = computedWithControl(isRoundFinished, () => {
 })
 
 onBeforeMount(() => {
+  gameResultStore.$reset()
   if (!gameDataStore.selectedTracks || gameDataStore.selectedTracks.length === 0)
     router.push({ name: 'setup' })
 })
