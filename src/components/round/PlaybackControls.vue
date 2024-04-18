@@ -20,11 +20,7 @@ const isPlayingStarted = ref(false)
 const playerStore = usePlayerStore()
 
 function togglePlay() {
-  if (props.isPlaying)
-    emit('playChange', false)
-
-  else
-    emit('playChange', true)
+  emit('playChange', !props.isPlaying)
 }
 
 async function startPlaying() {
@@ -43,8 +39,8 @@ async function stopPlaying() {
   await playerStore.pause()
 }
 
-watch(() => props.isPlaying, (value) => {
-  if (value)
+watch(() => props.isPlaying, (isPlaying) => {
+  if (isPlaying)
     startPlaying()
 
   else stopPlaying()
@@ -73,6 +69,5 @@ watch(() => props.trackPlayRepeats, (newValue, oldValue) => {
       <Play v-if="isPlaying" class="size-12" />
       <Pause v-else class="size-12" />
     </Button>
-    <!-- volume input here -->
   </div>
 </template>
