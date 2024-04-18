@@ -89,7 +89,7 @@ watchEffect(() => {
   }
 })
 
-function onOptionClick(_guess: string) {
+function handleOptionClick(_guess: string) {
   guess.value = _guess
 }
 </script>
@@ -113,7 +113,7 @@ function onOptionClick(_guess: string) {
         :key="track.uri"
         :selected="selectedTrack === track"
         :track="track"
-        @click="onOptionClick"
+        @click="handleOptionClick"
       />
       <ScrollBar class="text-primary" />
     </ScrollArea>

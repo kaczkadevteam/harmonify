@@ -123,22 +123,22 @@ function finishGame() {
   router.push({ name: 'result', params: route.params })
 }
 
-function onPlayingStart() {
+function handlePlayingStart() {
   roundTimer.resume()
 }
 
-function onPlayingChange(newValue: boolean) {
+function handlePlayingChange(newValue: boolean) {
   isPlaying.value = newValue
 }
 
-function onGuessKeyDown(e: KeyboardEvent) {
+function handleGuessKeyDown(e: KeyboardEvent) {
   if (guess.value === '' && e.key === ' ') {
     e.preventDefault()
     isPlaying.value = !isPlaying.value
   }
 }
 
-function onGuessSubmit(e: Event) {
+function handleGuessSubmit(e: Event) {
   const submittionType = ((e as SubmitEvent).submitter as HTMLButtonElement).value
   e.preventDefault()
 
@@ -197,10 +197,10 @@ watch(isRoundFinished, async (newValue) => {
       :is-playing
       :selected-track
       :track-play-repeats
-      @play-change="onPlayingChange"
-      @play-start="onPlayingStart"
+      @play-change="handlePlayingChange"
+      @play-start="handlePlayingStart"
     />
-    <form class="col-span-2 grid grid-cols-2 place-items-center gap-y-4" @keydown="onGuessKeyDown" @submit="onGuessSubmit">
+    <form class="col-span-2 grid grid-cols-2 place-items-center gap-y-4" @keydown="handleGuessKeyDown" @submit="handleGuessSubmit">
       <SearchInput v-model="guess" :tracks="gameDataStore.tracks" class=" col-span-2" />
       <Button type="submit" value="submit">
         Submit

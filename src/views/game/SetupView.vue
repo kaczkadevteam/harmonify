@@ -18,12 +18,12 @@ const router = useRouter()
 const cookies = useCookies()
 const access_token = cookies.get('access_token')
 
-function onLoaded(playlists: SelectablePlaylist[], albums: SelectableAlbum[]) {
+function handleLoadingFinished(playlists: SelectablePlaylist[], albums: SelectableAlbum[]) {
   spotifyLibraryStore.playlists = playlists
   spotifyLibraryStore.albums = albums
 }
 
-async function onStartGame() {
+async function handleGameStart() {
   if (!playerStore.ready)
     return
 
@@ -49,7 +49,7 @@ const startButtonText = computed(() => {
 </script>
 
 <template>
-  <SpotifyLibraryLoading v-if="!spotifyLibraryStore.playlists || !spotifyLibraryStore.albums" @loaded="onLoaded" />
+  <SpotifyLibraryLoading v-if="!spotifyLibraryStore.playlists || !spotifyLibraryStore.albums" @loaded="handleLoadingFinished" />
   <main v-else class="grid h-[80vh] w-[80vw] grid-cols-[1fr_auto] grid-rows-[1fr_50px] items-start gap-5">
     <SpotifyLibraryDisplay
       v-model:favourites-selected="spotifyLibraryStore.favouritesSelected"
@@ -60,7 +60,7 @@ const startButtonText = computed(() => {
     <Button
       class=" w-28 place-self-center"
       :disabled="!playerStore.player || !selectedAnything"
-      @click="onStartGame"
+      @click="handleGameStart"
     >
       {{ startButtonText }}
     </Button>
