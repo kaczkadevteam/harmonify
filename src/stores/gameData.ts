@@ -25,13 +25,14 @@ export const useGameDataStore = defineStore('gameData', {
       const lowerLimit = duration_ms * this.trackLowerLimit_perc
       const upperLimit = duration_ms * this.trackUpperLimit_perc
       const durationRange = upperLimit - lowerLimit
+      const trackStart_ms = Math.min(
+        Math.floor(Math.random() * durationRange) + lowerLimit,
+        duration_ms - this.trackDuration * 1000,
+      )
 
       return {
         ...track,
-        trackStart_ms: Math.min(
-          Math.floor(Math.random() * durationRange) + lowerLimit,
-          duration_ms - this.trackDuration * 1000,
-        ),
+        trackStart_ms,
       }
     },
   },
