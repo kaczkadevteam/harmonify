@@ -44,9 +44,6 @@ async function stopPlaying() {
   await playerStore.pause()
 }
 
-/**
- *
- */
 watch(() => props.isPlaying, (value) => {
   if (value)
     startPlaying()

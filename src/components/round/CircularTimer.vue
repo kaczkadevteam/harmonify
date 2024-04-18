@@ -3,8 +3,6 @@ defineProps<{
   x: number
   xMax: number
 }>()
-
-// bg-[var(--gradient-background)_fixed_content-box_no-repeat,conic-gradient(transparent_var(--percentage),0,hsl(var(--primary)))_border-box]
 </script>
 
 <template>
