@@ -1,5 +1,6 @@
 ![Harmonify](./public/baner.png)
 
+![Vercel](https://vercelbadge.vercel.app/api/marcinskic/harmonify)
 ![License](https://img.shields.io/github/license/kaczkadevteam/harmonify.svg)
 ![Release](https://img.shields.io/github/release/kaczkadevteam/harmonify.svg)
 
