@@ -1,15 +1,19 @@
 <script setup lang="ts">
 import BaseDisplay from './BaseDisplay.vue'
 
-defineProps<{
+const props = defineProps<{
   guess: string
 }>()
+
+function extractGuessPart(index: number) {
+  return props.guess.split(' - ')?.[index] ?? ''
+}
 </script>
 
 <template>
   <BaseDisplay
-    :title="guess.split(' - ')?.[0] ?? ''"
-    :author="guess.split(' - ')?.[1] ?? ''"
-    :album="guess.split(' - ')?.[2] ?? ''"
+    :title="extractGuessPart(0)"
+    :author="extractGuessPart(1)"
+    :album="extractGuessPart(2)"
   />
 </template>
