@@ -2,6 +2,18 @@
 
 <div align="right">
 
+## v2.0.0 (2024-04-18)
+
+</div>
+
+## Migration
+
+![baner](./changelog/4.png)
+
+Migrate from Next.js to Vue, refactor code to be more clear, improve UI a little
+
+<div align="right">
+
 ## v1.1.0 (2024-03-21)
 
 </div>
