@@ -14,9 +14,13 @@ const props = defineProps<{
   pointsForRound: number
 }>()
 
-const isOpen = defineModel<boolean>('open', { required: true })
+const isOpen = defineModel<boolean>({ required: true })
 
 const roundFinishedTitle = computed(() => props.isFullyGuessed ? 'Correct :)' : 'Incorrect :(')
+
+function handleContinue() {
+  isOpen.value = false
+}
 </script>
 
 <template>
@@ -32,7 +36,7 @@ const roundFinishedTitle = computed(() => props.isFullyGuessed ? 'Correct :)' : 
         <TrackDisplay :track="selectedTrack" />
         <div v-if="!isFullyGuessed" class="mt-4">
           <span class="mr-3">Your guess:</span>
-          <GuessDisplay :guess="guess" />
+          <GuessDisplay :guess />
         </div>
       </div>
       <DialogFooter class="flex items-center sm:justify-between">
@@ -40,7 +44,7 @@ const roundFinishedTitle = computed(() => props.isFullyGuessed ? 'Correct :)' : 
           <span>Points </span>
           <span>{{ `${points} + ${pointsForRound}` }}</span>
         </div>
-        <Button autofocus @click="isOpen = false">
+        <Button autofocus @click="handleContinue">
           Continue
         </Button>
       </DialogFooter>

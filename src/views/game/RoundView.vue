@@ -211,7 +211,7 @@ watch(isRoundFinished, async (newValue) => {
     </form>
   </div>
   <FinishedRoundDialog
-    v-model:open="isRoundFinished"
+    v-model="isRoundFinished"
     :selected-track
     :guess
     :is-fully-guessed
