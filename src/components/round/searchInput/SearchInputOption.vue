@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue'
 import type { Track } from '@/types'
-import TrackDisplay from '@/components/TrackDisplay.vue'
+import { TrackDisplay } from '@/components/trackDisplay'
 import { cn } from '@/lib/utils'
 
 const props = defineProps<{

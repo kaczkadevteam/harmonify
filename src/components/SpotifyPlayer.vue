@@ -3,8 +3,10 @@ import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useCookies } from '@vueuse/integrations/useCookies'
 import { useStorage } from '@vueuse/core'
-import { type Player, VOLUME_KEY, usePlayerStore } from '@/stores/player'
-import { fetchFromSpotify } from '@/lib/spotify'
+import { usePlayerStore } from '@/stores'
+import { SpotifyService } from '@/services'
+import { VOLUME_KEY } from '@/consts'
+import type { Player } from '@/types'
 
 declare global {
   interface Window {
@@ -57,31 +59,15 @@ function addSpotifyPlayerNotReadyListener(player: any) {
 function getWrapperForSpotifyPlayer(player: any, device_id: string): Player {
   return {
     _turnOn: async () => {
-      await fetchFromSpotify(
-        '/me/player',
-        access_token,
-        router,
-        false,
-        'PUT',
-        JSON.stringify({ device_ids: [device_id] }),
-      )
+      await SpotifyService.selectPlayer(device_id, access_token, router)
     },
     _play: async (track) => {
-      await fetchFromSpotify(
-            `/me/player/play?device_id=${device_id}`,
-            access_token,
-            router,
-            false,
-            'PUT',
-            JSON.stringify({
-              uris: [track?.uri],
-              position_ms: track.trackStart_ms,
-            }),
-      )
+      await SpotifyService.playTrack(track, device_id, access_token, router)
     },
-    _pause: player.pause,
-    _resume: player.resume,
-    _setVolume: player.setVolume,
+    _seek: time_ms => player.seek(time_ms),
+    _pause: () => player.pause(),
+    _resume: () => player.resume(),
+    _setVolume: volume => player.setVolume(volume),
   }
 }
 

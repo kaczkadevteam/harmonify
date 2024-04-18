@@ -35,10 +35,10 @@ const matchingTracks = computed(() => {
   return matchingTracks
 })
 
-/**
- * Select the first track on the list if a selected track no longer matches the query and there are still tracks that do match the query
- */
 watchEffect(() => {
+  /**
+   * Select the first track on the list if a selected track no longer matches the query and there are still tracks that do match the query
+   */
   if (selectedTrack.value && !matchingTracks.value.includes(selectedTrack.value) && matchingTracks.value.length !== 0)
     selectedTrack.value = matchingTracks.value[0]
 })
@@ -47,23 +47,19 @@ function handleSelectionMovement(event: KeyboardEvent) {
   if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
     event.preventDefault()
 
-    if (selectedTrack.value === undefined) {
+    const moveDown = event.key === 'ArrowDown'
+    const moveUp = event.key === 'ArrowUp'
+    const selectedTrackExistsAndIsNotLast = selectedTrack.value && matchingTracks.value.indexOf(selectedTrack.value) < matchingTracks.value.length - 1
+    const selectedTrackExistsAndIsNotFirst = selectedTrack.value && matchingTracks.value.indexOf(selectedTrack.value) > 0
+
+    if (!selectedTrack.value) {
       selectedTrack.value = matchingTracks.value[0]
     }
-    else if (
-      event.key === 'ArrowDown'
-      && selectedTrack.value !== undefined
-      && matchingTracks.value.indexOf(selectedTrack.value)
-      < matchingTracks.value.length - 1
-    ) {
+    else if (moveDown && selectedTrackExistsAndIsNotLast) {
       const newIndex = matchingTracks.value.indexOf(selectedTrack.value) + 1
       selectedTrack.value = matchingTracks.value[newIndex]
     }
-    else if (
-      event.key === 'ArrowUp'
-      && selectedTrack.value !== undefined
-      && matchingTracks.value.indexOf(selectedTrack.value) > 0
-    ) {
+    else if (moveUp && selectedTrackExistsAndIsNotFirst) {
       const newIndex = matchingTracks.value.indexOf(selectedTrack.value) - 1
       selectedTrack.value = matchingTracks.value[newIndex]
     }
@@ -71,9 +67,13 @@ function handleSelectionMovement(event: KeyboardEvent) {
 }
 
 function handleSelectionInput(event: KeyboardEvent) {
-  if (event.key === 'Enter' && selectedTrack.value !== undefined) {
+  const inputIsFocused = focused.value
+  const clickedEnter = event.key === 'Enter'
+  const selectedVisibleTrack = selectedTrack.value && matchingTracks.value.length !== 0
+
+  if (inputIsFocused && clickedEnter && selectedVisibleTrack) {
     event.preventDefault()
-    guess.value = selectedTrack.value.guess ?? ''
+    guess.value = selectedTrack.value!.guess ?? ''
   }
 }
 
@@ -89,7 +89,7 @@ watchEffect(() => {
   }
 })
 
-function onOptionClick(_guess: string) {
+function handleOptionClick(_guess: string) {
   guess.value = _guess
 }
 </script>
@@ -97,6 +97,7 @@ function onOptionClick(_guess: string) {
 <template>
   <div class="relative w-80 ">
     <Input
+      id="searchInput"
       v-model="guess"
       :class="cn(`focus-visible:ring-0 focus-visible:ring-offset-0 box-border text-lg h-12`, matchingTracks.length > 0 && 'rounded-b-none border-b-0')"
       placeholder="Guess"
@@ -112,7 +113,7 @@ function onOptionClick(_guess: string) {
         :key="track.uri"
         :selected="selectedTrack === track"
         :track="track"
-        @click="onOptionClick"
+        @click="handleOptionClick"
       />
       <ScrollBar class="text-primary" />
     </ScrollArea>

@@ -4,13 +4,13 @@ import { Button } from '@/components/ui/button'
 
 const router = useRouter()
 
-function onPlayAgain() {
+function handlePlayAgain() {
   router.push({ name: 'setup' })
 }
 </script>
 
 <template>
-  <Button @click="onPlayAgain">
+  <Button @click="handlePlayAgain">
     Play again?
   </Button>
 </template>
