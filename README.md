@@ -1,8 +1,7 @@
-![Name that tune](./public/baner.png)
+![Harmonify](./public/baner.png)
 
-![Vercel](https://vercelbadge.vercel.app/api/marcinskic/name-that-tune)
-![License](https://img.shields.io/github/license/marcinskic/name-that-tune.svg)
-![Release](https://img.shields.io/github/release/marcinskic/name-that-tune.svg)
+![License](https://img.shields.io/github/license/kaczkadevteam/harmonify.svg)
+![Release](https://img.shields.io/github/release/kaczkadevteam/harmonify.svg)
 
 ## Description
 
@@ -38,6 +37,11 @@ The app, unfortunately, will never leave development mode due to Spotify's ToS (
 
 ### Used technologies
 
-[<img align="left" width="26" height="26" alt="Next.js" src="https://api.iconify.design/logos:nextjs-icon.svg" style="padding: 0 20px 16px 0">](https://nextjs.org 'Next.js')
-[<img align="left" width="26" height="26" alt="Typescript" src="https://api.iconify.design/devicon:typescript.svg" style="padding: 0 20px 16px 0">](https://www.typescriptlang.org 'Typescript')
-[<img align="left" width="26" height="26" alt="Sass" src="https://api.iconify.design/devicon:sass.svg" style="padding: 0 20px 16px 0">](https://sass-lang.com 'Sass')
+[<img align="left" width="26" height="26" alt="Vue.js" src="https://api.iconify.design/devicon:vuejs.svg" style="padding: 0 20px 16px 0"/>](https://vuejs.org 'Vue.js')
+[<img align="left" width="26" height="26" alt="VueUse" src="https://api.iconify.design/logos:vueuse.svg" style="padding: 0 20px 16px 0"/>](https://vueuse.org 'VueUse')
+[<img align="left" width="26" height="26" alt="Pinia" src="https://api.iconify.design/logos:pinia.svg" style="padding: 0 20px 16px 0"/>](https://pinia.vuejs.org 'Pinia')
+[<img align="left" width="26" height="26" alt="Typescript" src="https://api.iconify.design/devicon:typescript.svg" style="padding: 0 20px 16px 0"/>](https://www.typescriptlang.org 'Typescript')
+[<img align="left" width="26" height="26" alt="shadcn-vue" src="https://api.iconify.design/simple-icons:shadcnui.svg?color=%2341b883" style="padding: 0 20px 16px 0"/>](https://www.shadcn-vue.com 'shadcn-vue')
+[<img align="left" width="26" height="26" alt="TailwindCSS" src="https://api.iconify.design/devicon:tailwindcss.svg" style="padding: 0 20px 16px 0"/>](https://tailwindcss.com 'TailwindCSS')
+[<img align="left" width="26" height="26" alt="Vite" src="https://api.iconify.design/devicon:vitejs.svg" style="padding: 0 20px 16px 0"/>](https://vitejs.dev/ 'Vite')
+[<img align="left" width="26" height="26" alt="Vitest" src="https://api.iconify.design/devicon:vitest.svg" style="padding: 0 20px 16px 0"/>](https://vitest.dev 'Vitest')
