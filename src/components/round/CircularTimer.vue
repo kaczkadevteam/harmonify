@@ -1,17 +1,18 @@
 <script setup lang="ts">
-defineProps<{
+import { computed } from 'vue'
+
+const props = defineProps<{
   x: number
   xMax: number
 }>()
+
+const fillPercentage = computed(() => {
+  return `${Math.floor(((props.xMax - props.x) / props.xMax) * 100)}%`
+})
 </script>
 
 <template>
-  <div
-    :style="`--percentage: ${Math.floor(
-      ((xMax - x) / xMax) * 100,
-    )}%`"
-    class="circle-background grid size-12 place-items-center rounded-full border-8 border-transparent text-xl text-primary"
-  >
+  <div class="circle-background grid size-12 place-items-center rounded-full border-8 border-transparent text-xl text-primary">
     {{ x }}
   </div>
 </template>
@@ -20,7 +21,7 @@ defineProps<{
 .circle-background {
   background:
     var(--gradient-background) fixed content-box no-repeat,
-    conic-gradient(transparent var(--percentage), 0, hsl(var(--primary)))
+    conic-gradient(transparent v-bind(fillPercentage), 0, hsl(var(--primary)))
       border-box;
 }
 </style>
