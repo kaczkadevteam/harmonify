@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { Heart } from 'lucide-vue-next'
 import type { SelectableAlbum, SelectablePlaylist } from '@/types'
 import CheckableCard from '@/components/CheckableCard.vue'
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area'
@@ -23,9 +24,10 @@ const favouritesSelected = defineModel<boolean>('favouritesSelected', { required
           v-model="favouritesSelected"
           art-type="icon"
           title="Favourites"
-          src=""
           alt="Favourites"
-        />
+        >
+          <Heart fill="hsl(38, 92%, 50%)" class="text-primary" :size="60" />
+        </CheckableCard>
         <CheckableCard
           v-for="playlist of playlists"
           :id="playlist.id"
