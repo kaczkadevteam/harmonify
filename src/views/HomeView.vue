@@ -5,16 +5,30 @@ import { z } from 'zod'
 import { Input } from '@/components/ui/input'
 import { PinInput, PinInputGroup, PinInputInput } from '@/components/ui/pin-input'
 import { Button } from '@/components/ui/button'
+import { useConnectionStore } from '@/stores'
 
 const cookies = useCookies()
+const connectionStore = useConnectionStore()
 
 const isLogged = ref(!!cookies.get('access_token') || !!cookies.get('refresh_token'))
 const roomId = ref<string[]>([])
 const username = ref('')
 const usernameError = ref('')
+const isJoinRoomError = ref(false)
 
 function joinRoom() {
-  alert(`Joined room ${roomId.value.join('')}`)
+  const room = roomId.value.join('')
+
+  connectionStore.openConnection(`/game/${room}`, {
+    handleOpen() {},
+    handleError() {
+      isJoinRoomError.value = true
+    },
+    handleMessage(message) {
+      console.log(message)
+    },
+    handleClose() {},
+  })
 }
 
 function createRoom() {
@@ -27,7 +41,16 @@ function createRoom() {
     return
   }
 
-  alert(`Created room`)
+  connectionStore.openConnection('/create', {
+    handleOpen() {},
+    handleError() {
+      console.error('Couldn\'t establish connection with a server')
+    },
+    handleMessage(message) {
+      console.log(message)
+    },
+    handleClose() {},
+  })
 }
 
 function connectToSpotify() {
@@ -46,14 +69,18 @@ function connectToSpotify() {
     <main class="mt-10 text-2xl font-bold">
       <div class="flex items-end gap-10">
         <form class="grid justify-items-center gap-5" @submit.prevent="joinRoom">
+          <p v-if="isJoinRoomError" class="-mb-3 text-base font-normal text-destructive">
+            No room with such id
+          </p>
           <PinInput
             id="room-id"
             v-model="roomId"
             placeholder="○"
+            @update:model-value="isJoinRoomError = false"
             @complete="joinRoom"
           >
             <PinInputGroup>
-              <PinInputInput v-for="(id, index) in 5" :key="id" :index="index" required />
+              <PinInputInput v-for="(id, index) in 4" :key="id" :index="index" required />
             </PinInputGroup>
           </PinInput>
 
