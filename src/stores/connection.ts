@@ -1,28 +1,24 @@
 import { defineStore } from 'pinia'
+import { type Message, messageSchema } from '@/types'
 
 export const useConnectionStore = defineStore('connection', {
   state: (): {
     ws?: WebSocket
     handleOpen?: () => void
-    handleMessage?: (message: unknown) => void
+    handleMessage?: (message: Message) => void
     handleError?: (event: Event) => void
     handleClose?: () => void
-    handleMessageWrapper: (event: MessageEvent<string>) => void
+    handleMessageWrapper?: (event: MessageEvent<string>) => void
 
   } => {
-    return {
-      handleMessageWrapper(event) {
-        if (this.handleMessage)
-          this.handleMessage(JSON.parse(event.data))
-      },
-    }
+    return {}
   },
   actions: {
     openConnection(
       path: string,
       handlers: {
         handleOpen: () => void
-        handleMessage: (message: unknown) => void
+        handleMessage: (message: Message) => void
         handleError: (event: Event) => void
         handleClose: () => void
       },
@@ -36,7 +32,7 @@ export const useConnectionStore = defineStore('connection', {
       this.handleClose = handlers.handleClose
       this.handleMessageWrapper = (event) => {
         if (this.handleMessage)
-          this.handleMessage(JSON.parse(event.data))
+          this.handleMessage(messageSchema.parse(JSON.parse(event.data)))
       }
 
       this.ws = new WebSocket(`${import.meta.env.VITE_WEB_SOCKET_URL}${path}`)
@@ -57,7 +53,7 @@ export const useConnectionStore = defineStore('connection', {
       if (this.handleOpen)
         this.ws?.removeEventListener('open', this.handleOpen)
 
-      if (this.handleMessage)
+      if (this.handleMessage && this.handleMessageWrapper)
         this.ws?.removeEventListener('message', this.handleMessageWrapper)
 
       if (this.handleClose)

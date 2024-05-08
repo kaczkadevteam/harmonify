@@ -90,6 +90,59 @@ export const selectableAlbumSchema = getAlbumSchema(trackSchema).and(z.object({
 export type SelectableAlbum = z.infer<typeof selectableAlbumSchema>
 
 /**
+ * Harmonify API
+ */
+const messageTypeString = 'message'
+const errorTypeString = 'messageError'
+
+export const messageSchema = z.discriminatedUnion('$type', [
+  z.object({
+    $type: z.literal(`${messageTypeString}`),
+    type: z.string(),
+  }),
+  z.object({
+    $type: z.literal(`${errorTypeString}`),
+    type: z.string(),
+    errorMessage: z.string(),
+  }),
+  z.object({
+    $type: z.literal(`${messageTypeString}/createdGameDto`),
+    type: z.literal('createdGame'),
+    data: z.object({
+      gameId: z.string().length(4),
+      hostGuid: z.string().uuid(),
+    }),
+  }),
+  z.object({
+    $type: z.literal(`${messageTypeString}/startedGameDto`),
+    type: z.literal('startGame').or(z.literal('gameStarted')),
+    data: z.object({
+      tracks: z.array(trackSchema),
+      gameSettings: z.object({
+        roundTime: z.number(),
+      }),
+    }),
+  }),
+  z.object({
+    $type: z.literal(`${messageTypeString}/string`),
+    type: z.string(),
+    data: z.string(),
+  }),
+  z.object({
+    $type: z.literal(`${messageTypeString}/int`),
+    type: z.string(),
+    data: z.number(),
+  }),
+  z.object({
+    $type: z.literal(`${messageTypeString}/long`),
+    type: z.string(),
+    data: z.number(),
+  }),
+])
+
+export type Message = z.infer<typeof messageSchema>
+
+/**
  * Game types
  */
 
