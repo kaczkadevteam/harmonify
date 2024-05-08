@@ -26,6 +26,11 @@ export const useGameDataStore = defineStore('gameData', {
       this.selfPlayer.isHost = true
       this.selfPlayer.guid = createdGameDto.hostGuid
     },
+    joinGame(id: string, playerGuid: string) {
+      this.id = id
+      this.selfPlayer.isHost = false
+      this.selfPlayer.guid = playerGuid
+    },
     prepareGame(selectedTracks: Track[]) {
       this.tracks = selectedTracks
       this.selectedTracks = selectRandomlyTracks(selectedTracks, this.roundCount)

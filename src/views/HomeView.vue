@@ -28,7 +28,10 @@ function joinRoom() {
       isJoinRoomError.value = true
     },
     handleMessage(message) {
-      console.log(message)
+      if (message.$type === 'message/string') {
+        gameDataStore.joinGame(room, message.data)
+        router.push({ name: 'setup', params: { id: room } })
+      }
     },
     handleClose() {},
   })
