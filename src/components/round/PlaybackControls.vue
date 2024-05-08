@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { onMounted, ref, watch } from 'vue'
+import { ref, watch } from 'vue'
 import { Pause, Play } from 'lucide-vue-next'
 import VolumeInput from './VolumeInput.vue'
-import { usePlayerStore } from '@/stores'
+import { useMusicPlayerStore } from '@/stores'
 import type { Track } from '@/types'
 import { Button } from '@/components/ui/button'
 
@@ -18,7 +18,7 @@ const emit = defineEmits<{
 }>()
 
 const isPlayingStarted = ref(false)
-const playerStore = usePlayerStore()
+const musicPlayerStore = useMusicPlayerStore()
 
 function togglePlay() {
   emit('playChange', !props.isPlaying)
@@ -28,16 +28,16 @@ async function startPlaying() {
   if (!isPlayingStarted.value) {
     isPlayingStarted.value = true
 
-    await playerStore.play(props.selectedTrack)
+    await musicPlayerStore.play(props.selectedTrack)
     emit('playStart')
   }
   else {
-    await playerStore.resume()
+    await musicPlayerStore.resume()
   }
 }
 
 async function stopPlaying() {
-  await playerStore.pause()
+  await musicPlayerStore.pause()
 }
 
 watch(() => props.isPlaying, (isPlaying) => {
@@ -59,7 +59,7 @@ watch(() => props.selectedTrack, () => {
  */
 watch(() => props.trackPlayRepeats, (newValue, oldValue) => {
   if (newValue > oldValue)
-    playerStore.seek(props.selectedTrack.trackStart_ms)
+    musicPlayerStore.seek(props.selectedTrack.trackStart_ms)
 })
 </script>
 

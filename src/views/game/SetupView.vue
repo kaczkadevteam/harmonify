@@ -2,14 +2,14 @@
 import { computed } from 'vue'
 import { useCookies } from '@vueuse/integrations/useCookies'
 import { useRouter } from 'vue-router'
-import { useGameDataStore, usePlayerStore, useSpotifyLibraryStore } from '@/stores'
+import { useGameDataStore, useMusicPlayerStore, useSpotifyLibraryStore } from '@/stores'
 import SpotifyLibraryLoading from '@/components/setup/SpotifyLibraryLoading.vue'
 import SpotifyLibraryDisplay from '@/components/setup/SpotifyLibraryDisplay.vue'
 import { Button } from '@/components/ui/button'
 import GameDataForm from '@/components/setup/GameDataForm.vue'
 import type { SelectableAlbum, SelectablePlaylist } from '@/types'
 
-const playerStore = usePlayerStore()
+const musicPlayerStore = useMusicPlayerStore()
 const spotifyLibraryStore = useSpotifyLibraryStore()
 const gameDataStore = useGameDataStore()
 const router = useRouter()
@@ -22,10 +22,10 @@ function handleLoadingFinished(playlists: SelectablePlaylist[], albums: Selectab
 }
 
 async function handleGameStart() {
-  if (!playerStore.ready)
+  if (!musicPlayerStore.ready)
     return
 
-  await playerStore.turnOn()
+  await musicPlayerStore.turnOn()
   const tracks = await spotifyLibraryStore.getTracksFromSelectedSets(access_token, router)
   gameDataStore.prepareGame(tracks)
   router.push({ name: 'round', params: { id: '7734' } })
@@ -38,7 +38,7 @@ const selectedAnything = computed(() => {
 })
 
 const startButtonText = computed(() => {
-  if (!playerStore.ready)
+  if (!musicPlayerStore.ready)
     return 'Connecting...'
   else if (!selectedAnything.value)
     return 'Select tracks'
@@ -57,7 +57,7 @@ const startButtonText = computed(() => {
     <GameDataForm />
     <Button
       class=" w-28 place-self-center"
-      :disabled="!playerStore.player || !selectedAnything"
+      :disabled="!musicPlayerStore.player || !selectedAnything"
       @click="handleGameStart"
     >
       {{ startButtonText }}

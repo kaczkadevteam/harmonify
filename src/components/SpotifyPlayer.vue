@@ -3,10 +3,10 @@ import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useCookies } from '@vueuse/integrations/useCookies'
 import { useStorage } from '@vueuse/core'
-import { usePlayerStore } from '@/stores'
+import { useMusicPlayerStore } from '@/stores'
 import { SpotifyService } from '@/services'
 import { VOLUME_KEY } from '@/consts'
-import type { Player } from '@/types'
+import type { MusicPlayer } from '@/types'
 
 declare global {
   interface Window {
@@ -21,7 +21,7 @@ const router = useRouter()
 const access_token = cookies.get('access_token')
 const volume = useStorage(VOLUME_KEY, 0.05)
 
-const playerStore = usePlayerStore()
+const musicPlayerStore = useMusicPlayerStore()
 
 function createSpotifyPlayer() {
   return new window.Spotify.Player({
@@ -46,7 +46,7 @@ function attachSpotifyScript() {
 
 function addSpotifyPlayerReadyListener(player: any) {
   player.addListener('ready', ({ device_id }: any) => {
-    playerStore.player = getWrapperForSpotifyPlayer(player, device_id)
+    musicPlayerStore.player = getWrapperForSpotifyPlayer(player, device_id)
   })
 }
 
@@ -56,7 +56,7 @@ function addSpotifyPlayerNotReadyListener(player: any) {
   })
 }
 
-function getWrapperForSpotifyPlayer(player: any, device_id: string): Player {
+function getWrapperForSpotifyPlayer(player: any, device_id: string): MusicPlayer {
   return {
     _turnOn: async () => {
       await SpotifyService.selectPlayer(device_id, access_token, router)

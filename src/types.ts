@@ -170,7 +170,7 @@ export const gameResultSchema = z.object({
 })
 export type GameResult = z.infer<typeof gameResultSchema>
 
-export interface Player {
+export interface MusicPlayer {
   _turnOn: () => Promise<void>
   _play: (track: Track) => Promise<void>
   _seek: (time_ms: number) => Promise<void>
