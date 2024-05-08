@@ -1,10 +1,16 @@
 import { defineStore } from 'pinia'
-import type { GameData, Track } from '@/types'
+import type { CreatedGameDto, GameData, Track } from '@/types'
 import { selectRandomlyTracks } from '@/lib/track'
 
 export const useGameDataStore = defineStore('gameData', {
   state: (): GameData => {
     return {
+      id: 'nope',
+      selfPlayer: {
+        isHost: false,
+        username: '',
+        guid: '',
+      },
       roundCount: 20,
       roundDuration: 30,
       trackDuration: 10,
@@ -15,6 +21,11 @@ export const useGameDataStore = defineStore('gameData', {
     }
   },
   actions: {
+    createGame(createdGameDto: CreatedGameDto) {
+      this.id = createdGameDto.gameId
+      this.selfPlayer.isHost = true
+      this.selfPlayer.guid = createdGameDto.hostGuid
+    },
     prepareGame(selectedTracks: Track[]) {
       this.tracks = selectedTracks
       this.selectedTracks = selectRandomlyTracks(selectedTracks, this.roundCount)

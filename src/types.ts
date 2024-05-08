@@ -92,6 +92,12 @@ export type SelectableAlbum = z.infer<typeof selectableAlbumSchema>
 /**
  * Harmonify API
  */
+export const createdGameDtoSchema = z.object({
+  gameId: z.string().length(4),
+  hostGuid: z.string().uuid(),
+})
+export type CreatedGameDto = z.infer<typeof createdGameDtoSchema>
+
 const messageTypeString = 'message'
 const errorTypeString = 'messageError'
 
@@ -108,10 +114,7 @@ export const messageSchema = z.discriminatedUnion('$type', [
   z.object({
     $type: z.literal(`${messageTypeString}/createdGameDto`),
     type: z.literal('createdGame'),
-    data: z.object({
-      gameId: z.string().length(4),
-      hostGuid: z.string().uuid(),
-    }),
+    data: createdGameDtoSchema,
   }),
   z.object({
     $type: z.literal(`${messageTypeString}/startedGameDto`),
@@ -153,7 +156,18 @@ export const guessLevelSchema = z.union([
 ])
 export type GuessLevel = z.infer<typeof guessLevelSchema>
 
+export const playerSchema = z.object({
+  isHost: z.boolean(),
+  username: z.string()
+    .min(2, { message: 'Username must contain at least 2 characters' })
+    .max(50, { message: 'Username must contain at most 50 characters' }),
+  guid: z.string(),
+})
+export type Player = z.infer<typeof playerSchema>
+
 export const gameDataSchema = z.object({
+  id: z.string().length(4),
+  selfPlayer: playerSchema,
   roundCount: z.number(),
   roundDuration: z.number(),
   trackDuration: z.number(),

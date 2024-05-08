@@ -1,14 +1,17 @@
 <script setup lang="ts">
 import { useCookies } from '@vueuse/integrations/useCookies'
 import { ref } from 'vue'
-import { z } from 'zod'
+import { useRouter } from 'vue-router'
 import { Input } from '@/components/ui/input'
 import { PinInput, PinInputGroup, PinInputInput } from '@/components/ui/pin-input'
 import { Button } from '@/components/ui/button'
-import { useConnectionStore } from '@/stores'
+import { useConnectionStore, useGameDataStore } from '@/stores'
+import { playerSchema } from '@/types'
 
 const cookies = useCookies()
 const connectionStore = useConnectionStore()
+const gameDataStore = useGameDataStore()
+const router = useRouter()
 
 const isLogged = ref(!!cookies.get('access_token') || !!cookies.get('refresh_token'))
 const roomId = ref<string[]>([])
@@ -32,10 +35,7 @@ function joinRoom() {
 }
 
 function createRoom() {
-  const parseResult = z.string()
-    .min(2, { message: 'Username must contain at least 2 characters' })
-    .max(50, { message: 'Username must contain at most 50 characters' })
-    .safeParse(username.value)
+  const parseResult = playerSchema.shape.username.safeParse(username.value)
   if (!parseResult.success) {
     usernameError.value = parseResult.error.issues[0].message
     return
@@ -47,7 +47,10 @@ function createRoom() {
       console.error('Couldn\'t establish connection with a server')
     },
     handleMessage(message) {
-      console.log(message)
+      if (message.$type === 'message/createdGameDto') {
+        gameDataStore.createGame(message.data)
+        router.push({ name: 'setup', params: { id: message.data.gameId } })
+      }
     },
     handleClose() {},
   })
