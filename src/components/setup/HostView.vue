@@ -2,7 +2,7 @@
 import { computed } from 'vue'
 import { useCookies } from '@vueuse/integrations/useCookies'
 import { useRouter } from 'vue-router'
-import { useGameDataStore, useMusicPlayerStore, useSpotifyLibraryStore } from '@/stores'
+import { useConnectionStore, useMusicPlayerStore, useSpotifyLibraryStore } from '@/stores'
 import SpotifyLibraryLoading from '@/components/setup/SpotifyLibraryLoading.vue'
 import SpotifyLibraryDisplay from '@/components/setup/SpotifyLibraryDisplay.vue'
 import { Button } from '@/components/ui/button'
@@ -11,10 +11,10 @@ import type { SelectableAlbum, SelectablePlaylist } from '@/types'
 
 const musicPlayerStore = useMusicPlayerStore()
 const spotifyLibraryStore = useSpotifyLibraryStore()
-const gameDataStore = useGameDataStore()
 const router = useRouter()
 const cookies = useCookies()
 const access_token = cookies.get('access_token')
+const connectionStore = useConnectionStore()
 
 function handleLoadingFinished(playlists: SelectablePlaylist[], albums: SelectableAlbum[]) {
   spotifyLibraryStore.playlists = playlists
@@ -27,8 +27,16 @@ async function handleGameStart() {
 
   await musicPlayerStore.turnOn()
   const tracks = await spotifyLibraryStore.getTracksFromSelectedSets(access_token, router)
-  gameDataStore.prepareGame(tracks)
-  router.push({ name: 'round', params: { id: '7734' } })
+  connectionStore.sendMessage({
+    $type: 'message/startedGameDto',
+    type: 'startGame',
+    data: {
+      tracks,
+      gameSettings: {
+        roundTime: 10,
+      },
+    },
+  })
 }
 
 const selectedAnything = computed(() => {
