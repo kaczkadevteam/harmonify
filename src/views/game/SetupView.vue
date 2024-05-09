@@ -1,10 +1,24 @@
 <script setup lang="ts">
 import { CircleUserRound } from 'lucide-vue-next'
+import { onBeforeMount } from 'vue'
+import { useRouter } from 'vue-router'
 import HostView from '@/components/setup/HostView.vue'
-import { useGameDataStore } from '@/stores'
+import { useConnectionStore, useGameDataStore } from '@/stores'
 import LoadingCircle from '@/components/LoadingCircle.vue'
 
+const router = useRouter()
 const gameDataStore = useGameDataStore()
+const connectionStore = useConnectionStore()
+
+onBeforeMount(() => {
+  connectionStore.handleMessage = (message) => {
+    if (message.$type === 'message/startedGameDto') {
+      gameDataStore.roundDuration = message.data.gameSettings.roundTime
+      gameDataStore.prepareGame(message.data.tracks)
+      router.push({ name: 'round', params: router.currentRoute.value.params })
+    }
+  }
+})
 </script>
 
 <template>

@@ -31,6 +31,7 @@ export const useConnectionStore = defineStore('connection', {
       this.handleError = handlers.handleError
       this.handleClose = handlers.handleClose
       this.handleMessageWrapper = (event) => {
+        console.log(JSON.parse(event.data))
         if (this.handleMessage)
           this.handleMessage(messageSchema.parse(JSON.parse(event.data)))
       }
@@ -42,7 +43,8 @@ export const useConnectionStore = defineStore('connection', {
       this.ws.addEventListener('message', this.handleMessageWrapper)
       this.ws.addEventListener('close', this.handleClose)
     },
-    sendMessage(message: unknown) {
+    sendMessage(message: Message) {
+      console.log(JSON.stringify(message))
       if (this.ws)
         this.ws.send(JSON.stringify(message))
     },

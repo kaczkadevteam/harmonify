@@ -66,7 +66,7 @@ export const trackSchema = simplifiedTrackObjectSchema.and(
       images: z.array(imageObjectSchema),
     }),
     guess: z.string().optional(),
-    trackStart_ms: z.number().optional(),
+    trackStart_ms: z.number().nullable().optional(), // TODO: Probably remove when backend data crystalizes
   }),
 )
 export type Track = z.infer<typeof trackSchema>
