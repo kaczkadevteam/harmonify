@@ -90,6 +90,62 @@ export const selectableAlbumSchema = getAlbumSchema(trackSchema).and(z.object({
 export type SelectableAlbum = z.infer<typeof selectableAlbumSchema>
 
 /**
+ * Harmonify API
+ */
+export const createdGameDtoSchema = z.object({
+  gameId: z.string().length(4),
+  hostGuid: z.string().uuid(),
+})
+export type CreatedGameDto = z.infer<typeof createdGameDtoSchema>
+
+const messageTypeString = 'message'
+const errorTypeString = 'messageError'
+
+export const messageSchema = z.discriminatedUnion('$type', [
+  z.object({
+    $type: z.literal(`${messageTypeString}`),
+    type: z.string(),
+  }),
+  z.object({
+    $type: z.literal(`${errorTypeString}`),
+    type: z.string(),
+    errorMessage: z.string(),
+  }),
+  z.object({
+    $type: z.literal(`${messageTypeString}/createdGameDto`),
+    type: z.literal('createdGame'),
+    data: createdGameDtoSchema,
+  }),
+  z.object({
+    $type: z.literal(`${messageTypeString}/startedGameDto`),
+    type: z.literal('startGame').or(z.literal('gameStarted')),
+    data: z.object({
+      tracks: z.array(trackSchema),
+      gameSettings: z.object({
+        roundTime: z.number(),
+      }),
+    }),
+  }),
+  z.object({
+    $type: z.literal(`${messageTypeString}/string`),
+    type: z.string(),
+    data: z.string(),
+  }),
+  z.object({
+    $type: z.literal(`${messageTypeString}/int`),
+    type: z.string(),
+    data: z.number(),
+  }),
+  z.object({
+    $type: z.literal(`${messageTypeString}/long`),
+    type: z.string(),
+    data: z.number(),
+  }),
+])
+
+export type Message = z.infer<typeof messageSchema>
+
+/**
  * Game types
  */
 
@@ -100,7 +156,18 @@ export const guessLevelSchema = z.union([
 ])
 export type GuessLevel = z.infer<typeof guessLevelSchema>
 
+export const playerSchema = z.object({
+  isHost: z.boolean(),
+  username: z.string()
+    .min(2, { message: 'Username must contain at least 2 characters' })
+    .max(50, { message: 'Username must contain at most 50 characters' }),
+  guid: z.string(),
+})
+export type Player = z.infer<typeof playerSchema>
+
 export const gameDataSchema = z.object({
+  id: z.string().length(4),
+  selfPlayer: playerSchema,
   roundCount: z.number(),
   roundDuration: z.number(),
   trackDuration: z.number(),
@@ -117,7 +184,7 @@ export const gameResultSchema = z.object({
 })
 export type GameResult = z.infer<typeof gameResultSchema>
 
-export interface Player {
+export interface MusicPlayer {
   _turnOn: () => Promise<void>
   _play: (track: Track) => Promise<void>
   _seek: (time_ms: number) => Promise<void>

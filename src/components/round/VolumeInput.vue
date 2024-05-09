@@ -2,14 +2,14 @@
 import { computed, ref } from 'vue'
 import { Volume, Volume1, Volume2, VolumeX } from 'lucide-vue-next'
 import { useElementHover } from '@vueuse/core'
-import { usePlayerStore } from '@/stores'
+import { useMusicPlayerStore } from '@/stores'
 import { Slider } from '@/components/ui/slider'
 import { cn } from '@/lib/utils'
 
 const SCROLL_DELTA = -120
 const VOLUME_CHANGE_ON_SCROLL_TICK = 0.05
 
-const playerStore = usePlayerStore()
+const musicPlayerStore = useMusicPlayerStore()
 
 const rootElement = ref<HTMLDivElement | null>(null)
 const isHovered = useElementHover(rootElement)
@@ -17,11 +17,11 @@ const isSliderToggled = ref(false)
 
 const isSliderVisible = computed(() => isHovered.value || isSliderToggled.value)
 const volumeIcon = computed(() => {
-  if (playerStore.volume === 0)
+  if (musicPlayerStore.volume === 0)
     return VolumeX
-  else if (playerStore.volume < 0.25)
+  else if (musicPlayerStore.volume < 0.25)
     return Volume
-  else if (playerStore.volume < 0.75)
+  else if (musicPlayerStore.volume < 0.75)
     return Volume1
   else
     return Volume2
@@ -30,16 +30,16 @@ const volumeIcon = computed(() => {
 function handleWheelScroll(e: WheelEvent) {
   const volumeDelta = (e.deltaY / SCROLL_DELTA) * VOLUME_CHANGE_ON_SCROLL_TICK
   const newVolume = Math.min(
-    Math.max(playerStore.volume + volumeDelta, 0),
+    Math.max(musicPlayerStore.volume + volumeDelta, 0),
     1,
   )
 
-  playerStore.setVolume(newVolume)
+  musicPlayerStore.setVolume(newVolume)
 }
 
 function handleVolumeChange(newValue?: number[]) {
   if (newValue?.[0] !== undefined)
-    playerStore.setVolume(newValue[0])
+    musicPlayerStore.setVolume(newValue[0])
 }
 
 function handleIconClick() {
@@ -62,7 +62,7 @@ function handleIconClick() {
     >
       <div v-show="isSliderVisible" class="ml-2 w-28 ">
         <Slider
-          :model-value="[playerStore.volume]"
+          :model-value="[musicPlayerStore.volume]"
           :min="0"
           :max="1"
           :step="0.01"
