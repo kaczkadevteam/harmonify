@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue'
-import type { Track } from '@/types'
+import type { DisplayedGuessDto, Track } from '@/types'
 import { TrackDisplay } from '@/components/trackDisplay'
 import { cn } from '@/lib/utils'
+import GuessDisplay from '@/components/trackDisplay/GuessDisplay.vue'
 
 const props = defineProps<{
-  track: Track
+  displayedGuess: DisplayedGuessDto
   selected: boolean
 }>()
 
@@ -25,9 +26,9 @@ watch(() => props.selected, (selected) => {
   <div
     ref="element"
     :class="cn('px-5 py-3 hover:bg-accent hover:text-accent-foreground', selected && 'bg-accent text-accent-foreground')"
-    @click="emit('click', track.guess ?? '')"
+    @click="emit('click', displayedGuess.guess ?? '')"
   >
-    <TrackDisplay :track />
-    <input type="hidden" name="track" :value="track.uri">
+    <GuessDisplay :guess="displayedGuess.guess" />
+    <input type="hidden" name="track" :value="displayedGuess.id">
   </div>
 </template>
