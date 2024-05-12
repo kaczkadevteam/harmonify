@@ -220,6 +220,12 @@ export type Message = z.infer<typeof messageSchema>
  * Game types
  */
 
+export const musicPlayDataSchema = z.object({
+  uri: z.string(),
+  trackStart_ms: z.number(),
+})
+export type MusicPlayData = z.infer<typeof musicPlayDataSchema>
+
 export const guessLevelSchema = z.union([
   z.literal('full'),
   z.literal('author'),
@@ -253,7 +259,7 @@ export type GameResult = z.infer<typeof gameResultSchema>
 
 export interface MusicPlayer {
   _turnOn: () => Promise<void>
-  _play: (track: Track) => Promise<void>
+  _play: (track: MusicPlayData) => Promise<void>
   _seek: (time_ms: number) => Promise<void>
   _resume: () => Promise<void>
   _pause: () => Promise<void>

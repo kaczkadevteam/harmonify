@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { type RemovableRef, useStorage } from '@vueuse/core'
-import type { MusicPlayer, Track } from '@/types'
+import type { MusicPlayData, MusicPlayer, Track } from '@/types'
 import { VOLUME_KEY } from '@/consts'
 
 export const useMusicPlayerStore = defineStore('musicPlayer', {
@@ -22,7 +22,7 @@ export const useMusicPlayerStore = defineStore('musicPlayer', {
     async turnOn() {
       await this.player?._turnOn()
     },
-    async play(track: Track) {
+    async play(track: MusicPlayData) {
       await this.player?._play(track)
     },
     async seek(time_ms: number) {
