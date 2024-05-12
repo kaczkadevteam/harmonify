@@ -66,7 +66,6 @@ export const trackSchema = simplifiedTrackObjectSchema.and(
       images: z.array(imageObjectSchema),
     }),
     guess: z.string().optional(),
-    trackStart_ms: z.number().nullable().optional(), // TODO: Probably remove when backend data crystalizes
   }),
 )
 export type Track = z.infer<typeof trackSchema>
@@ -170,6 +169,8 @@ export const messageSchema = z.discriminatedUnion('$type', [
       possibleGuesses: z.array(displayedGuessDtoSchema),
       gameSettings: gameSettingsDtoSchema,
       roundStartTimestamp: z.number(),
+      trackStart_ms: z.number(),
+      uri: z.string(),
     }),
   }),
   z.object({
@@ -178,12 +179,9 @@ export const messageSchema = z.discriminatedUnion('$type', [
     data: z.object({
       roundNumber: z.number(),
       roundStartTimestamp: z.number(),
+      trackStart_ms: z.number(),
+      uri: z.string(),
     }),
-  }),
-  z.object({
-    $type: z.literal(`${messageTypeString}/string`),
-    type: z.string(),
-    data: z.string(),
   }),
   z.object({
     $type: z.literal(`${messageTypeString}/roundFinishedDto`),
@@ -194,6 +192,11 @@ export const messageSchema = z.discriminatedUnion('$type', [
       score: z.number(),
       players: z.array(playerDtoSchema),
     }),
+  }),
+  z.object({
+    $type: z.literal(`${messageTypeString}/string`),
+    type: z.string(),
+    data: z.string(),
   }),
   z.object({
     $type: z.literal(`${messageTypeString}/int`),
