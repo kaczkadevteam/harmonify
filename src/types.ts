@@ -135,6 +135,15 @@ export const playerDtoSchema = z.object({
   guid: z.string(),
   score: z.number(),
 })
+export type PlayerDto = z.infer<typeof playerDtoSchema>
+
+export const roundFinishedDto = z.object({
+  track: trackSchema,
+  roundResult: roundResultDtoSchema,
+  score: z.number(),
+  players: z.array(playerDtoSchema),
+})
+export type RoundFinishedDto = z.infer<typeof roundFinishedDto>
 
 const messageTypeString = 'message'
 const errorTypeString = 'messageError'
@@ -186,12 +195,7 @@ export const messageSchema = z.discriminatedUnion('$type', [
   z.object({
     $type: z.literal(`${messageTypeString}/roundFinishedDto`),
     type: z.literal('nextRound'),
-    data: z.object({
-      track: trackSchema,
-      roundResult: roundResultDtoSchema,
-      score: z.number(),
-      players: z.array(playerDtoSchema),
-    }),
+    data: roundFinishedDto,
   }),
   z.object({
     $type: z.literal(`${messageTypeString}/string`),

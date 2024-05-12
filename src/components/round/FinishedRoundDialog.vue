@@ -1,22 +1,20 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { cn } from '@/lib/utils'
-import type { Track } from '@/types'
+import type { RoundFinishedDto } from '@/types'
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { GuessDisplay, TrackDisplay } from '@/components/trackDisplay'
 import { Button } from '@/components/ui/button'
 
 const props = defineProps<{
-  selectedTrack: Track
   guess: string
-  isFullyGuessed: boolean
-  points: number
-  pointsForRound: number
+  roundResult: RoundFinishedDto
 }>()
 
 const isOpen = defineModel<boolean>({ required: true })
 
-const roundFinishedTitle = computed(() => props.isFullyGuessed ? 'Correct :)' : 'Incorrect :(')
+const isFullyGuessed = computed(() => props.roundResult.roundResult.guess === props.guess)
+const roundFinishedTitle = computed(() => isFullyGuessed.value ? 'Correct :)' : 'Incorrect :(')
 
 function handleContinue() {
   isOpen.value = false
@@ -32,8 +30,8 @@ function handleContinue() {
         </DialogTitle>
       </DialogHeader>
       <div class="mb-2 grid justify-items-center gap-1 text-center">
-        <img :src="selectedTrack.album.images[0].url" alt="Album cover" width="200" height="200">
-        <TrackDisplay :track="selectedTrack" />
+        <img :src="roundResult.track.album.images[0].url" alt="Album cover" width="200" height="200">
+        <TrackDisplay :track="roundResult.track" />
         <div v-if="!isFullyGuessed" class="mt-4">
           <span class="mr-3">Your guess:</span>
           <GuessDisplay :guess />
@@ -42,7 +40,7 @@ function handleContinue() {
       <DialogFooter class="flex items-center sm:justify-between">
         <div class="text-lg">
           <span>Points </span>
-          <span>{{ `${points} + ${pointsForRound}` }}</span>
+          <span>{{ `${roundResult.score - roundResult.roundResult.score} + ${roundResult.roundResult.score}` }}</span>
         </div>
         <Button autofocus @click="handleContinue">
           Continue
