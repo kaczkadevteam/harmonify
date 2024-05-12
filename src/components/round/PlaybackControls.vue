@@ -30,11 +30,13 @@ async function stopPlaying() {
 }
 
 watch(() => props.isPlaying, (isPlaying) => {
-  if (isPlaying) { startPlaying() }
+  if (isPlaying) {
+    musicPlayerStore.seek(props.musicPlayData.trackStart_ms)
+    startPlaying()
+  }
 
   else {
     stopPlaying()
-    musicPlayerStore.seek(props.musicPlayData.trackStart_ms)
   }
 })
 

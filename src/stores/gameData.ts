@@ -19,6 +19,10 @@ export const useGameDataStore = defineStore('gameData', {
         trackStartUpperBound: 0.9,
       },
       possibleGuesses: [],
+      musicPlayData: {
+        uri: '',
+        trackStart_ms: 0,
+      },
     }
   },
   actions: {
@@ -35,6 +39,10 @@ export const useGameDataStore = defineStore('gameData', {
     startGame(gameStartedDto: GameStartedDto) {
       this.gameSettings = gameStartedDto.gameSettings
       this.possibleGuesses = gameStartedDto.possibleGuesses
+      this.musicPlayData = {
+        uri: gameStartedDto.uri,
+        trackStart_ms: gameStartedDto.trackStart_ms,
+      }
     },
   },
 })

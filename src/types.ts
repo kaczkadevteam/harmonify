@@ -109,13 +109,18 @@ export const gameSettingsDtoSchema = z.object({
 })
 export type GameSettingsDto = z.infer<typeof gameSettingsDtoSchema>
 
+export const displayedGuessDtoSchema = z.object({
+  guess: z.string(),
+  id: z.string(),
+})
+export type DisplayedGuessDto = z.infer<typeof displayedGuessDtoSchema>
+
 export const gameStartedDtoSchema = z.object({
-  possibleGuesses: z.array(z.object({
-    guess: z.string(),
-    id: z.string(),
-  })),
+  possibleGuesses: z.array(displayedGuessDtoSchema),
   gameSettings: gameSettingsDtoSchema,
   roundStartTimestamp: z.number(),
+  trackStart_ms: z.number(),
+  uri: z.string(),
 })
 export type GameStartedDto = z.infer<typeof gameStartedDtoSchema>
 
@@ -125,11 +130,13 @@ export const roundResultDtoSchema = z.object({
 })
 export type RoundResultDto = z.infer<typeof roundResultDtoSchema>
 
-export const displayedGuessDtoSchema = z.object({
-  guess: z.string(),
-  id: z.string(),
+export const roundStartedDto = z.object({
+  roundNumber: z.number(),
+  roundStartTimestamp: z.number(),
+  trackStart_ms: z.number(),
+  uri: z.string(),
 })
-export type DisplayedGuessDto = z.infer<typeof displayedGuessDtoSchema>
+export type RoundStartedDto = z.infer<typeof roundStartedDto>
 
 export const playerDtoSchema = z.object({
   guid: z.string(),
@@ -174,23 +181,12 @@ export const messageSchema = z.discriminatedUnion('$type', [
   z.object({
     $type: z.literal(`${messageTypeString}/gameStartedDto`),
     type: z.literal('gameStarted'),
-    data: z.object({
-      possibleGuesses: z.array(displayedGuessDtoSchema),
-      gameSettings: gameSettingsDtoSchema,
-      roundStartTimestamp: z.number(),
-      trackStart_ms: z.number(),
-      uri: z.string(),
-    }),
+    data: gameStartedDtoSchema,
   }),
   z.object({
     $type: z.literal(`${messageTypeString}/roundStartedDto`),
     type: z.literal('nextRound'),
-    data: z.object({
-      roundNumber: z.number(),
-      roundStartTimestamp: z.number(),
-      trackStart_ms: z.number(),
-      uri: z.string(),
-    }),
+    data: roundStartedDto,
   }),
   z.object({
     $type: z.literal(`${messageTypeString}/roundFinishedDto`),
@@ -248,6 +244,7 @@ export const gameDataSchema = z.object({
   selfPlayer: playerSchema,
   gameSettings: gameSettingsDtoSchema,
   possibleGuesses: z.array(displayedGuessDtoSchema),
+  musicPlayData: musicPlayDataSchema,
 })
 export type GameData = z.infer<typeof gameDataSchema>
 
