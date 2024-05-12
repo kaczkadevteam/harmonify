@@ -1,6 +1,5 @@
 import { defineStore } from 'pinia'
-import type { CreatedGameDto, GameData, Track } from '@/types'
-import { selectRandomlyTracks } from '@/lib/track'
+import type { CreatedGameDto, GameData, GameStartedDto, Track } from '@/types'
 
 export const useGameDataStore = defineStore('gameData', {
   state: (): GameData => {
@@ -8,16 +7,18 @@ export const useGameDataStore = defineStore('gameData', {
       id: 'nope',
       selfPlayer: {
         isHost: false,
-        username: '',
         guid: '',
       },
-      roundCount: 20,
-      roundDuration: 30,
-      trackDuration: 10,
-      trackLowerLimit_perc: 0.2,
-      trackUpperLimit_perc: 0.8,
-      tracks: [],
-      selectedTracks: [],
+      gameSettings: {
+        breakDurationBetweenTrackPlays: 2,
+        breakDurationBetweenRounds: 5,
+        trackDuration: 5,
+        roundDuration: 5,
+        roundCount: 5,
+        trackStartLowerBound: 0.1,
+        trackStartUpperBound: 0.9,
+      },
+      possibleGuesses: [],
     }
   },
   actions: {
@@ -31,25 +32,9 @@ export const useGameDataStore = defineStore('gameData', {
       this.selfPlayer.isHost = false
       this.selfPlayer.guid = playerGuid
     },
-    prepareGame(selectedTracks: Track[]) {
-      this.tracks = selectedTracks
-      this.selectedTracks = selectRandomlyTracks(selectedTracks, this.roundCount)
-    },
-    getTrackForRound(round: number): Track & { trackStart_ms: number } {
-      const track = this.selectedTracks[round - 1]
-      const { duration_ms } = track
-      const lowerLimit = duration_ms * this.trackLowerLimit_perc
-      const upperLimit = duration_ms * this.trackUpperLimit_perc
-      const durationRange = upperLimit - lowerLimit
-      const trackStart_ms = Math.min(
-        Math.floor(Math.random() * durationRange) + lowerLimit,
-        duration_ms - this.trackDuration * 1000,
-      )
-
-      return {
-        ...track,
-        trackStart_ms,
-      }
+    startGame(gameStartedDto: GameStartedDto) {
+      this.gameSettings = gameStartedDto.gameSettings
+      this.possibleGuesses = gameStartedDto.possibleGuesses
     },
   },
 })

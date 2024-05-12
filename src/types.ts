@@ -92,11 +92,50 @@ export type SelectableAlbum = z.infer<typeof selectableAlbumSchema>
 /**
  * Harmonify API
  */
+
 export const createdGameDtoSchema = z.object({
   gameId: z.string().length(4),
   hostGuid: z.string().uuid(),
 })
 export type CreatedGameDto = z.infer<typeof createdGameDtoSchema>
+
+export const gameSettingsDtoSchema = z.object({
+  breakDurationBetweenTrackPlays: z.number(),
+  breakDurationBetweenRounds: z.number(),
+  trackDuration: z.number(),
+  roundDuration: z.number(),
+  roundCount: z.number(),
+  trackStartLowerBound: z.number(),
+  trackStartUpperBound: z.number(),
+})
+export type GameSettingsDto = z.infer<typeof gameSettingsDtoSchema>
+
+export const gameStartedDtoSchema = z.object({
+  possibleGuesses: z.array(z.object({
+    guess: z.string(),
+    id: z.string(),
+  })),
+  gameSettings: gameSettingsDtoSchema,
+  roundStartTimestamp: z.number(),
+})
+export type GameStartedDto = z.infer<typeof gameStartedDtoSchema>
+
+export const roundResultDtoSchema = z.object({
+  score: z.number(),
+  guess: z.string(),
+})
+export type RoundResultDto = z.infer<typeof roundResultDtoSchema>
+
+export const displayedGuessDtoSchema = z.object({
+  guess: z.string(),
+  id: z.string(),
+})
+export type DisplayedGuessDto = z.infer<typeof displayedGuessDtoSchema>
+
+export const playerDtoSchema = z.object({
+  guid: z.string(),
+  score: z.number(),
+})
 
 const messageTypeString = 'message'
 const errorTypeString = 'messageError'
@@ -117,19 +156,44 @@ export const messageSchema = z.discriminatedUnion('$type', [
     data: createdGameDtoSchema,
   }),
   z.object({
-    $type: z.literal(`${messageTypeString}/startedGameDto`),
-    type: z.literal('startGame').or(z.literal('gameStarted')),
+    $type: z.literal(`${messageTypeString}/startGameDto`),
+    type: z.literal('startGame'),
     data: z.object({
       tracks: z.array(trackSchema),
-      gameSettings: z.object({
-        roundTime: z.number(),
-      }),
+      gameSettings: gameSettingsDtoSchema,
+    }),
+  }),
+  z.object({
+    $type: z.literal(`${messageTypeString}/gameStartedDto`),
+    type: z.literal('gameStarted'),
+    data: z.object({
+      possibleGuesses: z.array(displayedGuessDtoSchema),
+      gameSettings: gameSettingsDtoSchema,
+      roundStartTimestamp: z.number(),
+    }),
+  }),
+  z.object({
+    $type: z.literal(`${messageTypeString}/roundStartedDto`),
+    type: z.literal('nextRound'),
+    data: z.object({
+      roundNumber: z.number(),
+      roundStartTimestamp: z.number(),
     }),
   }),
   z.object({
     $type: z.literal(`${messageTypeString}/string`),
     type: z.string(),
     data: z.string(),
+  }),
+  z.object({
+    $type: z.literal(`${messageTypeString}/roundFinishedDto`),
+    type: z.literal('nextRound'),
+    data: z.object({
+      track: trackSchema,
+      roundResult: roundResultDtoSchema,
+      score: z.number(),
+      players: z.array(playerDtoSchema),
+    }),
   }),
   z.object({
     $type: z.literal(`${messageTypeString}/int`),
@@ -160,7 +224,8 @@ export const playerSchema = z.object({
   isHost: z.boolean(),
   username: z.string()
     .min(2, { message: 'Username must contain at least 2 characters' })
-    .max(50, { message: 'Username must contain at most 50 characters' }),
+    .max(50, { message: 'Username must contain at most 50 characters' })
+    .optional(),
   guid: z.string(),
 })
 export type Player = z.infer<typeof playerSchema>
@@ -168,13 +233,8 @@ export type Player = z.infer<typeof playerSchema>
 export const gameDataSchema = z.object({
   id: z.string().length(4),
   selfPlayer: playerSchema,
-  roundCount: z.number(),
-  roundDuration: z.number(),
-  trackDuration: z.number(),
-  trackLowerLimit_perc: z.number(),
-  trackUpperLimit_perc: z.number(),
-  tracks: z.array(trackSchema),
-  selectedTracks: z.array(trackSchema),
+  gameSettings: gameSettingsDtoSchema,
+  possibleGuesses: z.array(displayedGuessDtoSchema),
 })
 export type GameData = z.infer<typeof gameDataSchema>
 

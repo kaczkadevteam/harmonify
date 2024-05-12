@@ -12,9 +12,8 @@ const connectionStore = useConnectionStore()
 
 onBeforeMount(() => {
   connectionStore.handleMessage = (message) => {
-    if (message.$type === 'message/startedGameDto') {
-      gameDataStore.roundDuration = message.data.gameSettings.roundTime
-      gameDataStore.prepareGame(message.data.tracks)
+    if (message.$type === 'message/gameStartedDto') {
+      gameDataStore.startGame(message.data)
       router.push({ name: 'round', params: router.currentRoute.value.params })
     }
   }
