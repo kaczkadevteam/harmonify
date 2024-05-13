@@ -129,7 +129,7 @@ watch(isPlaying, (isPlaying) => {
     trackTimer.playbackRate.value = -(gameDataStore.gameSettings.breakDurationBetweenTrackPlays / gameDataStore.gameSettings.roundDuration)
 
   else
-    trackTimer.playbackRate.value = gameDataStore.gameSettings.breakDurationBetweenTrackPlays
+    trackTimer.playbackRate.value = 1
 })
 </script>
 
