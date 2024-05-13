@@ -2,7 +2,7 @@
 import { onUnmounted, ref, watch } from 'vue'
 import { Pause, Play } from 'lucide-vue-next'
 import VolumeInput from './VolumeInput.vue'
-import { useMusicPlayerStore } from '@/stores'
+import { useGameDataStore, useMusicPlayerStore } from '@/stores'
 import type { MusicPlayData, Track } from '@/types'
 import { Button } from '@/components/ui/button'
 
@@ -13,8 +13,11 @@ const props = defineProps<{
 
 const isPlayingStarted = ref(false)
 const musicPlayerStore = useMusicPlayerStore()
+const gameDataStore = useGameDataStore()
 
 async function startPlaying() {
+  if (!gameDataStore.selfPlayer.isHost)
+    return
   if (!isPlayingStarted.value) {
     isPlayingStarted.value = true
 
@@ -26,6 +29,8 @@ async function startPlaying() {
 }
 
 async function stopPlaying() {
+  if (!gameDataStore.selfPlayer.isHost)
+    return
   await musicPlayerStore.pause()
 }
 
