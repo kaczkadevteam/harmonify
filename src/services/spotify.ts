@@ -1,7 +1,7 @@
 import type { Router } from 'vue-router'
 import { z } from 'zod'
 import { fetchFromSpotify, getAllPaginatedItems } from '@/lib/spotify'
-import { type SelectableAlbum, type SelectablePlaylist, type Track, getAlbumSchema, simplePlaylistObjectSchema, simplifiedTrackObjectSchema, trackSchema } from '@/types'
+import { type MusicPlayData, type SelectableAlbum, type SelectablePlaylist, type Track, getAlbumSchema, simplePlaylistObjectSchema, simplifiedTrackObjectSchema, trackSchema } from '@/types'
 
 export async function getUserId(access_token: string, router: Router): Promise<string> {
   const userResponse = await fetchFromSpotify(`/me`, access_token, router)
@@ -95,7 +95,7 @@ export async function selectPlayer(device_id: string, access_token: string, rout
   )
 }
 
-export async function playTrack(track: Track, device_id: string, access_token: string, router: Router) {
+export async function playTrack(playData: MusicPlayData, device_id: string, access_token: string, router: Router) {
   await fetchFromSpotify(
     `/me/player/play?device_id=${device_id}`,
     access_token,
@@ -103,8 +103,8 @@ export async function playTrack(track: Track, device_id: string, access_token: s
     false,
     'PUT',
     JSON.stringify({
-      uris: [track.uri],
-      position_ms: track.trackStart_ms,
+      uris: [playData.uri],
+      position_ms: playData.trackStart_ms,
     }),
   )
 }

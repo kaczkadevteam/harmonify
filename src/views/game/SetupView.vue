@@ -1,66 +1,34 @@
 <script setup lang="ts">
-import { computed } from 'vue'
-import { useCookies } from '@vueuse/integrations/useCookies'
+import { CircleUserRound } from 'lucide-vue-next'
+import { onBeforeMount } from 'vue'
 import { useRouter } from 'vue-router'
-import { useGameDataStore, usePlayerStore, useSpotifyLibraryStore } from '@/stores'
-import SpotifyLibraryLoading from '@/components/setup/SpotifyLibraryLoading.vue'
-import SpotifyLibraryDisplay from '@/components/setup/SpotifyLibraryDisplay.vue'
-import { Button } from '@/components/ui/button'
-import GameDataForm from '@/components/setup/GameDataForm.vue'
-import type { SelectableAlbum, SelectablePlaylist } from '@/types'
+import HostView from '@/components/setup/HostView.vue'
+import { useConnectionStore, useGameDataStore } from '@/stores'
+import LoadingCircle from '@/components/LoadingCircle.vue'
 
-const playerStore = usePlayerStore()
-const spotifyLibraryStore = useSpotifyLibraryStore()
-const gameDataStore = useGameDataStore()
 const router = useRouter()
-const cookies = useCookies()
-const access_token = cookies.get('access_token')
+const gameDataStore = useGameDataStore()
+const connectionStore = useConnectionStore()
 
-function handleLoadingFinished(playlists: SelectablePlaylist[], albums: SelectableAlbum[]) {
-  spotifyLibraryStore.playlists = playlists
-  spotifyLibraryStore.albums = albums
-}
-
-async function handleGameStart() {
-  if (!playerStore.ready)
-    return
-
-  await playerStore.turnOn()
-  const tracks = await spotifyLibraryStore.getTracksFromSelectedSets(access_token, router)
-  gameDataStore.prepareGame(tracks)
-  router.push({ name: 'round', params: { id: '7734' } })
-}
-
-const selectedAnything = computed(() => {
-  return spotifyLibraryStore.playlists?.some(i => i.selected)
-    || spotifyLibraryStore.albums?.some(i => i.selected)
-    || spotifyLibraryStore.favouritesSelected
-})
-
-const startButtonText = computed(() => {
-  if (!playerStore.ready)
-    return 'Connecting...'
-  else if (!selectedAnything.value)
-    return 'Select tracks'
-  else return 'Play!'
+onBeforeMount(() => {
+  connectionStore.handleMessage = (message) => {
+    if (message.$type === 'message/gameStartedDto') {
+      gameDataStore.startGame(message.data)
+      router.push({ name: 'round', params: router.currentRoute.value.params })
+    }
+  }
 })
 </script>
 
 <template>
-  <SpotifyLibraryLoading v-if="!spotifyLibraryStore.playlists || !spotifyLibraryStore.albums" @loaded="handleLoadingFinished" />
-  <main v-else class="grid h-[80vh] w-[80vw] grid-cols-[1fr_auto] grid-rows-[1fr_50px] items-start gap-5">
-    <SpotifyLibraryDisplay
-      v-model:favourites-selected="spotifyLibraryStore.favouritesSelected"
-      :playlists="spotifyLibraryStore.playlists"
-      :albums="spotifyLibraryStore.albums"
-    />
-    <GameDataForm />
-    <Button
-      class=" w-28 place-self-center"
-      :disabled="!playerStore.player || !selectedAnything"
-      @click="handleGameStart"
-    >
-      {{ startButtonText }}
-    </Button>
+  <main class="grid grid-cols-[200px_1fr] items-start gap-4">
+    <div class="flex items-center gap-2">
+      <CircleUserRound class="size-14" />
+      <div>{{ gameDataStore.selfPlayer.guid }}</div>
+    </div>
+    <HostView v-if="gameDataStore.selfPlayer.isHost" />
+    <div v-else class="flex items-center gap-5 self-center text-2xl">
+      <span>Waiting for host to start game</span><LoadingCircle size="60px" />
+    </div>
   </main>
 </template>

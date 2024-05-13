@@ -12,7 +12,7 @@ const gameDataStore = useGameDataStore()
       <Label class="text-base" for="roundCount">Rounds</Label>
       <Input
         id="roundCount"
-        v-model="gameDataStore.roundCount"
+        v-model="gameDataStore.gameSettings.roundCount"
         class="w-20 border-none text-base"
         type="number"
       />
@@ -21,7 +21,7 @@ const gameDataStore = useGameDataStore()
       <Label for="roundDuration" class="text-base">Round duration</Label>
       <Input
         id="roundDuration"
-        v-model="gameDataStore.roundDuration"
+        v-model="gameDataStore.gameSettings.roundDuration"
         class="w-20 border-none text-base"
         type="number"
       />
@@ -30,7 +30,7 @@ const gameDataStore = useGameDataStore()
       <Label for="trackDuration" class="text-base">Track duration</Label>
       <Input
         id="trackDuration"
-        v-model="gameDataStore.trackDuration"
+        v-model="gameDataStore.gameSettings.trackDuration"
         class="w-20 border-none text-base"
         type="number"
       />

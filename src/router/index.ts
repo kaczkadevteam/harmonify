@@ -14,7 +14,7 @@ const router = createRouter({
       component: () => import('@/views/GameLayout.vue'),
       children: [
         {
-          path: '',
+          path: ':id/setup',
           name: 'setup',
           component: () => import('@/views/game/SetupView.vue'),
         },
@@ -22,6 +22,11 @@ const router = createRouter({
           path: ':id',
           name: 'round',
           component: () => import(`@/views/game/RoundView.vue`),
+        },
+        {
+          path: ':id/roundResult',
+          name: 'roundResult',
+          component: () => import(`@/views/game/RoundResultView.vue`),
         },
         {
           path: ':id/result',

@@ -1,14 +1,14 @@
 import { defineStore } from 'pinia'
 import { type RemovableRef, useStorage } from '@vueuse/core'
-import type { Player, Track } from '@/types'
+import type { MusicPlayData, MusicPlayer, Track } from '@/types'
 import { VOLUME_KEY } from '@/consts'
 
-export const usePlayerStore = defineStore('player', {
+export const useMusicPlayerStore = defineStore('musicPlayer', {
   state: (): {
     /**
      * DO NOT USE IT DIRECTLY! Use store wrapper functions to interact with player
      */
-    player?: Player
+    player?: MusicPlayer
     volume: RemovableRef<number>
   } => {
     return {
@@ -22,7 +22,7 @@ export const usePlayerStore = defineStore('player', {
     async turnOn() {
       await this.player?._turnOn()
     },
-    async play(track: Track) {
+    async play(track: MusicPlayData) {
       await this.player?._play(track)
     },
     async seek(time_ms: number) {

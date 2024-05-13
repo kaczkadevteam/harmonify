@@ -3,7 +3,7 @@ import { defineStore } from 'pinia'
 import type { Router } from 'vue-router'
 import type { SelectableAlbum, SelectablePlaylist, Track } from '@/types'
 import { SpotifyService } from '@/services'
-import { addGuessToTracks, removeDuplicatedTracks } from '@/lib/track'
+import { removeDuplicatedTracks } from '@/lib/track'
 
 export const useSpotifyLibraryStore = defineStore('spotifyLibrary', () => {
   const favouritesSelected = ref(false)
@@ -13,7 +13,6 @@ export const useSpotifyLibraryStore = defineStore('spotifyLibrary', () => {
   async function getTracksFromSelectedSets(access_token: string, router: Router) {
     let tracks = await fetchTracksFromSelectedSets(access_token, router)
     tracks = removeDuplicatedTracks(tracks)
-    tracks = addGuessToTracks(tracks)
     return tracks
   }
 
