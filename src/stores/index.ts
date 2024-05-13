@@ -1,6 +1,6 @@
-export { useGameDataStore } from './gameData'
-export { useGameResultStore } from './gameResult'
 export { useConnectionStore } from './connection'
+export { useGameDataStore } from './gameData'
 export { useMusicPlayerStore } from './musicPlayer'
+export { useResultStore } from './result'
 export { useSettingsStore } from './settings'
 export { useSpotifyLibraryStore } from './spotifyLibrary'

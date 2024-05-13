@@ -16,8 +16,8 @@ defineProps<{
     <TrackDisplay class="mx-3" :track="playedTrack.track" />
     <div class="mx-3 flex items-center justify-between self-end">
       <div v-if="playedTrack.isGuessed">
-        <span class="mr-2 font-semibold">Time to guess: </span>
-        <span>{{ playedTrack.playDuration }}s</span>
+        <span class="mr-2 font-semibold">Score: </span>
+        <span>{{ playedTrack.score }}</span>
       </div>
       <div v-else-if="playedTrack.userGuess">
         <span class="mr-2 font-semibold">Your guess: </span>

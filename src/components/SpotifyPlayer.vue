@@ -61,8 +61,8 @@ function getWrapperForSpotifyPlayer(player: any, device_id: string): MusicPlayer
     _turnOn: async () => {
       await SpotifyService.selectPlayer(device_id, access_token, router)
     },
-    _play: async (track) => {
-      await SpotifyService.playTrack(track, device_id, access_token, router)
+    _play: async (playData) => {
+      await SpotifyService.playTrack(playData, device_id, access_token, router)
     },
     _seek: time_ms => player.seek(time_ms),
     _pause: () => player.pause(),

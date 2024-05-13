@@ -1,158 +1,67 @@
 <script setup lang="ts">
-import { useRoute, useRouter } from 'vue-router'
-import { computed, nextTick, onBeforeMount, onMounted, ref, watch } from 'vue'
-import { computedWithControl, useAnimate, useIntervalFn, watchOnce } from '@vueuse/core'
-import { ArrowRight } from 'lucide-vue-next'
+import { useRouter } from 'vue-router'
+import { nextTick, onBeforeMount, onMounted, onUnmounted, ref, watch } from 'vue'
+import { useAnimate, useIntervalFn, watchOnce } from '@vueuse/core'
 import { Button } from '@/components/ui/button'
-import { useGameDataStore, useGameResultStore } from '@/stores'
+import { useConnectionStore, useGameDataStore, useResultStore } from '@/stores'
 import SearchInput from '@/components/round/SearchInput.vue'
-import { cssNumberishToInt } from '@/lib/utils'
 import CircularTimer from '@/components/round/CircularTimer.vue'
 import PlaybackControls from '@/components/round/PlaybackControls.vue'
-import FinishedRoundDialog from '@/components/round/FinishedRoundDialog.vue'
 
-const route = useRoute()
 const router = useRouter()
 const gameDataStore = useGameDataStore()
-const gameResultStore = useGameResultStore()
+const connectionStore = useConnectionStore()
+const resultStore = useResultStore()
 
 const guess = ref('')
-const round = ref(1)
-const selectedTrack = ref(gameDataStore.getTrackForRound(round.value))
-const points = ref(0)
 
-const trackPlayRepeats = ref(0)
 const isPlaying = ref(false)
-const isRoundFinished = ref(false)
+const isGuessSubmitted = ref(false)
 
-const roundTimeLeft = ref(gameDataStore.roundDuration)
+const roundTimeLeft = ref(gameDataStore.gameSettings.roundDuration)
 const roundTimer = useIntervalFn(() => {
   roundTimeLeft.value--
   if (roundTimeLeft.value <= 0)
-    finishRound()
-}, 1000, { immediate: false })
+    roundTimer.pause()
+}, 1000, { immediate: true })
 
 const searchInput = ref<HTMLInputElement | null>(null)
 const playButton = ref<HTMLButtonElement | null>(null)
 const trackTimer = useAnimate(
   playButton,
   [{ backgroundPositionX: '100%' }, { backgroundPositionX: '0%' }],
-  { duration: gameDataStore.trackDuration * 1000, iterations: 1, immediate: false },
+  { duration: gameDataStore.gameSettings.breakDurationBetweenTrackPlays * 1000, iterations: 1, immediate: true, direction: 'reverse' },
 )
 
-const guessLevel = computed(() => {
-  const trackGuess = selectedTrack.value.guess ?? ''
-  const userGuess = guess.value
-
-  if (trackGuess === userGuess)
-    return 'full'
-  else if (
-    trackGuess.split(' - ')?.[1] === userGuess.split(' - ')?.[1] // compare if the same artist
-  )
-    return 'author'
-  else
-    return 'none'
-})
-const isFullyGuessed = computed(() => guessLevel.value === 'full')
-
-const pointsForRound = computedWithControl(isRoundFinished, () => {
-  const seconds = getTrackPlayDuration()
-
-  let points
-  if (seconds === 0)
-    points = 295
-  else if (seconds < 3)
-    points = Math.floor(-15 * seconds ** 2 + 295)
-  else
-    points = Math.floor(100 / (seconds - 2) ** 1.1 + 60)
-
-  switch (guessLevel.value) {
-    case 'full':
-      return points
-    case 'author':
-      return Math.floor(points / 5)
-    case 'none':
-      return 0
-  }
-})
-
 onBeforeMount(() => {
-  gameResultStore.$reset()
-  if (!gameDataStore.selectedTracks || gameDataStore.selectedTracks.length === 0)
-    router.push({ name: 'setup' })
+  connectionStore.handleMessage = (message) => {
+    if (message.$type === 'message/roundFinishedDto') {
+      resultStore.round = message.data
+      router.push({ name: 'roundResult', params: router.currentRoute.value.params })
+    }
+
+    else if (message.$type === 'message/endGameResultsDto') {
+      resultStore.game = message.data
+      router.push({ name: 'result', params: router.currentRoute.value.params })
+    }
+  }
 })
 
-function getTrackPlayDuration() {
-  const trackPlayDuration = cssNumberishToInt(trackTimer.currentTime.value) / 1000
-  return trackPlayDuration + trackPlayRepeats.value * gameDataStore.trackDuration
+function handleTrackTimerFinish() {
+  isPlaying.value = !isPlaying.value
 }
 
-function restartTrackTimer() {
-  trackPlayRepeats.value++
-  isPlaying.value = false
-}
-
-function finishRound() {
-  roundTimer.pause()
-  isRoundFinished.value = true
-  isPlaying.value = false
-}
-
-function advanceRound() {
-  gameResultStore.addPlayedTrack(selectedTrack.value, guess.value, isFullyGuessed.value, getTrackPlayDuration())
-  points.value += pointsForRound.value
-
-  if (round.value === gameDataStore.roundCount) {
-    finishGame()
-    return
-  }
-
-  round.value++
-  selectedTrack.value = gameDataStore.getTrackForRound(round.value)
-
-  trackPlayRepeats.value = 0
-  guess.value = ''
-  isPlaying.value = false
-  trackTimer.currentTime.value = 0
-  roundTimeLeft.value = gameDataStore.roundDuration
-}
-
-function finishGame() {
-  gameResultStore.finishGame(points.value)
-
-  router.push({ name: 'result', params: route.params })
-}
-
-function handlePlayingStart() {
-  roundTimer.resume()
-}
-
-function handlePlayingChange(newValue: boolean) {
-  isPlaying.value = newValue
-}
-
-function handleGuessKeyDown(e: KeyboardEvent) {
-  if (guess.value === '' && e.key === ' ') {
-    e.preventDefault()
-    isPlaying.value = !isPlaying.value
-  }
-}
-
-function handleGuessSubmit(e: Event) {
+async function handleGuessSubmit(e: Event) {
   const submittionType = ((e as SubmitEvent).submitter as HTMLButtonElement).value
   e.preventDefault()
 
-  if (guess.value === '' && submittionType === 'submit') {
-    isPlaying.value = !isPlaying.value
-    return
-  }
+  connectionStore.sendMessage({
+    $type: 'message/string',
+    type: 'guess',
+    data: submittionType === 'submit' ? guess.value : '',
+  })
 
-  finishRound()
-}
-
-function quitGame() {
-  finishRound()
-  finishGame()
+  isGuessSubmitted.value = true
 }
 
 onMounted(() => {
@@ -162,46 +71,34 @@ onMounted(() => {
 
 watchOnce(() => trackTimer.animate.value, (value) => {
   if (value)
-    value.onfinish = restartTrackTimer
+    value.onfinish = handleTrackTimerFinish
 })
 
-watch(isPlaying, (newValue) => {
-  if (newValue)
-    trackTimer.play()
+watch(isPlaying, (isPlaying) => {
+  trackTimer.reverse()
+
+  if (isPlaying)
+    trackTimer.playbackRate.value = -(gameDataStore.gameSettings.breakDurationBetweenTrackPlays / gameDataStore.gameSettings.trackDuration)
+
   else
-    trackTimer.pause()
-})
-
-watch(isRoundFinished, async (newValue) => {
-  if (!newValue) {
-    advanceRound()
-
-    await nextTick()
-    searchInput.value?.focus()
-  }
+    trackTimer.playbackRate.value = 1
 })
 </script>
 
 <template>
-  <div class="mb-32 grid grid-cols-2 place-items-center gap-x-40 gap-y-10">
-    <span class=" justify-self-start text-xl">Round: {{ round }}</span>
+  <div v-if="!isGuessSubmitted" class="mb-32 grid grid-cols-2 place-items-center gap-x-40 gap-y-10">
+    <span class=" justify-self-start text-xl">Round: {{ gameDataStore.round }}</span>
 
     <div class=" flex items-center gap-6 justify-self-end">
-      <CircularTimer :x="roundTimeLeft" :x-max="gameDataStore.roundDuration" />
-      <Button @click="quitGame">
-        Quit<ArrowRight class="ml-1 size-4" />
-      </Button>
+      <CircularTimer :x="roundTimeLeft" :x-max="gameDataStore.gameSettings.roundDuration" />
     </div>
     <PlaybackControls
       class="col-span-2 mt-20"
       :is-playing
-      :selected-track
-      :track-play-repeats
-      @play-change="handlePlayingChange"
-      @play-start="handlePlayingStart"
+      :music-play-data="gameDataStore.musicPlayData"
     />
-    <form class="col-span-2 grid grid-cols-2 place-items-center gap-y-4" @keydown="handleGuessKeyDown" @submit="handleGuessSubmit">
-      <SearchInput v-model="guess" :tracks="gameDataStore.tracks" class=" col-span-2" />
+    <form class="col-span-2 grid grid-cols-2 place-items-center gap-y-4" @submit="handleGuessSubmit">
+      <SearchInput v-model="guess" :guesses="gameDataStore.possibleGuesses" class=" col-span-2" />
       <Button type="submit" value="submit">
         Submit
       </Button>
@@ -210,12 +107,7 @@ watch(isRoundFinished, async (newValue) => {
       </Button>
     </form>
   </div>
-  <FinishedRoundDialog
-    v-model="isRoundFinished"
-    :selected-track
-    :guess
-    :is-fully-guessed
-    :points
-    :points-for-round
-  />
+  <div v-else>
+    Waiting for other players to submit guesses
+  </div>
 </template>
