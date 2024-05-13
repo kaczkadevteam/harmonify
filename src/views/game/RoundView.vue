@@ -1,28 +1,22 @@
 <script setup lang="ts">
-import { useRoute, useRouter } from 'vue-router'
-import { computed, nextTick, onBeforeMount, onMounted, ref, watch } from 'vue'
-import { computedWithControl, useAnimate, useIntervalFn, watchOnce } from '@vueuse/core'
-import { ArrowRight } from 'lucide-vue-next'
+import { useRouter } from 'vue-router'
+import { nextTick, onBeforeMount, onMounted, onUnmounted, ref, watch } from 'vue'
+import { useAnimate, useIntervalFn, watchOnce } from '@vueuse/core'
 import { Button } from '@/components/ui/button'
-import { useConnectionStore, useGameDataStore } from '@/stores'
+import { useConnectionStore, useGameDataStore, useResultStore } from '@/stores'
 import SearchInput from '@/components/round/SearchInput.vue'
-import { cssNumberishToInt } from '@/lib/utils'
 import CircularTimer from '@/components/round/CircularTimer.vue'
 import PlaybackControls from '@/components/round/PlaybackControls.vue'
-import FinishedRoundDialog from '@/components/round/FinishedRoundDialog.vue'
-import type { RoundFinishedDto, RoundStartedDto } from '@/types'
 
-// const router = useRouter()
+const router = useRouter()
 const gameDataStore = useGameDataStore()
 const connectionStore = useConnectionStore()
+const resultStore = useResultStore()
 
 const guess = ref('')
-const round = ref(1)
 
 const isPlaying = ref(false)
 const isGuessSubmitted = ref(false)
-const isRoundFinished = ref(false)
-const lastRoundResults = ref<RoundFinishedDto | undefined>()
 
 const roundTimeLeft = ref(gameDataStore.gameSettings.roundDuration)
 const roundTimer = useIntervalFn(() => {
@@ -41,67 +35,32 @@ const trackTimer = useAnimate(
 
 onBeforeMount(() => {
   connectionStore.handleMessage = (message) => {
-    if (message.$type === 'message/roundFinishedDto')
-      finishRound(message.data)
+    if (message.$type === 'message/roundFinishedDto') {
+      resultStore.round = message.data
+      router.push({ name: 'roundResult', params: router.currentRoute.value.params })
+    }
 
-    else if (message.$type === 'message/roundStartedDto')
-      startRound(message.data)
+    else if (message.$type === 'message/endGameResultsDto') {
+      resultStore.game = message.data
+      router.push({ name: 'result', params: router.currentRoute.value.params })
+    }
   }
 })
 
 function handleTrackTimerFinish() {
-  if (isRoundFinished.value)
-    return
-
   isPlaying.value = !isPlaying.value
 }
 
-function finishRound(data: RoundFinishedDto) {
-  roundTimer.pause()
-  roundTimeLeft.value = 0
-  lastRoundResults.value = data
-
-  isRoundFinished.value = true
-  isPlaying.value = false
-
-  guess.value = ''
-  trackTimer.currentTime.value = 0
-}
-
-function startRound(data: RoundStartedDto) {
-  gameDataStore.musicPlayData = {
-    uri: data.uri,
-    trackStart_ms: data.trackStart_ms,
-  }
-  round.value = data.roundNumber
-
-  isRoundFinished.value = false
-  roundTimeLeft.value = gameDataStore.gameSettings.roundDuration
-
-  trackTimer.currentTime.value = 0
-  roundTimer.resume()
-}
-
-// TODO: Add end game message
-/*
-function finishGame() {
-  router.push({ name: 'result', params: route.params })
-}
-*/
-function handleGuessSubmit(e: Event) {
+async function handleGuessSubmit(e: Event) {
   const submittionType = ((e as SubmitEvent).submitter as HTMLButtonElement).value
   e.preventDefault()
-
-  if (guess.value === '' && submittionType === 'submit') {
-    isPlaying.value = !isPlaying.value
-    return
-  }
 
   connectionStore.sendMessage({
     $type: 'message/string',
     type: 'guess',
-    data: guess.value,
+    data: submittionType === 'submit' ? guess.value : '',
   })
+
   isGuessSubmitted.value = true
 }
 
@@ -115,18 +74,11 @@ watchOnce(() => trackTimer.animate.value, (value) => {
     value.onfinish = handleTrackTimerFinish
 })
 
-watch(isRoundFinished, async (newValue) => {
-  if (!newValue) {
-    await nextTick()
-    searchInput.value?.focus()
-  }
-})
-
 watch(isPlaying, (isPlaying) => {
   trackTimer.reverse()
 
   if (isPlaying)
-    trackTimer.playbackRate.value = -(gameDataStore.gameSettings.breakDurationBetweenTrackPlays / gameDataStore.gameSettings.roundDuration)
+    trackTimer.playbackRate.value = -(gameDataStore.gameSettings.breakDurationBetweenTrackPlays / gameDataStore.gameSettings.trackDuration)
 
   else
     trackTimer.playbackRate.value = 1
@@ -135,7 +87,7 @@ watch(isPlaying, (isPlaying) => {
 
 <template>
   <div v-if="!isGuessSubmitted" class="mb-32 grid grid-cols-2 place-items-center gap-x-40 gap-y-10">
-    <span class=" justify-self-start text-xl">Round: {{ round }}</span>
+    <span class=" justify-self-start text-xl">Round: {{ gameDataStore.round }}</span>
 
     <div class=" flex items-center gap-6 justify-self-end">
       <CircularTimer :x="roundTimeLeft" :x-max="gameDataStore.gameSettings.roundDuration" />
@@ -158,9 +110,4 @@ watch(isPlaying, (isPlaying) => {
   <div v-else>
     Waiting for other players to submit guesses
   </div>
-  <FinishedRoundDialog
-    v-model="isRoundFinished"
-    :guess
-    :round-result="lastRoundResults!"
-  />
 </template>

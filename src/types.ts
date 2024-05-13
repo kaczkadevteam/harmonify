@@ -74,7 +74,7 @@ export const playedTrackSchema = z.object({
   track: trackSchema,
   userGuess: z.string(),
   isGuessed: z.boolean(),
-  playDuration: z.number(),
+  score: z.number(),
 })
 export type PlayedTrack = z.infer<typeof playedTrackSchema>
 
@@ -152,6 +152,14 @@ export const roundFinishedDto = z.object({
 })
 export type RoundFinishedDto = z.infer<typeof roundFinishedDto>
 
+export const endGameResultsDtoSchema = z.object({
+  tracks: z.array(trackSchema),
+  roundResults: z.array(roundResultDtoSchema),
+  score: z.number(),
+  players: z.array(playerDtoSchema),
+})
+export type EndGameResultsDto = z.infer<typeof endGameResultsDtoSchema>
+
 const messageTypeString = 'message'
 const errorTypeString = 'messageError'
 
@@ -192,6 +200,11 @@ export const messageSchema = z.discriminatedUnion('$type', [
     $type: z.literal(`${messageTypeString}/roundFinishedDto`),
     type: z.literal('nextRound'),
     data: roundFinishedDto,
+  }),
+  z.object({
+    $type: z.literal(`${messageTypeString}/endGameResultsDto`),
+    type: z.literal('endGameResults'),
+    data: endGameResultsDtoSchema,
   }),
   z.object({
     $type: z.literal(`${messageTypeString}/string`),
@@ -242,17 +255,12 @@ export type Player = z.infer<typeof playerSchema>
 export const gameDataSchema = z.object({
   id: z.string().length(4),
   selfPlayer: playerSchema,
+  round: z.number(),
   gameSettings: gameSettingsDtoSchema,
   possibleGuesses: z.array(displayedGuessDtoSchema),
   musicPlayData: musicPlayDataSchema,
 })
 export type GameData = z.infer<typeof gameDataSchema>
-
-export const gameResultSchema = z.object({
-  score: z.number(),
-  playedTracks: z.array(playedTrackSchema),
-})
-export type GameResult = z.infer<typeof gameResultSchema>
 
 export interface MusicPlayer {
   _turnOn: () => Promise<void>

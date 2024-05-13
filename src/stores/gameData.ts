@@ -9,6 +9,7 @@ export const useGameDataStore = defineStore('gameData', {
         isHost: false,
         guid: '',
       },
+      round: 1,
       gameSettings: {
         breakDurationBetweenTrackPlays: 2,
         breakDurationBetweenRounds: 5,

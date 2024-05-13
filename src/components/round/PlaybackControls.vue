@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import { onUnmounted, ref, watch } from 'vue'
 import { Pause, Play } from 'lucide-vue-next'
 import VolumeInput from './VolumeInput.vue'
 import { useMusicPlayerStore } from '@/stores'
@@ -40,11 +40,8 @@ watch(() => props.isPlaying, (isPlaying) => {
   }
 })
 
-/**
- * If selected track changes reset playback
- */
-watch(() => props.musicPlayData, () => {
-  isPlayingStarted.value = false
+onUnmounted(() => {
+  stopPlaying()
 })
 </script>
 
