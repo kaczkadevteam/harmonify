@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router'
-import { nextTick, onBeforeMount, onMounted, onUnmounted, ref, watch } from 'vue'
+import { onBeforeMount, onMounted, onUnmounted, ref, watch } from 'vue'
 import { useAnimate, useIntervalFn, watchOnce } from '@vueuse/core'
 import { Button } from '@/components/ui/button'
-import { useConnectionStore, useGameDataStore, useResultStore } from '@/stores'
+import { useConnectionStore, useGameDataStore, useMusicPlayerStore, useResultStore } from '@/stores'
 import SearchInput from '@/components/round/SearchInput.vue'
 import CircularTimer from '@/components/round/CircularTimer.vue'
 import PlaybackControls from '@/components/round/PlaybackControls.vue'
@@ -12,9 +12,11 @@ const router = useRouter()
 const gameDataStore = useGameDataStore()
 const connectionStore = useConnectionStore()
 const resultStore = useResultStore()
+const musicPlayerStore = useMusicPlayerStore()
 
 const guess = ref('')
 
+const isPlayingStarted = ref(false)
 const isPlaying = ref(false)
 const isGuessSubmitted = ref(false)
 
@@ -32,6 +34,25 @@ const trackTimer = useAnimate(
   [{ backgroundPositionX: '100%' }, { backgroundPositionX: '0%' }],
   { duration: gameDataStore.gameSettings.breakDurationBetweenTrackPlays * 1000, iterations: 1, immediate: true, direction: 'reverse' },
 )
+
+async function startPlaying() {
+  if (!gameDataStore.selfPlayer.isHost)
+    return
+  if (!isPlayingStarted.value) {
+    isPlayingStarted.value = true
+
+    await musicPlayerStore.play(gameDataStore.musicPlayData)
+  }
+  else {
+    await musicPlayerStore.resume()
+  }
+}
+
+async function stopPlaying() {
+  if (!gameDataStore.selfPlayer.isHost)
+    return
+  await musicPlayerStore.pause()
+}
 
 onBeforeMount(() => {
   connectionStore.handleMessage = (message) => {
@@ -77,11 +98,20 @@ watchOnce(() => trackTimer.animate.value, (value) => {
 watch(isPlaying, (isPlaying) => {
   trackTimer.reverse()
 
-  if (isPlaying)
+  if (isPlaying) {
     trackTimer.playbackRate.value = -(gameDataStore.gameSettings.breakDurationBetweenTrackPlays / gameDataStore.gameSettings.trackDuration)
+    musicPlayerStore.seek(gameDataStore.musicPlayData.trackStart_ms)
+    startPlaying()
+  }
 
-  else
+  else {
     trackTimer.playbackRate.value = 1
+    stopPlaying()
+  }
+})
+
+onUnmounted(() => {
+  stopPlaying()
 })
 </script>
 

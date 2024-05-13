@@ -38,6 +38,7 @@ export const useGameDataStore = defineStore('gameData', {
       this.selfPlayer.guid = playerGuid
     },
     startGame(gameStartedDto: GameStartedDto) {
+      this.round = 1
       this.gameSettings = gameStartedDto.gameSettings
       this.possibleGuesses = gameStartedDto.possibleGuesses
       this.musicPlayData = {
