@@ -1,8 +1,8 @@
 import { defineStore } from 'pinia'
-import type { EndGameResultsDto, RoundFinishedDto } from '@/types'
+import type { EndGameResultsDto, PlayerDto, RoundFinishedDto } from '@/types'
 
 export interface ResultStore {
-  round: RoundFinishedDto
+  round: RoundFinishedDto & { previousPlayerScores: PlayerDto[] }
   game: EndGameResultsDto
 }
 
@@ -15,6 +15,7 @@ export const useResultStore = defineStore('result', {
           guess: '',
         },
         score: 0,
+        previousPlayerScores: [],
         players: [],
         track: {
           name: '',

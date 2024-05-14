@@ -57,7 +57,7 @@ async function stopPlaying() {
 onBeforeMount(() => {
   connectionStore.handleMessage = (message) => {
     if (message.$type === 'message/roundFinishedDto') {
-      resultStore.round = message.data
+      resultStore.round = { ...message.data, previousPlayerScores: resultStore.round.players }
       router.push({ name: 'roundResult', params: router.currentRoute.value.params })
     }
 
