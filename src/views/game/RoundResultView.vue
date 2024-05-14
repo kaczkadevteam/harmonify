@@ -4,6 +4,7 @@ import { useRouter } from 'vue-router'
 import { cn } from '@/lib/utils'
 import { GuessDisplay, TrackDisplay } from '@/components/trackDisplay'
 import { useConnectionStore, useGameDataStore, useResultStore } from '@/stores'
+import PlayerResults from '@/components/roundResult/PlayerResults.vue'
 
 const router = useRouter()
 const gameDataStore = useGameDataStore()
@@ -29,25 +30,30 @@ const roundFinishedTitle = computed(() => isFullyGuessed.value ? 'Correct :)' : 
 </script>
 
 <template>
-  <div>
-    <div>
-      <div>
-        <div :class="cn('text-xl', isFullyGuessed ? 'text-green-600' : 'text-red-600')">
-          {{ roundFinishedTitle }}
+  <div class=" grid grid-cols-2 place-content-center gap-10">
+    <div class=" justify-self-center">
+      <PlayerResults :points-bar-max-width="20" />
+    </div>
+    <div class=" justify-self-center">
+      <div class="w-96">
+        <div>
+          <div :class="cn('text-xl', isFullyGuessed ? 'text-green-600' : 'text-red-600')">
+            {{ roundFinishedTitle }}
+          </div>
         </div>
-      </div>
-      <div class="mb-2 grid justify-items-center gap-1 text-center">
-        <img :src="roundResult.track.album.images[0].url" alt="Album cover" width="200" height="200">
-        <TrackDisplay :track="roundResult.track" />
-        <div v-if="!isFullyGuessed" class="mt-4">
-          <span class="mr-3">Your guess:</span>
-          <GuessDisplay :guess="roundResult.roundResult.guess" />
+        <div class="mb-2 grid justify-items-center gap-1 text-center">
+          <img :src="roundResult.track.album.images[0].url" alt="Album cover" width="200" height="200">
+          <TrackDisplay :track="roundResult.track" />
+          <div v-if="!isFullyGuessed" class="mt-4">
+            <span class="mr-3">Your guess:</span>
+            <GuessDisplay :guess="roundResult.roundResult.guess" />
+          </div>
         </div>
-      </div>
-      <div class="flex items-center sm:justify-between">
-        <div class="text-lg">
-          <span>Points </span>
-          <span>{{ `${roundResult.score - roundResult.roundResult.score} + ${roundResult.roundResult.score}` }}</span>
+        <div class="flex items-center sm:justify-between">
+          <div class="text-lg">
+            <span>Points </span>
+            <span>{{ `${roundResult.score - roundResult.roundResult.score} + ${roundResult.roundResult.score}` }}</span>
+          </div>
         </div>
       </div>
     </div>
