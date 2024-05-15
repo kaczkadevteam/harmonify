@@ -15,7 +15,7 @@ const width = useTransition(() => props.playerResult.width, {
 <template>
   <div class="flex items-center gap-2">
     <div class="w-40 truncate">
-      {{ playerResult.guid }}
+      {{ playerResult.nickname }}
     </div>
     <div class="h-full rounded-md bg-primary text-right text-primary-foreground" :style="{ width: `${width}rem` }" />
     <div>{{ playerResult.score }}</div>

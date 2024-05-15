@@ -24,7 +24,7 @@ onBeforeMount(() => {
   <main class="grid grid-cols-[200px_1fr] items-start gap-4">
     <div class="flex items-center gap-2">
       <CircleUserRound class="size-14" />
-      <div>{{ gameDataStore.selfPlayer.guid }}</div>
+      <div>{{ gameDataStore.selfPlayer.nickname }}</div>
     </div>
     <HostView v-if="gameDataStore.selfPlayer.isHost" />
     <div v-else class="flex items-center gap-5 self-center text-2xl">
