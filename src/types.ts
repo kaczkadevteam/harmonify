@@ -267,6 +267,7 @@ export type Player = z.infer<typeof playerSchema>
 export const gameDataSchema = z.object({
   id: z.string().length(4),
   selfPlayer: playerSchema,
+  players: z.array(playerDtoSchema),
   round: z.number(),
   gameSettings: gameSettingsDtoSchema,
   possibleGuesses: z.array(displayedGuessDtoSchema),

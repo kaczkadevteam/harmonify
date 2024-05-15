@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia'
+import { useGameDataStore } from '.'
 import { type Message, messageSchema } from '@/types'
 
 export const useConnectionStore = defineStore('connection', {
@@ -26,13 +27,19 @@ export const useConnectionStore = defineStore('connection', {
       if (this.ws)
         this.ws.close()
 
+      const gameDataStore = useGameDataStore()
+
       this.handleOpen = handlers.handleOpen
       this.handleMessage = handlers.handleMessage
       this.handleError = handlers.handleError
       this.handleClose = handlers.handleClose
       this.handleMessageWrapper = (event) => {
+        const message = messageSchema.parse(JSON.parse(event.data))
+        if (message.$type === 'message/playerList')
+          gameDataStore.updatePlayersList(message.data)
+
         if (this.handleMessage)
-          this.handleMessage(messageSchema.parse(JSON.parse(event.data)))
+          this.handleMessage(message)
       }
 
       this.ws = new WebSocket(`${import.meta.env.VITE_WEB_SOCKET_URL}${path}`)

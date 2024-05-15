@@ -10,6 +10,7 @@ export const useGameDataStore = defineStore('gameData', {
         guid: '',
         nickname: '',
       },
+      players: [],
       round: 1,
       gameSettings: {
         breakDurationBetweenTrackPlays: 2,
@@ -46,6 +47,9 @@ export const useGameDataStore = defineStore('gameData', {
         uri: gameStartedDto.uri,
         trackStart_ms: gameStartedDto.trackStart_ms,
       }
+    },
+    updatePlayersList(playersList: PlayerDto[]) {
+      this.players = playersList
     },
   },
 })
