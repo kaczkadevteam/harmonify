@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { CircleUserRound } from 'lucide-vue-next'
 import { onBeforeMount } from 'vue'
 import { useRouter } from 'vue-router'
 import HostView from '@/components/setup/HostView.vue'
 import { useConnectionStore, useGameDataStore } from '@/stores'
 import LoadingCircle from '@/components/LoadingCircle.vue'
+import { cn } from '@/lib/utils'
+import Player from '@/components/Player.vue'
 
 const router = useRouter()
 const gameDataStore = useGameDataStore()
@@ -22,9 +23,13 @@ onBeforeMount(() => {
 
 <template>
   <main class="grid grid-cols-[200px_1fr] items-start gap-4">
-    <div class="flex items-center gap-2">
-      <CircleUserRound class="size-14" />
-      <div>{{ gameDataStore.selfPlayer.guid }}</div>
+    <div class="grid gap-4">
+      <Player
+        v-for="player of gameDataStore.players"
+        :key="player.guid"
+        :player
+        :is-host="player.guid === gameDataStore.selfPlayer.guid"
+      />
     </div>
     <HostView v-if="gameDataStore.selfPlayer.isHost" />
     <div v-else class="flex items-center gap-5 self-center text-2xl">

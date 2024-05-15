@@ -95,6 +95,7 @@ export type SelectableAlbum = z.infer<typeof selectableAlbumSchema>
 export const createdGameDtoSchema = z.object({
   gameId: z.string().length(4),
   hostGuid: z.string().uuid(),
+  nickname: z.string(),
 })
 export type CreatedGameDto = z.infer<typeof createdGameDtoSchema>
 
@@ -140,15 +141,21 @@ export type RoundStartedDto = z.infer<typeof roundStartedDto>
 
 export const playerDtoSchema = z.object({
   guid: z.string(),
-  score: z.number(),
+  nickname: z.string().min(2, { message: 'Username must contain at least 2 characters' })
+    .max(50, { message: 'Username must contain at most 50 characters' }),
 })
 export type PlayerDto = z.infer<typeof playerDtoSchema>
+
+export const playerScoreDtoSchema = playerDtoSchema.and(z.object({
+  score: z.number(),
+}))
+export type PlayerScoreDto = z.infer<typeof playerScoreDtoSchema>
 
 export const roundFinishedDto = z.object({
   track: trackSchema,
   roundResult: roundResultDtoSchema,
   score: z.number(),
-  players: z.array(playerDtoSchema),
+  players: z.array(playerScoreDtoSchema),
 })
 export type RoundFinishedDto = z.infer<typeof roundFinishedDto>
 
@@ -156,7 +163,7 @@ export const endGameResultsDtoSchema = z.object({
   tracks: z.array(trackSchema),
   roundResults: z.array(roundResultDtoSchema),
   score: z.number(),
-  players: z.array(playerDtoSchema),
+  players: z.array(playerScoreDtoSchema),
 })
 export type EndGameResultsDto = z.infer<typeof endGameResultsDtoSchema>
 
@@ -190,6 +197,16 @@ export const messageSchema = z.discriminatedUnion('$type', [
     $type: z.literal(`${messageTypeString}/gameStartedDto`),
     type: z.literal('gameStarted'),
     data: gameStartedDtoSchema,
+  }),
+  z.object({
+    $type: z.literal(`${messageTypeString}/playerInfoDto`),
+    type: z.literal('newPlayer'),
+    data: playerDtoSchema,
+  }),
+  z.object({
+    $type: z.literal(`${messageTypeString}/playerList`),
+    type: z.literal('playerList'),
+    data: z.array(playerDtoSchema),
   }),
   z.object({
     $type: z.literal(`${messageTypeString}/roundStartedDto`),
@@ -242,19 +259,15 @@ export const guessLevelSchema = z.union([
 ])
 export type GuessLevel = z.infer<typeof guessLevelSchema>
 
-export const playerSchema = z.object({
+export const playerSchema = playerDtoSchema.and(z.object({
   isHost: z.boolean(),
-  username: z.string()
-    .min(2, { message: 'Username must contain at least 2 characters' })
-    .max(50, { message: 'Username must contain at most 50 characters' })
-    .optional(),
-  guid: z.string(),
-})
+}))
 export type Player = z.infer<typeof playerSchema>
 
 export const gameDataSchema = z.object({
   id: z.string().length(4),
   selfPlayer: playerSchema,
+  players: z.array(playerDtoSchema),
   round: z.number(),
   gameSettings: gameSettingsDtoSchema,
   possibleGuesses: z.array(displayedGuessDtoSchema),

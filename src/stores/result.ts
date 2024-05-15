@@ -1,8 +1,8 @@
 import { defineStore } from 'pinia'
-import type { EndGameResultsDto, PlayerDto, RoundFinishedDto } from '@/types'
+import type { EndGameResultsDto, PlayerScoreDto, RoundFinishedDto } from '@/types'
 
 export interface ResultStore {
-  round: RoundFinishedDto & { previousPlayerScores: PlayerDto[] }
+  round: RoundFinishedDto & { previousPlayerScores: PlayerScoreDto[] }
   game: EndGameResultsDto
 }
 
