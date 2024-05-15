@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { TransitionPresets, useTransition } from '@vueuse/core'
-import type { PlayerDto } from '@/types'
+import type { PlayerScoreDto } from '@/types'
 
 const props = defineProps<{
-  playerResult: PlayerDto & { width: number }
+  playerResult: PlayerScoreDto & { width: number }
 }>()
 
 const width = useTransition(() => props.playerResult.width, {

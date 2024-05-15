@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input'
 import { PinInput, PinInputGroup, PinInputInput } from '@/components/ui/pin-input'
 import { Button } from '@/components/ui/button'
 import { useConnectionStore, useGameDataStore } from '@/stores'
-import { playerSchema } from '@/types'
+import { playerDtoSchema } from '@/types'
 
 const cookies = useCookies()
 const connectionStore = useConnectionStore()
@@ -28,7 +28,7 @@ function joinRoom() {
       isJoinRoomError.value = true
     },
     handleMessage(message) {
-      if (message.$type === 'message/string') {
+      if (message.$type === 'message/playerInfoDto') {
         gameDataStore.joinGame(room, message.data)
         router.push({ name: 'setup', params: { id: room } })
       }
@@ -38,7 +38,7 @@ function joinRoom() {
 }
 
 function createRoom() {
-  const parseResult = playerSchema.shape.username.safeParse(username.value)
+  const parseResult = playerDtoSchema.shape.nickname.safeParse(username.value)
   if (!parseResult.success) {
     usernameError.value = parseResult.error.issues[0].message
     return

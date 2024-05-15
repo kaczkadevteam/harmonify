@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import type { CreatedGameDto, GameData, GameStartedDto, Track } from '@/types'
+import type { CreatedGameDto, GameData, GameStartedDto, PlayerDto, Track } from '@/types'
 
 export const useGameDataStore = defineStore('gameData', {
   state: (): GameData => {
@@ -8,6 +8,7 @@ export const useGameDataStore = defineStore('gameData', {
       selfPlayer: {
         isHost: false,
         guid: '',
+        nickname: '',
       },
       round: 1,
       gameSettings: {
@@ -31,11 +32,11 @@ export const useGameDataStore = defineStore('gameData', {
       this.id = createdGameDto.gameId
       this.selfPlayer.isHost = true
       this.selfPlayer.guid = createdGameDto.hostGuid
+      this.selfPlayer.nickname = createdGameDto.nickname
     },
-    joinGame(id: string, playerGuid: string) {
+    joinGame(id: string, player: PlayerDto) {
       this.id = id
-      this.selfPlayer.isHost = false
-      this.selfPlayer.guid = playerGuid
+      this.selfPlayer = { ...player, isHost: false }
     },
     startGame(gameStartedDto: GameStartedDto) {
       this.round = 1
