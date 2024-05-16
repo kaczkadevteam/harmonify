@@ -7,6 +7,7 @@ import Player from '@/components/Player.vue'
 const props = defineProps<{
   playerResult: PlayerScoreDto & { width: number }
 }>()
+
 const gameDataStore = useGameDataStore()
 const width = useTransition(() => props.playerResult.width, {
   duration: 1000,

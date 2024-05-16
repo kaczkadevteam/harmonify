@@ -6,6 +6,8 @@ import { ScrollArea } from '@/components/ui/scroll-area'
 import { useResultStore } from '@/stores'
 import PlayedTrack from '@/components/result/PlayedTrack.vue'
 import type { PlayedTrack as TPlayedTrack } from '@/types'
+import PlayerResults from '@/components/roundResult/PlayerResults.vue'
+import GameResults from '@/components/result/GameResults.vue'
 
 const router = useRouter()
 const resultStore = useResultStore()
@@ -28,8 +30,8 @@ const playedTracks = computed<TPlayedTrack[]>(() => {
 </script>
 
 <template>
-  <div class="grid h-screen grid-cols-[auto_auto] place-items-center gap-5">
-    <ScrollArea class="h-4/5 w-[650px] rounded-lg border p-4">
+  <div class="grid h-screen grid-cols-[auto_auto] grid-rows-2 place-items-center gap-5">
+    <ScrollArea class="row-span-2 h-4/5 w-[650px] rounded-lg border p-4">
       <div class="space-y-4">
         <PlayedTrack
           v-for="playedTrack, idx of playedTracks"
@@ -38,6 +40,7 @@ const playedTracks = computed<TPlayedTrack[]>(() => {
         />
       </div>
     </ScrollArea>
+    <GameResults :points-bar-max-width="20" />
     <div class="grid place-items-center gap-5">
       <div class="text-4xl">
         <span>Score: </span>
