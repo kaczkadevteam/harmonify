@@ -36,4 +36,19 @@ export const useResultStore = defineStore('result', {
       },
     }
   },
+  actions: {
+    setRoundResult(data: RoundFinishedDto) {
+      this.round = {
+        ...data,
+        players: [...data.players].sort((a, b) => b.score - a.score),
+        previousPlayerScores: [...this.round.players].sort((a, b) => b.score - a.score),
+      }
+    },
+    setGameResult(data: EndGameResultsDto) {
+      this.game = {
+        ...data,
+        players: [...data.players].sort((a, b) => b.score - a.score),
+      }
+    },
+  },
 })

@@ -3,7 +3,6 @@ import { computed } from 'vue'
 import { useTimeout } from '@vueuse/core'
 import PlayerResult from './PlayerResult.vue'
 import { useResultStore } from '@/stores'
-import type { PlayerScoreDto } from '@/types'
 
 const props = defineProps<{
   /**
@@ -16,13 +15,9 @@ const resultStore = useResultStore()
 
 const showCurrentScore = useTimeout(1000)
 const playerResults = computed(() => {
-  let results: PlayerScoreDto[] = []
-  if (showCurrentScore.value)
-    results = resultStore.round.players
-  else
-    results = resultStore.round.previousPlayerScores
-
-  results.sort((a, b) => b.score - a.score)
+  const results = showCurrentScore.value
+    ? resultStore.round.players
+    : resultStore.round.previousPlayerScores
 
   const bestScore: number = results[0]?.score ?? 0
 

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
-import { useIntervalFn, useSorted } from '@vueuse/core'
+import { useIntervalFn } from '@vueuse/core'
 import PlayerResult from '@/components/roundResult/PlayerResult.vue'
 import { useResultStore } from '@/stores'
 import type { PlayerScoreDto } from '@/types'
@@ -11,6 +11,20 @@ const resultsGap = 16
 const resultHeight = 32
 const resultsWidth = scoreBarMaxWidth + 240
 const maxVisibleResults = 6
+const intervalBeforeFirstPlace = 1000
+
+function getIntervalForIndex(index: number) {
+  switch (index) {
+    case 1:
+      return intervalBeforeFirstPlace
+    case 2:
+      return 800
+    case 3:
+      return 500
+    default:
+      return 300
+  }
+}
 
 const results = computed(() => {
   const results = [
@@ -18,6 +32,11 @@ const results = computed(() => {
       guid: '820b35e9-cf01-472f-8b53-60d3f71bb03a',
       nickname: 'BrightIndigoPanther17',
       score: 321,
+    },
+    {
+      guid: '72fb5e0f-d6d9-497d-87aa-5021d80db0e1',
+      nickname: 'CunningCeruleanCoyote97',
+      score: 320,
     },
     {
       guid: '820b35e9-cf01-472f-8b53-6033f71bb03a',
@@ -29,14 +48,7 @@ const results = computed(() => {
       nickname: 'BrightIndigoPanther17',
       score: 156,
     },
-    {
-      guid: '72fb5e0f-d6d9-497d-87aa-5021d80db0e1',
-      nickname: 'CunningCeruleanCoyote97',
-      score: 320,
-    },
   ]
-
-  results.sort((a, b) => b.score - a.score)
 
   const bestScore: number = results[0]?.score ?? 0
 
@@ -57,12 +69,14 @@ const containerHeight = computed(() => {
   return resultsToShow * (resultHeight + resultsGap) - resultsGap
 })
 
-const interval = ref(500)
+const interval = ref(getIntervalForIndex(resultsLeft.value - 1))
 const { pause } = useIntervalFn(() => {
   resultsLeft.value--
 
   if (resultsLeft.value <= 0)
     pause()
+  else
+    interval.value = getIntervalForIndex(resultsLeft.value)
 
   displayedResults.value.push(results.value[resultsLeft.value])
 }, interval)
