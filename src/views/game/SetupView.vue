@@ -6,10 +6,15 @@ import { useConnectionStore, useGameDataStore } from '@/stores'
 import LoadingCircle from '@/components/LoadingCircle.vue'
 import { cn } from '@/lib/utils'
 import Player from '@/components/Player.vue'
+import { useClipboard } from '@vueuse/core'
 
 const router = useRouter()
 const gameDataStore = useGameDataStore()
 const connectionStore = useConnectionStore()
+
+import { Copy } from 'lucide-vue-next'
+
+const { text, isSupported, copy } = useClipboard()
 
 onBeforeMount(() => {
   connectionStore.handleMessage = (message) => {
@@ -24,6 +29,14 @@ onBeforeMount(() => {
 <template>
   <main class="grid grid-cols-[200px_1fr] items-start gap-4">
     <div class="grid gap-4">
+      <div class="flex gap-4 mb-4">
+        <div>
+          Room: {{router.currentRoute.value.params.id}}
+        </div>
+        <button >
+          <Copy @click="copy(router.currentRoute.value.params.id)"></Copy>
+        </button>
+      </div>
       <Player
         v-for="player of gameDataStore.players"
         :key="player.guid"
