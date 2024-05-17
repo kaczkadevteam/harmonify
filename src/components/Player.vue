@@ -11,7 +11,7 @@ defineProps<{
 
 <template>
   <div class="flex w-40 items-center gap-2">
-    <CircleUserRound :class="cn('size-8', isHost && 'text-primary')" />
+    <CircleUserRound :class="cn('min-w-8 min-h-8', isHost && 'text-primary')" />
     <div class="truncate">
       {{ player.nickname }}
     </div>

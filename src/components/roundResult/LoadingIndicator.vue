@@ -12,14 +12,6 @@ const waitTime = computed(() => `${gameDataStore.gameSettings.breakDurationBetwe
 
 <style scoped>
 .loading-indicator {
-  animation: loading-indicator v-bind(waitTime) linear;
-}
-@keyframes loading-indicator {
-  from {
-    transform: scaleX(0);
-  }
-  to {
-    transform: scaleX(1);
-  }
+  animation: grow-x v-bind(waitTime) linear;
 }
 </style>

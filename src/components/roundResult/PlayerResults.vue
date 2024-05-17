@@ -3,11 +3,10 @@ import { computed } from 'vue'
 import { useTimeout } from '@vueuse/core'
 import PlayerResult from './PlayerResult.vue'
 import { useResultStore } from '@/stores'
-import type { PlayerScoreDto } from '@/types'
 
 const props = defineProps<{
   /**
-   * Value in rem
+   * Value in px
    */
   pointsBarMaxWidth: number
 }>()
@@ -16,23 +15,25 @@ const resultStore = useResultStore()
 
 const showCurrentScore = useTimeout(1000)
 const playerResults = computed(() => {
-  let results: PlayerScoreDto[] = []
-  if (showCurrentScore.value)
-    results = resultStore.round.players
-  else
-    results = resultStore.round.previousPlayerScores
-
-  results.sort((a, b) => b.score - a.score)
+  const results = showCurrentScore.value
+    ? resultStore.round.players
+    : resultStore.round.previousPlayerScores
 
   const bestScore: number = results[0]?.score ?? 0
 
   return results.map(r => ({ ...r, width: (r.score / bestScore) * props.pointsBarMaxWidth }))
 })
+const isFirstRound = computed(() => resultStore.round.previousPlayerScores.length === 0)
 </script>
 
 <template>
   <TransitionGroup name="results" tag="div" class="grid gap-4">
-    <PlayerResult v-for="playerResult in playerResults" :key="playerResult.guid" :player-result />
+    <PlayerResult
+      v-for="playerResult in playerResults"
+      :key="playerResult.guid"
+      :animated="isFirstRound"
+      :player-result
+    />
   </TransitionGroup>
 </template>
 
