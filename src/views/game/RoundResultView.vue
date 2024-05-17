@@ -34,7 +34,7 @@ const roundFinishedTitle = computed(() => isFullyGuessed.value ? 'Correct :)' : 
   <LoadingIndicator />
   <div class=" grid grid-cols-2 place-content-center gap-10">
     <div class=" justify-self-center">
-      <PlayerResults :points-bar-max-width="20" />
+      <PlayerResults :points-bar-max-width="320" />
     </div>
     <div class=" justify-self-center">
       <div class="w-96">

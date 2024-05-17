@@ -21,7 +21,7 @@ const width = useTransition(() => props.playerResult.width, {
       :player="playerResult"
       :is-host="playerResult.guid === gameDataStore.selfPlayer.guid"
     />
-    <div class="h-full rounded-md bg-primary text-right text-primary-foreground" :style="{ width: `${width}rem` }" />
+    <div class="h-full rounded-md bg-primary text-right text-primary-foreground" :style="{ width: `${width}px` }" />
     <div>{{ playerResult.score }}</div>
   </div>
 </template>

@@ -7,7 +7,7 @@ import type { PlayerScoreDto } from '@/types'
 
 const props = defineProps<{
   /**
-   * Value in rem
+   * Value in px
    */
   pointsBarMaxWidth: number
 }>()

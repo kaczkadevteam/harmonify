@@ -6,6 +6,12 @@ import { useResultStore } from '@/stores'
 import type { PlayerScoreDto } from '@/types'
 
 // const resultStore = useResultStore()
+const scoreBarMaxWidth = 320
+const resultsGap = 16
+const resultHeight = 32
+const resultsWidth = scoreBarMaxWidth + 240
+const maxVisibleResults = 6
+
 const results = computed(() => {
   const results = [
     {
@@ -34,11 +40,23 @@ const results = computed(() => {
 
   const bestScore: number = results[0]?.score ?? 0
 
-  return results.map(r => ({ ...r, width: (r.score / bestScore) * 20 }))
+  return results.map(r => ({ ...r, width: (r.score / bestScore) * scoreBarMaxWidth }))
 })
 
 const displayedResults = ref<(PlayerScoreDto & { width: number })[]>([])
+
 const resultsLeft = ref(results.value.length)
+const containerHeight = computed(() => {
+  let resultsToShow = 0
+  if (results.value.length > maxVisibleResults)
+    resultsToShow = maxVisibleResults
+
+  else
+    resultsToShow = results.value.length
+
+  return resultsToShow * (resultHeight + resultsGap) - resultsGap
+})
+
 const interval = ref(500)
 const { pause } = useIntervalFn(() => {
   resultsLeft.value--
@@ -51,8 +69,8 @@ const { pause } = useIntervalFn(() => {
 </script>
 
 <template>
-  <TransitionGroup name="results" tag="div" class="flex h-60 flex-col-reverse gap-4">
-    <PlayerResult v-for="playerResult in displayedResults" :key="playerResult.guid" :player-result class="h-8" />
+  <TransitionGroup name="results" tag="div" class="flex flex-col-reverse gap-4 overflow-hidden" :style="{ height: `${containerHeight}px`, width: `${resultsWidth}px`, gap: `${resultsGap}px` }">
+    <PlayerResult v-for="playerResult in displayedResults" :key="playerResult.guid" :player-result :style="{ height: `${resultHeight}px` }" />
   </TransitionGroup>
 </template>
 
