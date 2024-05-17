@@ -7,14 +7,14 @@ import LoadingCircle from '@/components/LoadingCircle.vue'
 import { cn } from '@/lib/utils'
 import Player from '@/components/Player.vue'
 import { useClipboard } from '@vueuse/core'
+import { useToast } from '@/components/ui/toast/use-toast'
+import { Copy } from 'lucide-vue-next'
 
 const router = useRouter()
 const gameDataStore = useGameDataStore()
 const connectionStore = useConnectionStore()
-
-import { Copy } from 'lucide-vue-next'
-
 const { text, isSupported, copy } = useClipboard()
+const { toast } = useToast()
 
 onBeforeMount(() => {
   connectionStore.handleMessage = (message) => {
@@ -24,6 +24,11 @@ onBeforeMount(() => {
     }
   }
 })
+
+function copyId() {
+  copy(router.currentRoute.value.params.id);
+  toast({description: 'Room ID copied to clipboard!'})
+}
 </script>
 
 <template>
@@ -34,7 +39,7 @@ onBeforeMount(() => {
           Room: {{router.currentRoute.value.params.id}}
         </div>
         <button >
-          <Copy @click="copy(router.currentRoute.value.params.id)"></Copy>
+          <Copy @click="copyId"></Copy>
         </button>
       </div>
       <Player
