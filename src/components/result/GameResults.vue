@@ -15,7 +15,7 @@ const maxVisibleResults = 6
 const results = computed(() => {
   const results = [
     {
-      guid: '820b35e9-cf01-472f-8b53-6033f71bb03a',
+      guid: '820b35e9-cf01-472f-8b53-60d3f71bb03a',
       nickname: 'BrightIndigoPanther17',
       score: 321,
     },
@@ -25,12 +25,12 @@ const results = computed(() => {
       score: 256,
     },
     {
-      guid: '820b35e9-cf01-472f-8b53-6033f71bb03a',
+      guid: '820b35e9-cf01-472f-8b53-6da3f71bb03a',
       nickname: 'BrightIndigoPanther17',
       score: 156,
     },
     {
-      guid: '72fb5e0f-d6d9-497d-87aa-504ed80db0e1',
+      guid: '72fb5e0f-d6d9-497d-87aa-5021d80db0e1',
       nickname: 'CunningCeruleanCoyote97',
       score: 320,
     },
@@ -70,7 +70,13 @@ const { pause } = useIntervalFn(() => {
 
 <template>
   <TransitionGroup name="results" tag="div" class="flex flex-col-reverse gap-4 overflow-hidden" :style="{ height: `${containerHeight}px`, width: `${resultsWidth}px`, gap: `${resultsGap}px` }">
-    <PlayerResult v-for="playerResult in displayedResults" :key="playerResult.guid" :player-result :style="{ height: `${resultHeight}px` }" />
+    <PlayerResult
+      v-for="playerResult in displayedResults"
+      :key="playerResult.guid"
+      :style="{ height: `${resultHeight}px` }"
+      :player-result
+      animated
+    />
   </TransitionGroup>
 </template>
 

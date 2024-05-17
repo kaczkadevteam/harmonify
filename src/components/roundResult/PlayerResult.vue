@@ -3,8 +3,10 @@ import { TransitionPresets, useTransition } from '@vueuse/core'
 import type { PlayerScoreDto } from '@/types'
 import { useGameDataStore } from '@/stores'
 import Player from '@/components/Player.vue'
+import { cn } from '@/lib/utils'
 
 const props = defineProps<{
+  animated?: boolean
   playerResult: PlayerScoreDto & { width: number }
 }>()
 
@@ -21,7 +23,15 @@ const width = useTransition(() => props.playerResult.width, {
       :player="playerResult"
       :is-host="playerResult.guid === gameDataStore.selfPlayer.guid"
     />
-    <div class="h-full rounded-md bg-primary text-right text-primary-foreground" :style="{ width: `${width}px` }" />
+    <div :class="cn('h-full origin-left rounded-md bg-primary text-right text-primary-foreground', animated && 'animated')" :style="{ width: `${width}px` }" />
     <div>{{ playerResult.score }}</div>
   </div>
 </template>
+
+<style scoped>
+.animated {
+  transform: scaleX(0);
+  animation: grow-x 1s ease-in-out 0.2s;
+  animation-fill-mode: forwards;
+}
+</style>

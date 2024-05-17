@@ -1,1 +1,10 @@
 @import './tailwind.css';
+
+@keyframes grow-x {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
