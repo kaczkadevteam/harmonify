@@ -16,8 +16,10 @@
     "lint:fix": "eslint . --fix"
   },
   "dependencies": {
+    "@types/canvas-confetti": "^1.6.4",
     "@vueuse/core": "^10.9.0",
     "@vueuse/integrations": "^10.9.0",
+    "canvas-confetti": "^1.9.3",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
     "lucide-vue-next": "^0.363.0",

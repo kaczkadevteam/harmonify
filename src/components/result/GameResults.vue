@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { useIntervalFn } from '@vueuse/core'
+import confetti from 'canvas-confetti'
 import PlayerResult from '@/components/roundResult/PlayerResult.vue'
 import { useResultStore } from '@/stores'
 import type { PlayerScoreDto } from '@/types'
@@ -73,10 +74,36 @@ const interval = ref(getIntervalForIndex(resultsLeft.value - 1))
 const { pause } = useIntervalFn(() => {
   resultsLeft.value--
 
-  if (resultsLeft.value <= 0)
+  if (resultsLeft.value <= 0) {
+    const velocities: number[] = Array.from({ length: 5 }).map(() => Math.random() * 50 + 65)
+
     pause()
-  else
-    interval.value = getIntervalForIndex(resultsLeft.value)
+    setTimeout(() => {
+      for (let i = 0; i < 5; i++) {
+        confetti({
+          particleCount: 40,
+          angle: 40,
+          spread: 45,
+          startVelocity: velocities[i],
+          origin: { x: -0.15 },
+          drift: -0.1,
+        })
+      }
+
+      for (let i = 0; i < 5; i++) {
+        confetti({
+          particleCount: 40,
+          angle: 140,
+          spread: 45,
+          startVelocity: velocities[i],
+          origin: { x: 1.15 },
+          drift: 0.1,
+        })
+      }
+    }, intervalBeforeFirstPlace / 2)
+  }
+
+  else { interval.value = getIntervalForIndex(resultsLeft.value) }
 
   displayedResults.value.push(results.value[resultsLeft.value])
 }, interval)
