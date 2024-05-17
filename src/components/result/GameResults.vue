@@ -6,7 +6,7 @@ import PlayerResult from '@/components/roundResult/PlayerResult.vue'
 import { useResultStore } from '@/stores'
 import type { PlayerScoreDto } from '@/types'
 
-// const resultStore = useResultStore()
+const resultStore = useResultStore()
 const scoreBarMaxWidth = 320
 const resultsGap = 16
 const resultHeight = 32
@@ -28,28 +28,7 @@ function getIntervalForIndex(index: number) {
 }
 
 const results = computed(() => {
-  const results = [
-    {
-      guid: '820b35e9-cf01-472f-8b53-60d3f71bb03a',
-      nickname: 'BrightIndigoPanther17',
-      score: 321,
-    },
-    {
-      guid: '72fb5e0f-d6d9-497d-87aa-5021d80db0e1',
-      nickname: 'CunningCeruleanCoyote97',
-      score: 320,
-    },
-    {
-      guid: '820b35e9-cf01-472f-8b53-6033f71bb03a',
-      nickname: 'BrightIndigoPanther17',
-      score: 256,
-    },
-    {
-      guid: '820b35e9-cf01-472f-8b53-6da3f71bb03a',
-      nickname: 'BrightIndigoPanther17',
-      score: 156,
-    },
-  ]
+  const results = resultStore.game.players
 
   const bestScore: number = results[0]?.score ?? 0
 
