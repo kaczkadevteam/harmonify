@@ -1,19 +1,18 @@
 <script setup lang="ts">
 import { onBeforeMount } from 'vue'
 import { useRouter } from 'vue-router'
+import { useClipboard } from '@vueuse/core'
+import { Copy } from 'lucide-vue-next'
 import HostView from '@/components/setup/HostView.vue'
 import { useConnectionStore, useGameDataStore } from '@/stores'
 import LoadingCircle from '@/components/LoadingCircle.vue'
-import { cn } from '@/lib/utils'
 import Player from '@/components/Player.vue'
-import { useClipboard } from '@vueuse/core'
 import { useToast } from '@/components/ui/toast/use-toast'
-import { Copy } from 'lucide-vue-next'
 
 const router = useRouter()
 const gameDataStore = useGameDataStore()
 const connectionStore = useConnectionStore()
-const { text, isSupported, copy } = useClipboard()
+const { copy } = useClipboard()
 const { toast } = useToast()
 
 onBeforeMount(() => {
@@ -26,20 +25,20 @@ onBeforeMount(() => {
 })
 
 function copyId() {
-  copy(router.currentRoute.value.params.id);
-  toast({description: 'Room ID copied to clipboard!'})
+  copy(router.currentRoute.value.params.id.toString())
+  toast({ description: 'Room ID copied to clipboard!' })
 }
 </script>
 
 <template>
   <main class="grid grid-cols-[200px_1fr] items-start gap-4">
     <div class="grid gap-4">
-      <div class="flex gap-4 mb-4">
+      <div class="mb-4 flex gap-4">
         <div>
-          Room: {{router.currentRoute.value.params.id}}
+          Room: {{ router.currentRoute.value.params.id }}
         </div>
-        <button >
-          <Copy @click="copyId"></Copy>
+        <button>
+          <Copy @click="copyId" />
         </button>
       </div>
       <Player
