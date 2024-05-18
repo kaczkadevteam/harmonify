@@ -6,6 +6,7 @@ import type { PlayerScoreDto } from '@/types'
 import { useGameDataStore } from '@/stores'
 import Player from '@/components/Player.vue'
 import { cn } from '@/lib/utils'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 
 const props = defineProps<{
   animated?: boolean
@@ -18,21 +19,31 @@ const width = useTransition(() => props.playerResult.width, {
   duration: 1000,
   transition: TransitionPresets.linear,
 })
-const [icon, color] = toRefs(computed(() => {
+const [icon, color, message] = toRefs(computed(() => {
   switch (props.guessLevel) {
     case 'full':
-      return [CircleCheck, 'text-green-500']
+      return [CircleCheck, 'text-green-500', 'Guessed track']
     case 'partial':
-      return [CircleMinus, 'text-yellow-500']
+      return [CircleMinus, 'text-yellow-500', 'Guessed partialy: album or artist']
     default:
-      return [CircleX, 'text-red-500']
+      return [CircleX, 'text-red-500', 'Incorrect guess']
   }
 }))
 </script>
 
 <template>
   <div class="relative flex items-center gap-2">
-    <component :is="icon" v-if="guessLevel" :class="cn(' min-w-4 min-h-4 w-4 h-4 self-end -mr-2 relative -bottom-2', color)" />
+    <TooltipProvider v-if="guessLevel">
+      <Tooltip>
+        <TooltipTrigger>
+          <component :is="icon" :class="cn('min-w-4 min-h-4 w-4 h-4 self-end relative -mr-2 -bottom-2 cursor-default', color)" />
+        </TooltipTrigger>
+        <TooltipContent>
+          <p>{{ message }}</p>
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
+
     <Player
       :player="playerResult"
       :is-self="playerResult.guid === gameDataStore.selfPlayer.guid"
