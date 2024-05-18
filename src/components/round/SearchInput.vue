@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, ref, watchEffect } from 'vue'
+import { onStartTyping, useFocus } from '@vueuse/core'
 import SearchInputOption from './searchInput/SearchInputOption.vue'
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area'
 import type { DisplayedGuessDto, Track } from '@/types'
@@ -13,7 +14,13 @@ const props = defineProps<{
 const guess = defineModel<string>({ required: true })
 
 const selectedGuess = ref<DisplayedGuessDto>()
-const focused = ref(false)
+const input = ref<HTMLInputElement | null>(null)
+const { focused } = useFocus(input, { initialValue: true })
+
+onStartTyping(() => {
+  if (!focused.value)
+    focused.value = true
+})
 
 const matchingGuesses = computed(() => {
   let exactMatchFound = false
@@ -98,14 +105,14 @@ function handleOptionClick(_guess: string) {
   <div class="relative w-80 ">
     <Input
       id="searchInput"
+      ref="input"
       v-model="guess"
       :class="cn(`focus-visible:ring-0 focus-visible:ring-offset-0 box-border text-lg h-12`, matchingGuesses.length > 0 && 'rounded-b-none border-b-0')"
       placeholder="Guess"
       type="text"
       name="guess"
+      autofocus
       autocomplete="off"
-      @focus="focused = true"
-      @blur="focused = false"
     />
     <ScrollArea v-show="matchingGuesses.length > 0" class="!absolute h-80 rounded-b-md border bg-gradient bg-fixed">
       <SearchInputOption
