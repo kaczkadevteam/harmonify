@@ -59,7 +59,8 @@ export async function getTracksFromFavourites(access_token: string, router: Rout
     'https://api.spotify.com/v1/me/tracks?fields=next,items(track(album.images,artists(name,id),duration_ms,name,uri,is_local))&limit=50',
     access_token,
     router,
-    z.object({ track: trackSchema.and(z.object({ is_local: z.boolean() })) }),
+    z.object({ track: trackSchema.and(z.object({ is_local: z.literal(false) })) })
+      .or(z.object({ track: z.any().and(z.object({ is_local: z.literal(true) })) })),
   ))
     .filter(t => !t.track.is_local)
     .map(t => t.track)
@@ -71,7 +72,11 @@ export async function getTracksFromPlaylists(playlists: SelectablePlaylist[], ac
       p.tracks.href,
       access_token,
       router,
-      z.object({ track: trackSchema, is_local: z.boolean() }),
+      z.discriminatedUnion('is_local', [
+        z.object({ is_local: z.literal(true), track: z.any() }),
+        z.object({ is_local: z.literal(false), track: trackSchema }),
+      ]),
+
     )
   })))
     .flat()
