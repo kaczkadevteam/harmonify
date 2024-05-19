@@ -40,7 +40,7 @@ export async function getAlbums(access_token: string, router: Router): Promise<S
     return {
       ...a,
       tracks: {
-        items: (a.tracks.items = a.tracks.items.map<Track>((t) => {
+        items: (a.tracks.items = a.tracks.items.map((t) => {
           return {
             ...t,
             album: { name: a.name, images: a.images },
@@ -59,11 +59,13 @@ export async function getTracksFromFavourites(access_token: string, router: Rout
     'https://api.spotify.com/v1/me/tracks?fields=next,items(track(album.images,artists(name,id),duration_ms,name,uri,is_local))&limit=50',
     access_token,
     router,
-    z.object({ track: trackSchema.and(z.object({ is_local: z.literal(false) })) })
-      .or(z.object({ track: z.any().and(z.object({ is_local: z.literal(true) })) })),
+    z.union([
+      z.object({ track: trackSchema.extend({ is_local: z.literal(false), preview_url: z.string().nullable() }) }),
+      z.object({ track: z.object({ is_local: z.literal(true), preview_url: z.string().nullable() }) }),
+    ]),
   ))
-    .filter(t => !t.track.is_local)
     .map(t => t.track)
+    .filter(t => !t.is_local && t.preview_url !== null) as Track[]
 }
 
 export async function getTracksFromPlaylists(playlists: SelectablePlaylist[], access_token: string, router: Router): Promise<Track[]> {
@@ -73,20 +75,21 @@ export async function getTracksFromPlaylists(playlists: SelectablePlaylist[], ac
       access_token,
       router,
       z.discriminatedUnion('is_local', [
-        z.object({ is_local: z.literal(true), track: z.any() }),
-        z.object({ is_local: z.literal(false), track: trackSchema }),
+        z.object({ is_local: z.literal(true), track: z.unknown() }),
+        z.object({ is_local: z.literal(false), track: trackSchema.extend({ preview_url: z.string().nullable() }) }),
       ]),
 
     )
   })))
     .flat()
-    .filter(t => !t.is_local)
+    .filter((t): t is { is_local: false, track: Track } => !t.is_local && t.track.preview_url !== null)
     .map(t => t.track)
 }
 
 export async function getTracksFromAlbums(albums: SelectableAlbum[]): Promise<Track[]> {
   return albums
-    .reduce<Track[]>((acc, a) => [...acc, ...a.tracks.items], [])
+    .flatMap(album => album.tracks.items)
+    .filter(t => t.preview_url !== null) as Track[]
 }
 
 export async function selectPlayer(device_id: string, access_token: string, router: Router) {

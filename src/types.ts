@@ -52,6 +52,7 @@ export const simplifiedTrackObjectSchema = z.object({
   duration_ms: z.number(),
   name: z.string(),
   uri: z.string(),
+  preview_url: z.string().url().nullable(),
 })
 export type SimplifiedTrackObject = z.infer<typeof simplifiedTrackObjectSchema>
 
@@ -59,15 +60,14 @@ export type SimplifiedTrackObject = z.infer<typeof simplifiedTrackObjectSchema>
  * Spotify types extended with game logic
  */
 
-export const trackSchema = simplifiedTrackObjectSchema.and(
-  z.object({
-    album: z.object({
-      name: z.string(),
-      images: z.array(imageObjectSchema),
-    }),
-    guess: z.string().optional(),
+export const trackSchema = simplifiedTrackObjectSchema.extend({
+  preview_url: z.string().url(),
+  album: z.object({
+    name: z.string(),
+    images: z.array(imageObjectSchema),
   }),
-)
+  guess: z.string().optional(),
+})
 export type Track = z.infer<typeof trackSchema>
 
 export const playedTrackSchema = z.object({
@@ -83,9 +83,9 @@ export const selectablePlaylistSchema = simplePlaylistObjectSchema.and(z.object(
 }))
 export type SelectablePlaylist = z.infer<typeof selectablePlaylistSchema>
 
-export const selectableAlbumSchema = getAlbumSchema(trackSchema).and(z.object({
+export const selectableAlbumSchema = getAlbumSchema(trackSchema.extend({ preview_url: z.string().nullable() })).extend({
   selected: z.boolean(),
-}))
+})
 export type SelectableAlbum = z.infer<typeof selectableAlbumSchema>
 
 /**
