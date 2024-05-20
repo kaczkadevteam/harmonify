@@ -1,15 +1,10 @@
 <script setup lang="ts">
-import { useSettingsStore } from '../stores/settings'
-import { useGameDataStore } from '@/stores'
-import SpotifyPlayer from '@/components/SpotifyPlayer.vue'
-
-const settings = useSettingsStore()
-const gameDataStore = useGameDataStore()
+import PreviewPlayer from '@/components/PreviewPlayer.vue'
 </script>
 
 <template>
   <div class="grid min-h-screen place-content-center">
     <RouterView />
-    <SpotifyPlayer v-if="settings.player === 'spotify' && gameDataStore.selfPlayer.isHost" />
+    <PreviewPlayer />
   </div>
 </template>

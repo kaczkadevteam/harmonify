@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router'
-import { onBeforeMount, onMounted, onUnmounted, ref, watch } from 'vue'
-import { useAnimate, useIntervalFn, watchOnce } from '@vueuse/core'
+import { onBeforeMount, onMounted, ref } from 'vue'
+import { useIntervalFn } from '@vueuse/core'
 import { Button } from '@/components/ui/button'
-import { useConnectionStore, useGameDataStore, useMusicPlayerStore, useResultStore } from '@/stores'
+import { useConnectionStore, useGameDataStore, useResultStore } from '@/stores'
 import SearchInput from '@/components/round/SearchInput.vue'
 import CircularTimer from '@/components/round/CircularTimer.vue'
 import PlaybackControls from '@/components/round/PlaybackControls.vue'
@@ -12,12 +12,9 @@ const router = useRouter()
 const gameDataStore = useGameDataStore()
 const connectionStore = useConnectionStore()
 const resultStore = useResultStore()
-const musicPlayerStore = useMusicPlayerStore()
 
 const guess = ref('')
 
-const isPlayingStarted = ref(false)
-const isPlaying = ref(false)
 const isGuessSubmitted = ref(false)
 
 const roundTimeLeft = ref(gameDataStore.gameSettings.roundDuration)
@@ -28,31 +25,6 @@ const roundTimer = useIntervalFn(() => {
 }, 1000, { immediate: true })
 
 const searchInput = ref<HTMLInputElement | null>(null)
-const playButton = ref<HTMLButtonElement | null>(null)
-const trackTimer = useAnimate(
-  playButton,
-  [{ backgroundPositionX: '100%' }, { backgroundPositionX: '0%' }],
-  { duration: gameDataStore.gameSettings.breakDurationBetweenTrackPlays * 1000, iterations: 1, immediate: true, direction: 'reverse' },
-)
-
-async function startPlaying() {
-  if (!gameDataStore.selfPlayer.isHost)
-    return
-  if (!isPlayingStarted.value) {
-    isPlayingStarted.value = true
-
-    await musicPlayerStore.play(gameDataStore.musicPlayData)
-  }
-  else {
-    await musicPlayerStore.resume()
-  }
-}
-
-async function stopPlaying() {
-  if (!gameDataStore.selfPlayer.isHost)
-    return
-  await musicPlayerStore.pause()
-}
 
 onBeforeMount(() => {
   connectionStore.handleMessage = (message) => {
@@ -68,10 +40,6 @@ onBeforeMount(() => {
   }
 })
 
-function handleTrackTimerFinish() {
-  isPlaying.value = !isPlaying.value
-}
-
 async function handleGuessSubmit(e: Event) {
   const submittionType = ((e as SubmitEvent).submitter as HTMLButtonElement).value
   e.preventDefault()
@@ -86,32 +54,7 @@ async function handleGuessSubmit(e: Event) {
 }
 
 onMounted(() => {
-  playButton.value = document.getElementById('playbackButton')! as HTMLButtonElement
   searchInput.value = document.getElementById('searchInput')! as HTMLInputElement
-})
-
-watchOnce(() => trackTimer.animate.value, (value) => {
-  if (value)
-    value.onfinish = handleTrackTimerFinish
-})
-
-watch(isPlaying, (isPlaying) => {
-  trackTimer.reverse()
-
-  if (isPlaying) {
-    trackTimer.playbackRate.value = -(gameDataStore.gameSettings.breakDurationBetweenTrackPlays / gameDataStore.gameSettings.trackDuration)
-    musicPlayerStore.seek(gameDataStore.musicPlayData.trackStart_ms)
-    startPlaying()
-  }
-
-  else {
-    trackTimer.playbackRate.value = 1
-    stopPlaying()
-  }
-})
-
-onUnmounted(() => {
-  stopPlaying()
 })
 </script>
 
@@ -124,7 +67,6 @@ onUnmounted(() => {
     </div>
     <PlaybackControls
       class="col-span-2 mt-20"
-      :is-playing
       :music-play-data="gameDataStore.musicPlayData"
     />
     <form class="col-span-2 grid grid-cols-2 place-items-center gap-y-4" @submit="handleGuessSubmit">
