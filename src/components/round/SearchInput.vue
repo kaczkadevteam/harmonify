@@ -13,7 +13,7 @@ const props = defineProps<{
 
 const guess = defineModel<string>({ required: true })
 
-const selectedGuess = ref<DisplayedGuessDto>()
+const selectedGuess = ref<DisplayedGuessDto>(props.guesses[0])
 const input = ref<HTMLInputElement | null>(null)
 const { focused } = useFocus(input, { initialValue: true })
 
