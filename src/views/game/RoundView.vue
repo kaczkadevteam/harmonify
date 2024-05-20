@@ -36,8 +36,6 @@ const trackTimer = useAnimate(
 )
 
 async function startPlaying() {
-  if (!gameDataStore.selfPlayer.isHost)
-    return
   if (!isPlayingStarted.value) {
     isPlayingStarted.value = true
 
@@ -49,8 +47,6 @@ async function startPlaying() {
 }
 
 async function stopPlaying() {
-  if (!gameDataStore.selfPlayer.isHost)
-    return
   await musicPlayerStore.pause()
 }
 

@@ -16,7 +16,7 @@ onBeforeMount(() => {
   connectionStore.handleMessage = (message) => {
     if (message.$type === 'message/roundStartedDto') {
       gameDataStore.musicPlayData = {
-        uri: message.data.uri,
+        uri: message.data.preview_url,
         trackStart_ms: message.data.trackStart_ms,
       }
       gameDataStore.round = message.data.roundNumber

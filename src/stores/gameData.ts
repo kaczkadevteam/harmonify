@@ -44,7 +44,7 @@ export const useGameDataStore = defineStore('gameData', {
       this.gameSettings = gameStartedDto.gameSettings
       this.possibleGuesses = gameStartedDto.possibleGuesses
       this.musicPlayData = {
-        uri: gameStartedDto.uri,
+        uri: gameStartedDto.preview_url,
         trackStart_ms: gameStartedDto.trackStart_ms,
       }
     },
