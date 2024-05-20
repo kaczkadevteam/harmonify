@@ -41,12 +41,13 @@ function copyId() {
           <Copy @click="copyId" />
         </button>
       </div>
-      <Player
-        v-for="player of gameDataStore.players"
-        :key="player.guid"
-        :player
-        :is-host="player.guid === gameDataStore.selfPlayer.guid"
-      />
+      <template v-for="player of gameDataStore.players" :key="player.guid">
+        <Player
+          :is-self="player.guid === gameDataStore.selfPlayer.guid"
+          :editable="player.guid === gameDataStore.selfPlayer.guid"
+          :player
+        />
+      </template>
     </div>
     <HostView v-if="gameDataStore.selfPlayer.isHost" />
     <div v-else class="flex items-center gap-5 self-center text-2xl">

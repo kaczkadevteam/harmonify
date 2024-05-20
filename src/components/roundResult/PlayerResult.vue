@@ -21,7 +21,7 @@ const width = useTransition(() => props.playerResult.width, {
   <div class="flex items-center gap-2">
     <Player
       :player="playerResult"
-      :is-host="playerResult.guid === gameDataStore.selfPlayer.guid"
+      :is-self="playerResult.guid === gameDataStore.selfPlayer.guid"
     />
     <div :class="cn('h-full origin-left rounded-md bg-primary text-right text-primary-foreground', animated && 'animated')" :style="{ width: `${width}px` }" />
     <div>{{ playerResult.score }}</div>
