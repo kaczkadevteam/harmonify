@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { nextTick } from 'node:process'
 import { Pause, Play } from 'lucide-vue-next'
 import { onUnmounted, ref, watch } from 'vue'
 import { useAnimate, watchOnce } from '@vueuse/core'
@@ -16,17 +17,32 @@ const playButton = ref<HTMLButtonElement | null>(null)
 const trackTimer = useAnimate(
   playButton,
   [{ backgroundPositionX: '100%' }, { backgroundPositionX: '0%' }],
-  { duration: gameDataStore.gameSettings.breakDurationBetweenTrackPlays * 1000, iterations: 1, immediate: true, direction: 'reverse' },
+  { duration: gameDataStore.gameSettings.trackDuration * 1000, iterations: 1, immediate: true, direction: 'normal' },
 )
 
+function handlePlayingStarted() {
+  trackTimer.playbackRate.value = 1
+  trackTimer.animate.value!.onfinish = handleTrackTimerFinish
+  isPlaying.value = true
+}
+
 function handleTrackTimerFinish() {
-  isPlaying.value = !isPlaying.value
+  trackTimer.currentTime.value = 0
+  musicPlayerStore.seek(gameDataStore.musicPlayData.trackStart_ms)
+  isPlaying.value = false
 }
 
 watchOnce(() => trackTimer.animate.value, (value) => {
-  if (value)
-    value.onfinish = handleTrackTimerFinish
+  if (value) {
+    trackTimer.currentTime.value = gameDataStore.gameSettings.trackDuration * 1000 - 1
+    trackTimer.playbackRate.value = -(gameDataStore.gameSettings.trackDuration)
+    value.onfinish = handlePlayingStarted
+  }
 })
+
+function togglePlay() {
+  isPlaying.value = !isPlaying.value
+}
 
 async function startPlaying() {
   if (!isPlayingStarted.value) {
@@ -44,16 +60,13 @@ async function stopPlaying() {
 }
 
 watch(isPlaying, (isPlaying) => {
-  trackTimer.reverse()
-
   if (isPlaying) {
-    trackTimer.playbackRate.value = -(gameDataStore.gameSettings.breakDurationBetweenTrackPlays / gameDataStore.gameSettings.trackDuration)
-    musicPlayerStore.seek(gameDataStore.musicPlayData.trackStart_ms)
+    trackTimer.play()
     startPlaying()
   }
 
   else {
-    trackTimer.playbackRate.value = 1
+    trackTimer.pause()
     stopPlaying()
   }
 })
@@ -66,7 +79,7 @@ onUnmounted(() => {
 <template>
   <div class="relative">
     <!-- eslint-disable-next-line tailwindcss/no-contradicting-classname -->
-    <Button id="playbackButton" ref="playButton" class="h-20 w-32 rounded-xl bg-[linear-gradient(0.25turn,#1b3162_49%,50%,transparent)] bg-[length:200%_200%] bg-[position:100%_0]">
+    <Button ref="playButton" class="h-20 w-32 rounded-xl bg-[linear-gradient(0.25turn,#1b3162_49%,50%,transparent)] bg-[length:200%_200%] bg-[position:100%_0]" :disabled="!isPlayingStarted" @click="togglePlay">
       <Pause v-if="isPlaying" class="size-12" />
       <Play v-else class="size-12" />
     </Button>
