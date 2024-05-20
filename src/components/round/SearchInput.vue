@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import { computed, ref, watchEffect } from 'vue'
 import { onStartTyping, useFocus } from '@vueuse/core'
+import { X } from 'lucide-vue-next'
 import SearchInputOption from './searchInput/SearchInputOption.vue'
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area'
 import type { DisplayedGuessDto, Track } from '@/types'
 import { Input } from '@/components/ui/input'
 import { cn } from '@/lib/utils'
+import { Button } from '@/components/ui/button'
 
 const props = defineProps<{
   guesses: DisplayedGuessDto[]
@@ -13,7 +15,7 @@ const props = defineProps<{
 
 const guess = defineModel<string>({ required: true })
 
-const selectedGuess = ref<DisplayedGuessDto>()
+const selectedGuess = ref<DisplayedGuessDto>(props.guesses[0])
 const input = ref<HTMLInputElement | null>(null)
 const { focused } = useFocus(input, { initialValue: true })
 
@@ -103,17 +105,28 @@ function handleOptionClick(_guess: string) {
 
 <template>
   <div class="relative w-80 ">
-    <Input
-      id="searchInput"
-      ref="input"
-      v-model="guess"
-      :class="cn(`focus-visible:ring-0 focus-visible:ring-offset-0 box-border text-lg h-12`, matchingGuesses.length > 0 && 'rounded-b-none border-b-0')"
-      placeholder="Guess"
-      type="text"
-      name="guess"
-      autofocus
-      autocomplete="off"
-    />
+    <div class="inline-flex items-center rounded-lg border">
+      <Input
+        id="searchInput"
+        ref="input"
+        v-model="guess"
+        :class="cn(`focus-visible:ring-0 focus-visible:ring-offset-0 box-border text-lg h-12 border-none pr-2`, matchingGuesses.length > 0 && 'rounded-b-none border-b-0')"
+        placeholder="Guess"
+        type="text"
+        name="guess"
+        autofocus
+        autocomplete="off"
+      />
+      <Button
+        class="size-12 min-w-12 bg-gradient bg-fixed hover:bg-slate-800 hover:bg-none"
+        variant="ghost"
+        size="icon"
+        type="button"
+        @click="guess = ''"
+      >
+        <X class="size-7" />
+      </Button>
+    </div>
     <ScrollArea v-show="matchingGuesses.length > 0" class="!absolute h-80 rounded-b-md border bg-gradient bg-fixed">
       <SearchInputOption
         v-for="displayedGuess of matchingGuesses"
