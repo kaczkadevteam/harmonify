@@ -8,6 +8,9 @@ const gameDataStore = useGameDataStore()
 
 <template>
   <div class="grid gap-2">
+    <h2 class="mb-2 text-2xl font-bold">
+      Game settings
+    </h2>
     <div class="flex items-center gap-5">
       <Label class="text-base" for="roundCount">Rounds</Label>
       <Input
