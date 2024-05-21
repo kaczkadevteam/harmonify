@@ -70,10 +70,13 @@ export const trackSchema = simplifiedTrackObjectSchema.extend({
 })
 export type Track = z.infer<typeof trackSchema>
 
+export const guessLevelSchema = z.enum(['full', 'album', 'artist', 'none'])
+export type GuessLevel = z.infer<typeof guessLevelSchema>
+
 export const playedTrackSchema = z.object({
   track: trackSchema,
   userGuess: z.string(),
-  isGuessed: z.boolean(),
+  guessLevel: guessLevelSchema,
   score: z.number(),
 })
 export type PlayedTrack = z.infer<typeof playedTrackSchema>
@@ -125,9 +128,6 @@ export const gameStartedDtoSchema = z.object({
   preview_url: z.string().url(),
 })
 export type GameStartedDto = z.infer<typeof gameStartedDtoSchema>
-
-export const guessLevelSchema = z.enum(['full', 'album', 'artist', 'none'])
-export type GuessLevel = z.infer<typeof guessLevelSchema>
 
 export const roundResultDtoSchema = z.object({
   score: z.number(),
