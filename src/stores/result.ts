@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia'
+import { useGameDataStore } from '.'
 import type { EndGameResultsDto, PlayerScoreDto, RoundFinishedDto } from '@/types'
 
 export interface ResultStore {
@@ -10,11 +11,6 @@ export const useResultStore = defineStore('result', {
   state: (): ResultStore => {
     return {
       round: {
-        roundResult: {
-          score: 0,
-          guess: '',
-        },
-        score: 0,
         previousPlayerScores: [],
         players: [],
         track: {
@@ -26,15 +22,26 @@ export const useResultStore = defineStore('result', {
           artists: [],
           uri: '',
           duration_ms: 0,
+          preview_url: '',
         },
       },
       game: {
-        roundResults: [],
         players: [],
-        score: 0,
         tracks: [],
       },
     }
+  },
+  getters: {
+    roundSelfPlayer: (state) => {
+      const gameDataStore = useGameDataStore()
+
+      return state.round.players.find(p => p.guid === gameDataStore.selfPlayer.guid)!
+    },
+    gameSelfPlayer: (state) => {
+      const gameDataStore = useGameDataStore()
+
+      return state.game.players.find(p => p.guid === gameDataStore.selfPlayer.guid)!
+    },
   },
   actions: {
     setRoundResult(data: RoundFinishedDto) {

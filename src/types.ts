@@ -126,9 +126,13 @@ export const gameStartedDtoSchema = z.object({
 })
 export type GameStartedDto = z.infer<typeof gameStartedDtoSchema>
 
+export const guessLevelSchema = z.enum(['full', 'album', 'artist', 'none'])
+export type GuessLevel = z.infer<typeof guessLevelSchema>
+
 export const roundResultDtoSchema = z.object({
   score: z.number(),
   guess: z.string(),
+  guessLevel: guessLevelSchema,
 })
 export type RoundResultDto = z.infer<typeof roundResultDtoSchema>
 
@@ -150,21 +154,18 @@ export type PlayerDto = z.infer<typeof playerDtoSchema>
 
 export const playerScoreDtoSchema = playerDtoSchema.and(z.object({
   score: z.number(),
+  roundResults: z.array(roundResultDtoSchema),
 }))
 export type PlayerScoreDto = z.infer<typeof playerScoreDtoSchema>
 
 export const roundFinishedDto = z.object({
   track: trackSchema,
-  roundResult: roundResultDtoSchema,
-  score: z.number(),
   players: z.array(playerScoreDtoSchema),
 })
 export type RoundFinishedDto = z.infer<typeof roundFinishedDto>
 
 export const endGameResultsDtoSchema = z.object({
   tracks: z.array(trackSchema),
-  roundResults: z.array(roundResultDtoSchema),
-  score: z.number(),
   players: z.array(playerScoreDtoSchema),
 })
 export type EndGameResultsDto = z.infer<typeof endGameResultsDtoSchema>
@@ -253,13 +254,6 @@ export const musicPlayDataSchema = z.object({
   trackStart_ms: z.number(),
 })
 export type MusicPlayData = z.infer<typeof musicPlayDataSchema>
-
-export const guessLevelSchema = z.union([
-  z.literal('full'),
-  z.literal('author'),
-  z.literal('none'),
-])
-export type GuessLevel = z.infer<typeof guessLevelSchema>
 
 export const playerSchema = playerDtoSchema.and(z.object({
   isHost: z.boolean(),

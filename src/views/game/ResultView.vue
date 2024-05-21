@@ -4,13 +4,14 @@ import { computed, onMounted, ref } from 'vue'
 import { useElementBounding, useWindowSize } from '@vueuse/core'
 import { Button } from '@/components/ui/button'
 import { ScrollArea } from '@/components/ui/scroll-area'
-import { useResultStore } from '@/stores'
+import { useGameDataStore, useResultStore } from '@/stores'
 import PlayedTrack from '@/components/result/PlayedTrack.vue'
 import type { PlayedTrack as TPlayedTrack } from '@/types'
 import GameResults from '@/components/result/GameResults.vue'
 
-const router = useRouter()
 const resultStore = useResultStore()
+
+const router = useRouter()
 const gameResultsEl = ref<HTMLDivElement | null>(null)
 const windowDimensions = useWindowSize()
 const gameResultsDimensions = useElementBounding(gameResultsEl)
@@ -23,15 +24,18 @@ function handlePlayAgain() {
 }
 
 const playedTracks = computed<TPlayedTrack[]>(() => {
-  return resultStore.game.roundResults.map((roundResult, i) => {
-    const track = resultStore.game.tracks[i]
-    return {
-      track,
-      userGuess: roundResult.guess,
-      isGuessed: roundResult.guess === track.guess,
-      score: roundResult.score,
-    }
-  })
+  return resultStore
+    .gameSelfPlayer
+    .roundResults
+    .map((roundResult, i) => {
+      const track = resultStore.game.tracks[i]
+      return {
+        track,
+        userGuess: roundResult.guess,
+        isGuessed: roundResult.guess === track.guess,
+        score: roundResult.score,
+      }
+    })
 })
 
 onMounted(() => {
@@ -77,7 +81,7 @@ onMounted(() => {
       <div v-if="displayButton" class="grid place-items-center gap-5">
         <div class="text-4xl">
           <span>Score: </span>
-          <span>{{ resultStore.game.score }}</span>
+          <span>{{ resultStore.gameSelfPlayer.score }}</span>
         </div>
         <Button class="text-xl" size="lg" @click="handlePlayAgain">
           Play again?
