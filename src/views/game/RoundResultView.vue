@@ -25,8 +25,9 @@ onBeforeMount(() => {
   }
 })
 
-const roundResult = computed(() => resultStore.round)
-const isFullyGuessed = computed(() => resultStore.round.roundResult.guess === resultStore.round.track.guess)
+const track = computed(() => resultStore.round.track)
+const selfPlayerRoundResult = computed(() => resultStore.roundSelfPlayer.roundResults.at(-1)!)
+const isFullyGuessed = computed(() => selfPlayerRoundResult.value.guess === resultStore.round.track.guess)
 const roundFinishedTitle = computed(() => isFullyGuessed.value ? 'Correct :)' : 'Incorrect :(')
 </script>
 
@@ -44,17 +45,17 @@ const roundFinishedTitle = computed(() => isFullyGuessed.value ? 'Correct :)' : 
           </div>
         </div>
         <div class="mb-2 grid justify-items-center gap-1 text-center">
-          <img :src="roundResult.track.album.images[0].url" alt="Album cover" width="200" height="200">
-          <TrackDisplay :track="roundResult.track" />
+          <img :src="track.album.images[0].url" alt="Album cover" width="200" height="200">
+          <TrackDisplay :track="track" />
           <div v-if="!isFullyGuessed" class="mt-4">
             <span class="mr-3">Your guess:</span>
-            <GuessDisplay :guess="roundResult.roundResult.guess" />
+            <GuessDisplay :guess="selfPlayerRoundResult.guess" />
           </div>
         </div>
         <div class="flex items-center sm:justify-between">
           <div class="text-lg">
             <span>Points </span>
-            <span>{{ `${roundResult.score - roundResult.roundResult.score} + ${roundResult.roundResult.score}` }}</span>
+            <span>{{ `${resultStore.roundSelfPlayer.score - selfPlayerRoundResult.score} + ${selfPlayerRoundResult.score}` }}</span>
           </div>
         </div>
       </div>
