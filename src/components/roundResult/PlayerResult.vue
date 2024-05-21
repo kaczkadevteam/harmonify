@@ -1,12 +1,11 @@
 <script setup lang="ts">
-import { TransitionPresets, toRefs, useTransition } from '@vueuse/core'
-import { CircleCheck, CircleMinus, CircleX } from 'lucide-vue-next'
-import { computed } from 'vue'
+import { TransitionPresets, useTransition } from '@vueuse/core'
+import { computed, watch } from 'vue'
 import type { PlayerScoreDto } from '@/types'
 import { useGameDataStore } from '@/stores'
 import Player from '@/components/Player.vue'
 import { cn } from '@/lib/utils'
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
+import GuessLevelIcon from '@/components/GuessLevelIcon.vue'
 
 const props = defineProps<{
   animated?: boolean
@@ -19,33 +18,12 @@ const width = useTransition(() => props.playerResult.width, {
   duration: 1000,
   transition: TransitionPresets.linear,
 })
-const [icon, color, message] = toRefs(computed(() => {
-  switch (props.playerResult.roundResults.at(-1)!.guessLevel) {
-    case 'full':
-      return [CircleCheck, 'text-green-500', 'Guessed track']
-    case 'album':
-      return [CircleMinus, 'text-yellow-500', 'Guessed album']
-    case 'artist':
-      return [CircleMinus, 'text-yellow-500', 'Guessed artist']
-    default:
-      return [CircleX, 'text-red-500', 'Incorrect guess']
-  }
-}))
+const guessLevel = computed(() => props.playerResult.roundResults.at(-1)!.guessLevel)
 </script>
 
 <template>
   <div class="relative flex items-center gap-2">
-    <TooltipProvider v-if="displayGuessLevel">
-      <Tooltip>
-        <TooltipTrigger>
-          <component :is="icon" :class="cn('min-w-4 min-h-4 w-4 h-4 self-end relative -mr-2 -bottom-2 cursor-default', color)" />
-        </TooltipTrigger>
-        <TooltipContent>
-          <p>{{ message }}</p>
-        </TooltipContent>
-      </Tooltip>
-    </TooltipProvider>
-
+    <GuessLevelIcon v-if="displayGuessLevel" :guess-level="guessLevel" class="relative -bottom-2 -mr-2 self-end" />
     <Player
       :player="playerResult"
       :is-self="playerResult.guid === gameDataStore.selfPlayer.guid"

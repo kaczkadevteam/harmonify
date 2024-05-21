@@ -15,9 +15,10 @@ const resultStore = useResultStore()
 
 const showCurrentScore = useTimeout(1000)
 const playerResults = computed(() => {
-  const results = showCurrentScore.value
-    ? resultStore.round.players
-    : resultStore.round.previousPlayerScores
+  let results = resultStore.round.players
+
+  if (!showCurrentScore.value)
+    results = results.map(playerResult => ({ ...playerResult, score: playerResult.score - playerResult.roundResults.at(-1)!.score }))
 
   const bestScore: number = results[0]?.score ?? 0
 
