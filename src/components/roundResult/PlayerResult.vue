@@ -11,7 +11,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/comp
 const props = defineProps<{
   animated?: boolean
   playerResult: PlayerScoreDto & { width: number }
-  guessLevel?: 'full' | 'partial' | 'none'
+  displayGuessLevel?: boolean
 }>()
 
 const gameDataStore = useGameDataStore()
@@ -20,11 +20,13 @@ const width = useTransition(() => props.playerResult.width, {
   transition: TransitionPresets.linear,
 })
 const [icon, color, message] = toRefs(computed(() => {
-  switch (props.guessLevel) {
+  switch (props.playerResult.roundResults.at(-1)!.guessLevel) {
     case 'full':
       return [CircleCheck, 'text-green-500', 'Guessed track']
-    case 'partial':
-      return [CircleMinus, 'text-yellow-500', 'Guessed partialy: album or artist']
+    case 'album':
+      return [CircleMinus, 'text-yellow-500', 'Guessed album']
+    case 'artist':
+      return [CircleMinus, 'text-yellow-500', 'Guessed artist']
     default:
       return [CircleX, 'text-red-500', 'Incorrect guess']
   }
@@ -33,7 +35,7 @@ const [icon, color, message] = toRefs(computed(() => {
 
 <template>
   <div class="relative flex items-center gap-2">
-    <TooltipProvider v-if="guessLevel">
+    <TooltipProvider v-if="displayGuessLevel">
       <Tooltip>
         <TooltipTrigger>
           <component :is="icon" :class="cn('min-w-4 min-h-4 w-4 h-4 self-end relative -mr-2 -bottom-2 cursor-default', color)" />

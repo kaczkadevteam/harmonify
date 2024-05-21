@@ -33,6 +33,7 @@ const isFirstRound = computed(() => resultStore.round.previousPlayerScores.lengt
       :key="playerResult.guid"
       :animated="isFirstRound"
       :player-result
+      display-guess-level
     />
   </TransitionGroup>
 </template>
