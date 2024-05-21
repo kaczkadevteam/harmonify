@@ -32,7 +32,7 @@ const playedTracks = computed<TPlayedTrack[]>(() => {
       return {
         track,
         userGuess: roundResult.guess,
-        isGuessed: roundResult.guess === track.guess,
+        guessLevel: roundResult.guessLevel,
         score: roundResult.score,
       }
     })
