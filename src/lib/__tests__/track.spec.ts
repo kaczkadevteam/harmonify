@@ -1,7 +1,8 @@
 import { describe, expect, it } from 'vitest'
 import { removeDuplicatedTracks } from '../track'
+import type { Track } from '@/types'
 
-const rawTracks = [{
+const rawTracks: Track[] = [{
   artists: [{ name: 'Michael Hunter', id: '4J86DBDnC5acWsN0dpZe3j' }],
   duration_ms: 171486,
   name: 'Soviet Connection — The Theme from Grand Theft Auto IV',
@@ -26,6 +27,7 @@ const rawTracks = [{
       },
     ],
   },
+  preview_url: 'https://p.scdn.co/mp3-preview/8eac33a173cab23887351e37de248c5ef8aa4962?cid=090ef6814927448cb1a093339513c594',
 }, {
   artists: [{ name: 'Kristofer Maddigan', id: '2jR6Lr47O21Iq7l5Bs2mig' }],
   duration_ms: 195720,
@@ -51,6 +53,7 @@ const rawTracks = [{
       },
     ],
   },
+  preview_url: 'https://p.scdn.co/mp3-preview/8eac33a173cab23887351e37de248c5ef8aa4962?cid=090ef6814927448cb1a093339513c594',
 }, {
   artists: [{ name: 'DM DOKURO', id: '2NHvG0lx27x07cSzMn51KO' }],
   duration_ms: 274602,
@@ -76,6 +79,7 @@ const rawTracks = [{
       },
     ],
   },
+  preview_url: 'https://p.scdn.co/mp3-preview/8eac33a173cab23887351e37de248c5ef8aa4962?cid=090ef6814927448cb1a093339513c594',
 }, {
   artists: [{ name: 'George Strezov', id: '2DNnA9F0OrEmC80UWEwrMi' }],
   duration_ms: 162089,
@@ -101,6 +105,7 @@ const rawTracks = [{
       },
     ],
   },
+  preview_url: 'https://p.scdn.co/mp3-preview/8eac33a173cab23887351e37de248c5ef8aa4962?cid=090ef6814927448cb1a093339513c594',
 }, {
   artists: [{ name: 'Arnaud Roy', id: '4DfwOelzJtTBZiXZ1tYo8D' }],
   duration_ms: 292339,
@@ -126,6 +131,7 @@ const rawTracks = [{
       },
     ],
   },
+  preview_url: 'https://p.scdn.co/mp3-preview/8eac33a173cab23887351e37de248c5ef8aa4962?cid=090ef6814927448cb1a093339513c594',
 }, {
   artists: [
     { name: 'Johan Skugge', id: '0cxIE0a4SKHitNEvJ9rAXm' },
@@ -154,6 +160,7 @@ const rawTracks = [{
       },
     ],
   },
+  preview_url: 'https://p.scdn.co/mp3-preview/8eac33a173cab23887351e37de248c5ef8aa4962?cid=090ef6814927448cb1a093339513c594',
 }, {
   artists: [{ name: 'Chris Tilton', id: '0E7PdEWOAW6t5k9qKSwQxF' }],
   duration_ms: 171000,
@@ -179,6 +186,7 @@ const rawTracks = [{
       },
     ],
   },
+  preview_url: 'https://p.scdn.co/mp3-preview/8eac33a173cab23887351e37de248c5ef8aa4962?cid=090ef6814927448cb1a093339513c594',
 }, {
   artists: [{ name: 'Hyper Hippo Entertainment', id: '6pZ3WW7sRBVUyEerDPHWwC' }],
   duration_ms: 103783,
@@ -204,9 +212,10 @@ const rawTracks = [{
       },
     ],
   },
+  preview_url: 'https://p.scdn.co/mp3-preview/8eac33a173cab23887351e37de248c5ef8aa4962?cid=090ef6814927448cb1a093339513c594',
 }]
 
-const duplicatedTracks = [{
+const duplicatedTracks: Track[] = [{
   artists: [{ name: 'Michael Hunter', id: '4J86DBDnC5acWsN0dpZe3j' }],
   duration_ms: 171486,
   name: 'Soviet Connection — The Theme from Grand Theft Auto IV',
@@ -231,6 +240,7 @@ const duplicatedTracks = [{
       },
     ],
   },
+  preview_url: 'https://p.scdn.co/mp3-preview/8eac33a173cab23887351e37de248c5ef8aa4962?cid=090ef6814927448cb1a093339513c594',
 }, {
   artists: [{ name: 'Kristofer Maddigan', id: '2jR6Lr47O21Iq7l5Bs2mig' }],
   duration_ms: 195720,
@@ -256,6 +266,7 @@ const duplicatedTracks = [{
       },
     ],
   },
+  preview_url: 'https://p.scdn.co/mp3-preview/8eac33a173cab23887351e37de248c5ef8aa4962?cid=090ef6814927448cb1a093339513c594',
 }, {
   artists: [{ name: 'DM DOKURO', id: '2NHvG0lx27x07cSzMn51KO' }],
   duration_ms: 274602,
@@ -281,6 +292,7 @@ const duplicatedTracks = [{
       },
     ],
   },
+  preview_url: 'https://p.scdn.co/mp3-preview/8eac33a173cab23887351e37de248c5ef8aa4962?cid=090ef6814927448cb1a093339513c594',
 }, {
   artists: [{ name: 'George Strezov', id: '2DNnA9F0OrEmC80UWEwrMi' }],
   duration_ms: 162089,
@@ -306,6 +318,7 @@ const duplicatedTracks = [{
       },
     ],
   },
+  preview_url: 'https://p.scdn.co/mp3-preview/8eac33a173cab23887351e37de248c5ef8aa4962?cid=090ef6814927448cb1a093339513c594',
 }, {
   artists: [{ name: 'Arnaud Roy', id: '4DfwOelzJtTBZiXZ1tYo8D' }],
   duration_ms: 292339,
@@ -331,6 +344,7 @@ const duplicatedTracks = [{
       },
     ],
   },
+  preview_url: 'https://p.scdn.co/mp3-preview/8eac33a173cab23887351e37de248c5ef8aa4962?cid=090ef6814927448cb1a093339513c594',
 }, {
   artists: [
     { name: 'Johan Skugge', id: '0cxIE0a4SKHitNEvJ9rAXm' },
@@ -359,6 +373,7 @@ const duplicatedTracks = [{
       },
     ],
   },
+  preview_url: 'https://p.scdn.co/mp3-preview/8eac33a173cab23887351e37de248c5ef8aa4962?cid=090ef6814927448cb1a093339513c594',
 }, {
   artists: [{ name: 'Chris Tilton', id: '0E7PdEWOAW6t5k9qKSwQxF' }],
   duration_ms: 171000,
@@ -384,6 +399,7 @@ const duplicatedTracks = [{
       },
     ],
   },
+  preview_url: 'https://p.scdn.co/mp3-preview/8eac33a173cab23887351e37de248c5ef8aa4962?cid=090ef6814927448cb1a093339513c594',
 }, {
   artists: [{ name: 'Hyper Hippo Entertainment', id: '6pZ3WW7sRBVUyEerDPHWwC' }],
   duration_ms: 103783,
@@ -409,6 +425,7 @@ const duplicatedTracks = [{
       },
     ],
   },
+  preview_url: 'https://p.scdn.co/mp3-preview/8eac33a173cab23887351e37de248c5ef8aa4962?cid=090ef6814927448cb1a093339513c594',
 }, {
   artists: [{ name: 'Michael Hunter', id: '4J86DBDnC5acWsN0dpZe3j' }],
   duration_ms: 171486,
@@ -434,6 +451,7 @@ const duplicatedTracks = [{
       },
     ],
   },
+  preview_url: 'https://p.scdn.co/mp3-preview/8eac33a173cab23887351e37de248c5ef8aa4962?cid=090ef6814927448cb1a093339513c594',
 }, {
   artists: [{ name: 'Kristofer Maddigan', id: '2jR6Lr47O21Iq7l5Bs2mig' }],
   duration_ms: 195720,
@@ -459,6 +477,7 @@ const duplicatedTracks = [{
       },
     ],
   },
+  preview_url: 'https://p.scdn.co/mp3-preview/8eac33a173cab23887351e37de248c5ef8aa4962?cid=090ef6814927448cb1a093339513c594',
 }, {
   artists: [{ name: 'Michael Hunter', id: '4J86DBDnC5acWsN0dpZe3j' }],
   duration_ms: 171486,
@@ -484,6 +503,7 @@ const duplicatedTracks = [{
       },
     ],
   },
+  preview_url: 'https://p.scdn.co/mp3-preview/8eac33a173cab23887351e37de248c5ef8aa4962?cid=090ef6814927448cb1a093339513c594',
 }]
 
 describe('removeDuplicatedTracks', () => {
