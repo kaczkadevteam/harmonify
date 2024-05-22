@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import type { CreatedGameDto, GameData, GameStartedDto, PlayerDto, Track } from '@/types'
+import type { CreatedGameDto, GameData, GameStartedDto, PlayerDto } from '@/types'
 
 export const useGameDataStore = defineStore('gameData', {
   state: (): GameData => {

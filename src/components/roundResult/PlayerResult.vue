@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { TransitionPresets, useTransition } from '@vueuse/core'
-import { computed, watch } from 'vue'
+import { computed } from 'vue'
 import type { PlayerScoreDto } from '@/types'
 import { useGameDataStore } from '@/stores'
 import Player from '@/components/Player.vue'

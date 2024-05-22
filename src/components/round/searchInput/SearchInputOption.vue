@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue'
-import type { DisplayedGuessDto, Track } from '@/types'
-import { TrackDisplay } from '@/components/trackDisplay'
+import type { DisplayedGuessDto } from '@/types'
 import { cn } from '@/lib/utils'
 import GuessDisplay from '@/components/trackDisplay/GuessDisplay.vue'
 
