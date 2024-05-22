@@ -15,9 +15,9 @@ export const useGameDataStore = defineStore('gameData', {
       gameSettings: {
         breakDurationBetweenTrackPlays: 2,
         breakDurationBetweenRounds: 5,
-        trackDuration: 5,
-        roundDuration: 5,
-        roundCount: 5,
+        trackDuration: 8,
+        roundDuration: 20,
+        roundCount: 10,
         trackStartLowerBound: 0.1,
         trackStartUpperBound: 0.9,
       },
