@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { Check, X } from 'lucide-vue-next'
 import GuessLevelIcon from '../GuessLevelIcon.vue'
 import { GuessDisplay, TrackDisplay } from '@/components/trackDisplay'
 import type { PlayedTrack } from '@/types'

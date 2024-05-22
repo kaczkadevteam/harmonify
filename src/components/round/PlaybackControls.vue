@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { nextTick } from 'node:process'
 import { Pause, Play } from 'lucide-vue-next'
 import { onUnmounted, ref, watch } from 'vue'
 import { useAnimate, watchOnce } from '@vueuse/core'
