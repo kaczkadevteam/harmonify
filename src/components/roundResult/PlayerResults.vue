@@ -19,11 +19,6 @@ const playerResults = computed(() => {
     ? resultStore.round.players
     : resultStore.round.previousPlayerScores
 
-  /* let results = resultStore.round.players
-
-  if (!showCurrentScore.value)
-    results = results.map(playerResult => ({ ...playerResult, score: playerResult.score - playerResult.roundResults.at(-1)!.score })) */
-
   const bestScore: number = results[0]?.score ?? 0
 
   return results.map(r => ({ ...r, width: (r.score / bestScore) * props.pointsBarMaxWidth }))
