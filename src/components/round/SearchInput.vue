@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, watchEffect } from 'vue'
+import { computed, ref, watch, watchEffect } from 'vue'
 import { onStartTyping, useFocus } from '@vueuse/core'
 import { X } from 'lucide-vue-next'
 import SearchInputOption from './searchInput/SearchInputOption.vue'
@@ -86,15 +86,15 @@ function handleSelectionInput(event: KeyboardEvent) {
   }
 }
 
-watchEffect(() => {
-  if (matchingGuesses.value.length > 0 && focused.value) {
+watch<[number, boolean]>(() => [matchingGuesses.value.length, focused.value], ([newGuessesCount, newIsFocused], [prevGuessesCount, prevIsFocused]) => {
+  if (prevGuessesCount > 0 && prevIsFocused) {
+    window.removeEventListener('keydown', handleSelectionMovement)
+    window.removeEventListener('keydown', handleSelectionInput)
+  }
+
+  if (newGuessesCount > 0 && newIsFocused) {
     window.addEventListener('keydown', handleSelectionMovement)
     window.addEventListener('keydown', handleSelectionInput)
-
-    return () => {
-      window.removeEventListener('keydown', handleSelectionMovement)
-      window.removeEventListener('keydown', handleSelectionInput)
-    }
   }
 })
 
@@ -114,7 +114,6 @@ function handleOptionClick(_guess: string) {
         placeholder="Guess"
         type="text"
         name="guess"
-        autofocus
         autocomplete="off"
       />
       <Button
