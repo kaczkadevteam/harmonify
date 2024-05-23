@@ -7,7 +7,7 @@ import { cn } from '@/lib/utils'
 withDefaults(defineProps<{
   isSelf: boolean
   player: PlayerDto
-  editable: boolean
+  editable?: boolean
 }>(), {
   editable: false,
 })

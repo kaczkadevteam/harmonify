@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import { ref } from 'vue'
+import { whenever } from '@vueuse/core'
 import type { DisplayedGuessDto } from '@/types'
 import { cn } from '@/lib/utils'
 import GuessDisplay from '@/components/trackDisplay/GuessDisplay.vue'
@@ -15,9 +16,8 @@ const emit = defineEmits<{
 
 const element = ref<HTMLDivElement | null>(null)
 
-watch(() => props.selected, (selected) => {
-  if (selected)
-    element.value?.scrollIntoView({ block: 'nearest' })
+whenever(() => props.selected, () => {
+  element.value?.scrollIntoView({ block: 'nearest' })
 })
 </script>
 

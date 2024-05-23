@@ -42,7 +42,6 @@ onBeforeMount(() => {
 
 async function handleGuessSubmit(e: Event) {
   const submittionType = ((e as SubmitEvent).submitter as HTMLButtonElement).value
-  e.preventDefault()
 
   connectionStore.sendMessage({
     $type: 'message/string',
@@ -69,7 +68,7 @@ onMounted(() => {
       class="col-span-2 mt-20"
       :music-play-data="gameDataStore.musicPlayData"
     />
-    <form class="col-span-2 grid grid-cols-2 place-items-center gap-y-4" @submit="handleGuessSubmit">
+    <form class="col-span-2 grid grid-cols-2 place-items-center gap-y-4" @submit.prevent="handleGuessSubmit">
       <SearchInput v-model="guess" :guesses="gameDataStore.possibleGuesses" class=" col-span-2" />
       <Button type="submit" value="submit">
         Submit
