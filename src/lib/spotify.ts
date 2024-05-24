@@ -22,7 +22,7 @@ export async function fetchFromSpotify(
   )
 
   if (response.status === 400 || response.status === 401)
-    router.push('/api/token/expired')
+    window.location.href = '/api/token/expired'
 
   return response
 }
