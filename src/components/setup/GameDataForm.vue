@@ -18,6 +18,7 @@ const gameDataStore = useGameDataStore()
         v-model="gameDataStore.gameSettings.roundCount"
         class="w-20 border-none text-base"
         type="number"
+        min="1"
       />
     </div>
     <div class="flex items-center gap-5">
@@ -27,6 +28,7 @@ const gameDataStore = useGameDataStore()
         v-model="gameDataStore.gameSettings.roundDuration"
         class="w-20 border-none text-base"
         type="number"
+        min="1"
       />
     </div>
     <div class="flex items-center gap-5">
@@ -36,6 +38,8 @@ const gameDataStore = useGameDataStore()
         v-model="gameDataStore.gameSettings.trackDuration"
         class="w-20 border-none text-base"
         type="number"
+        min="1"
+        max="30"
       />
     </div>
     <div class="flex items-center gap-5">
@@ -45,6 +49,7 @@ const gameDataStore = useGameDataStore()
         v-model="gameDataStore.gameSettings.breakDurationBetweenRounds"
         class="w-20 border-none text-base"
         type="number"
+        min="2"
       />
     </div>
   </div>
