@@ -21,7 +21,11 @@ const playerResults = computed(() => {
 
   const bestScore: number = results[0]?.score ?? 0
 
-  return results.map(r => ({ ...r, width: (r.score / bestScore) * props.pointsBarMaxWidth }))
+  return results.map((r) => {
+    const width = bestScore === 0 ? 0 : (r.score / bestScore) * props.pointsBarMaxWidth
+
+    return { ...r, width }
+  })
 })
 const isFirstRound = computed(() => resultStore.round.previousPlayerScores.length === 0)
 </script>
