@@ -55,7 +55,7 @@ const startButtonText = computed(() => {
 
 <template>
   <SpotifyLibraryLoading v-if="!spotifyLibraryStore.playlists || !spotifyLibraryStore.albums" @loaded="handleLoadingFinished" />
-  <div v-else class="grid h-[80vh] w-[80vw] grid-cols-[1fr_auto] grid-rows-[1fr_50px] items-start gap-5">
+  <form v-else class="grid h-[80vh] w-[80vw] grid-cols-[1fr_auto] grid-rows-[1fr_50px] items-start gap-5" @submit.prevent="handleGameStart">
     <SpotifyLibraryDisplay
       v-model:favourites-selected="spotifyLibraryStore.favouritesSelected"
       :playlists="spotifyLibraryStore.playlists"
@@ -65,9 +65,9 @@ const startButtonText = computed(() => {
     <Button
       class=" w-28 place-self-center"
       :disabled="!musicPlayerStore.player || !selectedAnything"
-      @click="handleGameStart"
+      type="submit"
     >
       {{ startButtonText }}
     </Button>
-  </div>
+  </form>
 </template>
