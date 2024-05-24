@@ -38,5 +38,14 @@ const gameDataStore = useGameDataStore()
         type="number"
       />
     </div>
+    <div class="flex items-center gap-5">
+      <Label for="breakDurationBetweenRounds" class="text-base">Time between rounds</Label>
+      <Input
+        id="breakDurationBetweenRounds"
+        v-model="gameDataStore.gameSettings.breakDurationBetweenRounds"
+        class="w-20 border-none text-base"
+        type="number"
+      />
+    </div>
   </div>
 </template>
