@@ -11,12 +11,13 @@ Web app for playing the "Name that tune" game with playlists and albums from use
 
 ## Features
 
-- Loading all of player's playlists and albums
-- Player can select tracks from multiple albums and playlists
+- Multiplayer guessing game
+- Loading all of host's playlists and albums
+- Host selects tracks from albums and playlists
 - Game consists of multiple rounds, in each one track to guess
-- Guessing done with autocomplete bar where user can search by title or author
-- Ability to play comfortably with keyboard only
-- Points calculated based on how fast player guessed
+- Guessing done with autocomplete bar where user can search by title, author or album
+- Support for keyboard only gameplay
+- Points calculated based on how fast player guessed (partial points for guessing only album or artist)
 
 ## Showcase
 
@@ -30,9 +31,13 @@ Web app for playing the "Name that tune" game with playlists and albums from use
 
 ![Guessed track modal](/public/showcase/guessed.png)
 
+</br>
+
+![Guessed track modal](/public/showcase/result.png)
+
 ## Notice
 
-The app, unfortunately, will never leave development mode due to Spotify's ToS (unless I change API in the future 🫣). Therefore, if you would like to try it out, you are required to send me your email associated with Spotify Premium account.
+The app, unfortunately, will never leave development mode due to Spotify's ToS (unless I change API in the future 🫣). Therefore, player can only join existing rooms not create ones, unless you send me your email associated with Spotify account and I add it to developer dashboard.
 
 ---
 
