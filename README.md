@@ -29,11 +29,11 @@ Web app for playing the "Name that tune" game with playlists and albums from use
 
 </br>
 
-![Guessed track modal](/public/showcase/guessed.png)
+![Round result page](/public/showcase/guessed.png)
 
 </br>
 
-![Guessed track modal](/public/showcase/result.png)
+![Game result page](/public/showcase/result.png)
 
 ## Notice
 
