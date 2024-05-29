@@ -2,6 +2,25 @@
 
 <div align="right">
 
+## v3.0.0 (2024-05-29)
+
+</div>
+
+## Multiplayer
+
+![baner](./changelog/5.png)
+
+Game now supports multiplayer gameplay! To achieve this we developed [API service](https://github.com/kaczkadevteam/harmonify-api) and changed most of app logic.
+
+## Music player
+
+App no longer uses Spotify Web Playback SDK (player in browser) to play music, now its based on 30 second MP3 previews. **Thanks to this, a premium account is no longer required to create a room, and room guests don't have to connect to Spotify at all.**
+
+## New Contributors
+* @FilipTarajko made their first contribution in https://github.com/kaczkadevteam/harmonify/pull/17
+
+<div align="right">
+
 ## v2.0.0 (2024-04-18)
 
 </div>
