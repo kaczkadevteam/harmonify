@@ -126,7 +126,7 @@ function handleOptionClick(_guess: string) {
         <X class="size-7" />
       </Button>
     </div>
-    <ScrollArea v-show="matchingGuesses.length > 0" class="!absolute h-80 rounded-b-md border bg-gradient bg-fixed">
+    <ScrollArea v-show="matchingGuesses.length > 0" class="!absolute h-60 rounded-b-md border bg-gradient bg-fixed md:h-80">
       <SearchInputOption
         v-for="displayedGuess of matchingGuesses"
         :key="displayedGuess.id"
