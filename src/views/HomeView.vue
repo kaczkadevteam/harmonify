@@ -67,13 +67,13 @@ function connectToSpotify() {
 <template>
   <div class="grid h-screen place-content-center place-items-center">
     <header class=" grid justify-items-center gap-5">
-      <h1 class="flex items-center gap-5 text-8xl font-bold italic text-primary">
-        <img src="@/assets/logo.png" alt="Logo" width="100">
+      <h1 class="flex h-min items-center gap-5 text-[3.3rem] font-bold italic text-primary md:text-8xl">
+        <img src="@/assets/logo.png" alt="Logo" class="h-[1.2em]">
         <span>Harmonify!</span>
       </h1>
     </header>
     <main class="mt-10 text-2xl font-bold">
-      <div class="flex items-end gap-10">
+      <div class="flex flex-col-reverse  items-center gap-10 md:flex-row md:items-end">
         <form class="grid justify-items-center gap-5" @submit.prevent="joinRoom">
           <p v-if="isJoinRoomError" class="-mb-3 text-base font-normal text-destructive">
             No room with such id
@@ -102,7 +102,7 @@ function connectToSpotify() {
           </Button>
         </form>
         <div v-else class="grid justify-items-center gap-4">
-          <h3 class="flex w-56 flex-wrap items-center gap-x-3">
+          <h3 class="flex w-56 flex-wrap items-center justify-end gap-x-3">
             <span class="text-lg font-semibold">Connect to</span>
             <img alt="Spotify logo" src="@/assets/Spotify_Logo_RGB_White.png" width="100">
             <span class="text-lg font-semibold">in order to create room</span>
