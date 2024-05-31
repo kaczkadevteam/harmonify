@@ -1,17 +1,20 @@
 <script setup lang="ts">
-import { onBeforeMount } from 'vue'
+import { computed, onBeforeMount } from 'vue'
 import { useRouter } from 'vue-router'
-import { useClipboard } from '@vueuse/core'
-import { Copy } from 'lucide-vue-next'
+import { useClipboard, useWindowSize } from '@vueuse/core'
+import { Copy, Users } from 'lucide-vue-next'
 import HostView from '@/components/setup/HostView.vue'
 import { useConnectionStore, useGameDataStore } from '@/stores'
 import LoadingCircle from '@/components/LoadingCircle.vue'
 import Player from '@/components/Player.vue'
 import { useToast } from '@/components/ui/toast/use-toast'
+import { Button } from '@/components/ui/button'
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
 
 const router = useRouter()
 const gameDataStore = useGameDataStore()
 const connectionStore = useConnectionStore()
+const { width: screenWidth } = useWindowSize()
 const { copy } = useClipboard()
 const { toast } = useToast()
 
@@ -28,21 +31,45 @@ function copyId() {
   copy(router.currentRoute.value.params.id.toString())
   toast({ description: 'Room ID copied to clipboard!' })
 }
+
+const isMobileSize = computed(() => screenWidth.value < 1024)
 </script>
 
 <template>
-  <main class="grid grid-cols-[200px_1fr] items-start gap-4">
-    <div class="grid gap-4">
-      <div class="mb-4 flex gap-4">
-        <div>
+  <main class="grid items-start gap-4 md:grid-cols-[200px_1fr]">
+    <div class="grid gap-3">
+      <div class="mb-2 flex items-center gap-4">
+        <Sheet v-if="isMobileSize">
+          <SheetTrigger>
+            <Button variant="outline" size="icon" class="w-fit gap-1 px-1">
+              <Users />
+              <div>{{ gameDataStore.players.length }}</div>
+            </Button>
+          </SheetTrigger>
+          <SheetContent>
+            <SheetHeader class="mb-2">
+              <SheetTitle>Players</SheetTitle>
+            </SheetHeader>
+            <div class="space-y-3">
+              <Player
+                v-for="player of gameDataStore.players" :key="player.guid"
+                :is-self="player.guid === gameDataStore.selfPlayer.guid"
+                :editable="player.guid === gameDataStore.selfPlayer.guid"
+                :player
+              />
+            </div>
+          </SheetContent>
+        </Sheet>
+        <span>
           Room: {{ router.currentRoute.value.params.id }}
-        </div>
+        </span>
         <button>
           <Copy @click="copyId" />
         </button>
       </div>
-      <template v-for="player of gameDataStore.players" :key="player.guid">
+      <template v-if="!isMobileSize">
         <Player
+          v-for="player of gameDataStore.players" :key="player.guid"
           :is-self="player.guid === gameDataStore.selfPlayer.guid"
           :editable="player.guid === gameDataStore.selfPlayer.guid"
           :player

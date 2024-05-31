@@ -14,10 +14,10 @@ withDefaults(defineProps<{
 </script>
 
 <template>
-  <div class="flex w-40 items-center gap-2">
+  <div class="flex w-fit items-center gap-2">
     <CircleUserRound :class="cn('min-w-8 min-h-8', isSelf && 'text-primary')" />
     <NicknameForm v-if="editable" :nickname="player.nickname" />
-    <div v-else class="truncate text-sm md:text-base">
+    <div v-else class="ml-3 truncate text-sm md:text-base">
       {{ player.nickname }}
     </div>
   </div>
