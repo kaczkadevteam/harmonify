@@ -82,6 +82,6 @@
     @apply border-border;
   }
   body {
-    @apply bg-gradient text-foreground h-screen min-h-screen;
+    @apply bg-gradient text-foreground min-h-screen;
   }
 }
