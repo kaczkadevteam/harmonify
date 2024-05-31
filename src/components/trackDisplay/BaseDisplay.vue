@@ -7,7 +7,7 @@ defineProps<{
 </script>
 
 <template>
-  <span>
+  <span class="text-sm md:text-base">
     <span class="font-semibold" v-text="title" />
     <span class="ml-3 text-muted-foreground" v-text="author" />
     <span class="ml-3 text-muted-foreground" v-text="album" />
