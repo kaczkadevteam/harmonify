@@ -8,6 +8,11 @@ import SpotifyLibraryDisplay from '@/components/setup/SpotifyLibraryDisplay.vue'
 import { Button } from '@/components/ui/button'
 import GameDataForm from '@/components/setup/GameDataForm.vue'
 import type { SelectableAlbum, SelectablePlaylist } from '@/types'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+
+defineProps<{
+  isMobileSize: boolean
+}>()
 
 const musicPlayerStore = useMusicPlayerStore()
 const spotifyLibraryStore = useSpotifyLibraryStore()
@@ -55,13 +60,35 @@ const startButtonText = computed(() => {
 
 <template>
   <SpotifyLibraryLoading v-if="!spotifyLibraryStore.playlists || !spotifyLibraryStore.albums" @loaded="handleLoadingFinished" />
-  <form v-else class="grid h-[80vh] w-[80vw] grid-cols-[1fr_auto] grid-rows-[1fr_50px] items-start gap-5" @submit.prevent="handleGameStart">
-    <SpotifyLibraryDisplay
-      v-model:favourites-selected="spotifyLibraryStore.favouritesSelected"
-      :playlists="spotifyLibraryStore.playlists"
-      :albums="spotifyLibraryStore.albums"
-    />
-    <GameDataForm />
+  <form v-else class="grid h-[80vh] max-h-[80vh] w-[80vw] lg:grid-cols-[1fr_auto] lg:grid-rows-[1fr_50px] lg:items-start lg:gap-5" @submit.prevent="handleGameStart">
+    <Tabs v-if="isMobileSize">
+      <TabsList default-value="tracks" class="w-full">
+        <TabsTrigger value="tracks" class="flex-1">
+          Playlists & Albums
+        </TabsTrigger>
+        <TabsTrigger value="settings" class="flex-1">
+          Game settings
+        </TabsTrigger>
+      </TabsList>
+      <TabsContent value="tracks" class="h-[60vh]">
+        <SpotifyLibraryDisplay
+          v-model:favourites-selected="spotifyLibraryStore.favouritesSelected"
+          :playlists="spotifyLibraryStore.playlists"
+          :albums="spotifyLibraryStore.albums"
+        />
+      </TabsContent>
+      <TabsContent value="settings" class="h-[60vh]">
+        <GameDataForm />
+      </TabsContent>
+    </Tabs>
+    <template v-else>
+      <SpotifyLibraryDisplay
+        v-model:favourites-selected="spotifyLibraryStore.favouritesSelected"
+        :playlists="spotifyLibraryStore.playlists"
+        :albums="spotifyLibraryStore.albums"
+      />
+      <GameDataForm />
+    </template>
     <Button
       class=" w-28 place-self-center"
       :disabled="!musicPlayerStore.player || !selectedAnything"

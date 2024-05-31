@@ -36,9 +36,9 @@ const isMobileSize = computed(() => screenWidth.value < 1024)
 </script>
 
 <template>
-  <main class="grid items-start gap-4 md:grid-cols-[200px_1fr]">
+  <main class="grid items-start gap-4 lg:grid-cols-[200px_1fr]">
     <div class="grid gap-3">
-      <div class="mb-2 flex items-center gap-4">
+      <div class="mb-2 flex items-center justify-between">
         <Sheet v-if="isMobileSize">
           <SheetTrigger>
             <Button variant="outline" size="icon" class="w-fit gap-1 px-1">
@@ -60,12 +60,14 @@ const isMobileSize = computed(() => screenWidth.value < 1024)
             </div>
           </SheetContent>
         </Sheet>
-        <span>
-          Room: {{ router.currentRoute.value.params.id }}
-        </span>
-        <button>
-          <Copy @click="copyId" />
-        </button>
+        <div class="flex gap-3">
+          <span>
+            Room: {{ router.currentRoute.value.params.id }}
+          </span>
+          <button>
+            <Copy @click="copyId" />
+          </button>
+        </div>
       </div>
       <template v-if="!isMobileSize">
         <Player
@@ -76,7 +78,7 @@ const isMobileSize = computed(() => screenWidth.value < 1024)
         />
       </template>
     </div>
-    <HostView v-if="gameDataStore.selfPlayer.isHost" />
+    <HostView v-if="gameDataStore.selfPlayer.isHost" :is-mobile-size />
     <div v-else class="flex items-center gap-5 self-center text-2xl">
       <span>Waiting for host to start game</span><LoadingCircle size="60px" />
     </div>
