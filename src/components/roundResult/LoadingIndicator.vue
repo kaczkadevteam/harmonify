@@ -7,7 +7,7 @@ const waitTime = computed(() => `${gameDataStore.gameSettings.breakDurationBetwe
 </script>
 
 <template>
-  <div class="loading-indicator fixed left-0 top-0 h-3 w-screen origin-left bg-primary" />
+  <div class="loading-indicator fixed left-0 top-0 h-1.5 w-screen origin-left bg-primary md:h-3" />
 </template>
 
 <style scoped>

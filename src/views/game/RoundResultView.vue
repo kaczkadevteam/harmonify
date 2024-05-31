@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, onBeforeMount } from 'vue'
 import { useRouter } from 'vue-router'
+import { useWindowSize } from '@vueuse/core'
 import { cn } from '@/lib/utils'
 import { GuessDisplay, TrackDisplay } from '@/components/trackDisplay'
 import { useConnectionStore, useGameDataStore, useResultStore } from '@/stores'
@@ -11,6 +12,7 @@ const router = useRouter()
 const gameDataStore = useGameDataStore()
 const resultStore = useResultStore()
 const connectionStore = useConnectionStore()
+const { width: screenWidth } = useWindowSize()
 
 onBeforeMount(() => {
   connectionStore.handleMessage = (message) => {
@@ -28,32 +30,27 @@ onBeforeMount(() => {
 const track = computed(() => resultStore.round.track)
 const selfPlayerRoundResult = computed(() => resultStore.roundSelfPlayer.roundResults.at(-1)!)
 const isFullyGuessed = computed(() => selfPlayerRoundResult.value.guess === resultStore.round.track.guess)
-const roundFinishedTitle = computed(() => isFullyGuessed.value ? 'Correct :)' : 'Incorrect :(')
+const pointsBarMaxWidth = computed(() => screenWidth.value >= 1024 ? 320 : 220)
 </script>
 
 <template>
   <LoadingIndicator />
-  <div class=" grid grid-cols-2 place-content-center gap-10">
-    <div class=" justify-self-center">
-      <PlayerResults :points-bar-max-width="320" />
+  <div class="grid place-content-center gap-4 overflow-y-auto py-8 md:grid-cols-2 md:gap-10">
+    <div class="max-w-80 justify-self-center md:max-w-none">
+      <PlayerResults :points-bar-max-width />
     </div>
     <div class=" justify-self-center">
-      <div class="w-96">
-        <div>
-          <div :class="cn('text-xl', isFullyGuessed ? 'text-green-600' : 'text-red-600')">
-            {{ roundFinishedTitle }}
-          </div>
-        </div>
+      <div class="w-80 lg:w-96">
         <div class="mb-2 grid justify-items-center gap-1 text-center">
           <img :src="track.album.images[0].url" alt="Album cover" width="200" height="200">
           <TrackDisplay :track="track" />
           <div v-if="!isFullyGuessed" class="mt-4">
-            <span class="mr-3">Your guess:</span>
+            <span class="mr-3 text-sm md:text-base">Your guess:</span>
             <GuessDisplay :guess="selfPlayerRoundResult.guess" />
           </div>
         </div>
         <div class="flex items-center sm:justify-between">
-          <div class="text-lg">
+          <div class="md:text-lg">
             <span>Points </span>
             <span>{{ `${resultStore.roundSelfPlayer.score - selfPlayerRoundResult.score} + ${selfPlayerRoundResult.score}` }}</span>
           </div>
