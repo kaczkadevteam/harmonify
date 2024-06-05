@@ -9,6 +9,11 @@ import type { PlayerScoreDto } from '@/types'
 defineProps<{
   isMobileSize: boolean
 }>()
+
+const emit = defineEmits<{
+  animationFinished: []
+}>()
+
 const resultStore = useResultStore()
 const scoreBarMaxWidth = 220
 const resultsGap = 16
@@ -47,7 +52,6 @@ const containerHeight = computed(() => {
   let resultsToShow = 0
   if (results.value.length > maxVisibleResults)
     resultsToShow = maxVisibleResults
-
   else
     resultsToShow = results.value.length
 
@@ -85,8 +89,10 @@ const { pause } = useIntervalFn(() => {
         })
       }
     }, intervalBeforeFirstPlace / 2)
+
     setTimeout(() => {
       animationPending.value = false
+      emit('animationFinished')
     }, intervalBeforeFirstPlace + playerAnimationDuration)
   }
 

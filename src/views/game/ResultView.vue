@@ -9,6 +9,7 @@ import PlayedTrack from '@/components/result/PlayedTrack.vue'
 import type { PlayedTrack as TPlayedTrack } from '@/types'
 import GameResults from '@/components/result/GameResults.vue'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { cn } from '@/lib/utils'
 
 const resultStore = useResultStore()
 
@@ -23,6 +24,16 @@ const { width: screenWidth } = useWindowSize()
 
 function handlePlayAgain() {
   router.push({ name: 'home' })
+}
+
+function handleResultsAnimationFinish() {
+  setTimeout(() => {
+    displayTracks.value = true
+  }, 200)
+
+  setTimeout(() => {
+    displayButton.value = true
+  }, 800)
 }
 
 const playedTracks = computed<TPlayedTrack[]>(() => {
@@ -51,14 +62,6 @@ onMounted(() => {
   const deltaY = windowMiddleY - elementMiddleY
 
   startingTransform.value = `translate( ${deltaX}px, ${deltaY}px)`
-
-  setTimeout(() => {
-    displayTracks.value = true
-  }, 5000 + 2000)
-
-  setTimeout(() => {
-    displayButton.value = true
-  }, 5000 + 2000 + 2000)
 })
 
 const isMobileSize = computed(() => screenWidth.value < 1024)
@@ -67,16 +70,21 @@ const isMobileSize = computed(() => screenWidth.value < 1024)
 <template>
   <template v-if="isMobileSize">
     <Tabs default-value="leaderboard">
-      <TabsList class="w-full">
-        <TabsTrigger value="leaderboard" class="flex-1">
-          Leaderboard
-        </TabsTrigger>
-        <TabsTrigger value="tracks" class="flex-1">
-          Tracks
-        </TabsTrigger>
-      </TabsList>
+      <div class="h-10">
+        <Transition name="fade-top">
+          <TabsList v-if="displayTracks" class="w-full">
+            <TabsTrigger value="leaderboard" class="flex-1">
+              Leaderboard
+            </TabsTrigger>
+            <TabsTrigger value="tracks" class="flex-1">
+              Tracks
+            </TabsTrigger>
+          </TabsList>
+        </Transition>
+      </div>
+
       <TabsContent value="leaderboard" class="h-[60vh]" force-mount>
-        <GameResults :points-bar-max-width="20" :is-mobile-size />
+        <GameResults :points-bar-max-width="20" :is-mobile-size @animation-finished="handleResultsAnimationFinish" />
       </TabsContent>
       <TabsContent value="tracks" class="h-[60vh]">
         <ScrollArea v-if="displayTracks" class="row-span-2 h-4/5 w-[320px] rounded-lg border lg:w-full">
@@ -90,17 +98,19 @@ const isMobileSize = computed(() => screenWidth.value < 1024)
         </ScrollArea>
       </TabsContent>
     </Tabs>
-    <Transition name="fade-bottom">
-      <div v-if="displayButton" class="mt-4 flex items-center justify-center gap-5">
-        <div class="text-2xl">
-          <span>Score: </span>
-          <span>{{ resultStore.gameSelfPlayer.score }}</span>
+    <div class="h-14">
+      <Transition name="fade-bottom">
+        <div v-if="displayButton" class="mt-4 flex items-center justify-center gap-5">
+          <div class="text-2xl">
+            <span>Score: </span>
+            <span>{{ resultStore.gameSelfPlayer.score }}</span>
+          </div>
+          <Button class="text-base" size="default" @click="handlePlayAgain">
+            Play again?
+          </Button>
         </div>
-        <Button class="text-base" size="default" @click="handlePlayAgain">
-          Play again?
-        </Button>
-      </div>
-    </Transition>
+      </Transition>
+    </div>
   </template>
 
   <div v-else class="grid h-screen grid-cols-[650px_auto] grid-rows-2 place-items-center gap-5">
@@ -116,7 +126,7 @@ const isMobileSize = computed(() => screenWidth.value < 1024)
       </ScrollArea>
     </Transition>
     <div ref="gameResultsEl" class="game-results col-start-2">
-      <GameResults :points-bar-max-width="20" :is-mobile-size />
+      <GameResults :points-bar-max-width="20" :is-mobile-size @animation-finished="handleResultsAnimationFinish" />
     </div>
 
     <Transition name="fade-bottom">
@@ -142,9 +152,17 @@ const isMobileSize = computed(() => screenWidth.value < 1024)
 
 .fade-left-leave-active,
 .fade-left-enter-active,
+.fade-top-leave-active,
+.fade-top-enter-active,
 .fade-bottom-leave-active,
 .fade-bottom-enter-active {
   transition: all 1s ease-out;
+}
+
+.fade-top-enter-from,
+.fade-top-leave-to {
+  transform: translateY(-20px);
+  opacity: 0;
 }
 
 .fade-bottom-enter-from,
