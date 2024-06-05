@@ -3,7 +3,7 @@ import PreviewPlayer from '@/components/PreviewPlayer.vue'
 </script>
 
 <template>
-  <div class="grid min-h-screen place-content-center">
+  <div class="grid min-h-screen place-content-stretch">
     <RouterView />
     <PreviewPlayer />
   </div>

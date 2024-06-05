@@ -36,9 +36,9 @@ const isMobileSize = computed(() => screenWidth.value < 1024)
 </script>
 
 <template>
-  <main class="grid items-start gap-4 lg:grid-cols-[200px_1fr]">
-    <div class="grid gap-3">
-      <div class="mb-2 flex items-center justify-between">
+  <main class="grid place-content-center gap-4 lg:grid-cols-[200px_auto]">
+    <div class="grid gap-3 lg:mt-2 lg:place-content-start">
+      <div class="flex items-center justify-between">
         <Sheet v-if="isMobileSize">
           <SheetTrigger>
             <Button variant="outline" size="icon" class="w-fit gap-1 px-1">
