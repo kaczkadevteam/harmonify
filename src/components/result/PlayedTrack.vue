@@ -10,7 +10,7 @@ defineProps<{
 
 <template>
   <div
-    class="grid grid-cols-[auto_1fr] grid-rows-[auto_auto_auto] px-4 pt-4 lg:h-52 lg:px-0"
+    class="grid max-w-full grid-cols-[auto_1fr] grid-rows-[auto_auto_auto] px-4 pt-4 lg:h-52 lg:px-0"
   >
     <img class="col-span-1 row-span-2 row-start-1 size-28 min-h-28 min-w-28 lg:row-span-3 lg:size-48 lg:min-h-48 lg:min-w-48" :src="playedTrack.track.album.images[0].url" alt="Album cover">
     <TrackDisplay class="mx-3" :track="playedTrack.track" />

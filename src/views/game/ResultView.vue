@@ -83,12 +83,12 @@ const isMobileSize = computed(() => screenWidth.value < 1024)
         </Transition>
       </div>
 
-      <TabsContent value="leaderboard" class="h-[60vh]" force-mount>
+      <TabsContent value="leaderboard" class="h-[60vh] border py-2" force-mount>
         <GameResults :points-bar-max-width="20" :is-mobile-size @animation-finished="handleResultsAnimationFinish" />
       </TabsContent>
       <TabsContent value="tracks" class="h-[60vh]">
-        <ScrollArea v-if="displayTracks" class="row-span-2 h-4/5 w-[320px] rounded-lg border lg:w-full">
-          <div class="space-y-4 divide-y py-4">
+        <ScrollArea v-if="displayTracks" class="row-span-2 h-4/5 rounded-lg border lg:w-full">
+          <div class="w-[320px] space-y-4 divide-y py-4 ">
             <PlayedTrack
               v-for="playedTrack, idx of playedTracks"
               :key="`${playedTrack.track.uri}-${idx}`"
