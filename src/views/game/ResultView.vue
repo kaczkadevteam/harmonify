@@ -8,6 +8,7 @@ import { useResultStore } from '@/stores'
 import PlayedTrack from '@/components/result/PlayedTrack.vue'
 import type { PlayedTrack as TPlayedTrack } from '@/types'
 import GameResults from '@/components/result/GameResults.vue'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 
 const resultStore = useResultStore()
 
@@ -18,6 +19,7 @@ const gameResultsDimensions = useElementBounding(gameResultsEl)
 const startingTransform = ref('')
 const displayTracks = ref(false)
 const displayButton = ref(false)
+const { width: screenWidth } = useWindowSize()
 
 function handlePlayAgain() {
   router.push({ name: 'home' })
@@ -58,10 +60,50 @@ onMounted(() => {
     displayButton.value = true
   }, 5000 + 2000 + 2000)
 })
+
+const isMobileSize = computed(() => screenWidth.value < 1024)
 </script>
 
 <template>
-  <div class="grid h-screen grid-cols-[650px_auto] grid-rows-2 place-items-center gap-5">
+  <template v-if="isMobileSize">
+    <Tabs default-value="leaderboard">
+      <TabsList class="w-full">
+        <TabsTrigger value="leaderboard" class="flex-1">
+          Leaderboard
+        </TabsTrigger>
+        <TabsTrigger value="tracks" class="flex-1">
+          Tracks
+        </TabsTrigger>
+      </TabsList>
+      <TabsContent value="leaderboard" class="h-[60vh]" force-mount>
+        <GameResults :points-bar-max-width="20" :is-mobile-size />
+      </TabsContent>
+      <TabsContent value="tracks" class="h-[60vh]">
+        <ScrollArea v-if="displayTracks" class="row-span-2 h-4/5 w-[320px] rounded-lg border lg:w-full">
+          <div class="space-y-4 divide-y py-4">
+            <PlayedTrack
+              v-for="playedTrack, idx of playedTracks"
+              :key="`${playedTrack.track.uri}-${idx}`"
+              :played-track="playedTrack"
+            />
+          </div>
+        </ScrollArea>
+      </TabsContent>
+    </Tabs>
+    <Transition name="fade-bottom">
+      <div v-if="displayButton" class="mt-4 flex items-center justify-center gap-5">
+        <div class="text-2xl">
+          <span>Score: </span>
+          <span>{{ resultStore.gameSelfPlayer.score }}</span>
+        </div>
+        <Button class="text-base" size="default" @click="handlePlayAgain">
+          Play again?
+        </Button>
+      </div>
+    </Transition>
+  </template>
+
+  <div v-else class="grid h-screen grid-cols-[650px_auto] grid-rows-2 place-items-center gap-5">
     <Transition name="fade-left">
       <ScrollArea v-if="displayTracks" class="row-span-2 h-4/5 w-full rounded-lg border p-4">
         <div class="space-y-4">
@@ -74,7 +116,7 @@ onMounted(() => {
       </ScrollArea>
     </Transition>
     <div ref="gameResultsEl" class="game-results col-start-2">
-      <GameResults :points-bar-max-width="20" />
+      <GameResults :points-bar-max-width="20" :is-mobile-size />
     </div>
 
     <Transition name="fade-bottom">

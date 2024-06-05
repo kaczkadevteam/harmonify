@@ -6,11 +6,14 @@ import PlayerResult from '@/components/roundResult/PlayerResult.vue'
 import { useResultStore } from '@/stores'
 import type { PlayerScoreDto } from '@/types'
 
+defineProps<{
+  isMobileSize: boolean
+}>()
 const resultStore = useResultStore()
-const scoreBarMaxWidth = 320
+const scoreBarMaxWidth = 220
 const resultsGap = 16
 const resultHeight = 32
-const resultsWidth = scoreBarMaxWidth + 240
+const resultsWidth = scoreBarMaxWidth + 100
 const maxVisibleResults = 6
 const intervalBeforeFirstPlace = 1000
 const playerAnimationDuration = 1000
@@ -94,7 +97,7 @@ const { pause } = useIntervalFn(() => {
 </script>
 
 <template>
-  <TransitionGroup name="results" tag="div" class="flex flex-col-reverse gap-4 overflow-hidden" :style="{ height: `${containerHeight}px`, width: `${resultsWidth}px`, gap: `${resultsGap}px` }">
+  <TransitionGroup name="results" tag="div" class="flex flex-col-reverse items-center justify-end gap-4 overflow-hidden rounded-lg border py-4 lg:items-start lg:justify-start lg:border-none lg:p-0" :style="{ height: isMobileSize ? '60vh' : `${containerHeight}px`, width: `${resultsWidth}px`, gap: `${resultsGap}px` }">
     <PlayerResult
       v-for="playerResult in displayedResults"
       :key="playerResult.guid"
