@@ -8,7 +8,7 @@ import { cn } from '@/lib/utils'
 import GuessLevelIcon from '@/components/GuessLevelIcon.vue'
 
 const props = defineProps<{
-  animated?: boolean
+  animation?: false | { duration: string }
   playerResult: PlayerScoreDto & { width: number }
   displayGuessLevel?: boolean
 }>()
@@ -30,7 +30,7 @@ const isSelf = computed(() => props.playerResult.guid === gameDataStore.selfPlay
       <div class="mr-3 text-sm">
         {{ props.playerResult.nickname }}
       </div>
-      <div :class="cn('h-3/4 origin-left rounded-md bg-primary text-right text-primary-foreground', animated && 'animated')" :style="{ width: `${width}px` }" />
+      <div :class="cn('h-3/4 origin-left rounded-md bg-primary text-right text-primary-foreground', animation && 'animated')" :style="{ width: `${width}px` }" />
     </div>
     <div>{{ playerResult.score }}</div>
   </div>
@@ -39,7 +39,7 @@ const isSelf = computed(() => props.playerResult.guid === gameDataStore.selfPlay
 <style scoped>
 .animated {
   transform: scaleX(0);
-  animation: grow-x 1s ease-in-out 0.2s;
+  animation: grow-x v-bind('animation && animation.duration') ease-in-out 0.2s;
   animation-fill-mode: forwards;
 }
 </style>

@@ -35,7 +35,7 @@ const isFirstRound = computed(() => resultStore.round.previousPlayerScores.lengt
     <PlayerResult
       v-for="playerResult in playerResults"
       :key="playerResult.guid"
-      :animated="isFirstRound"
+      :animation="isFirstRound && { duration: `1s` }"
       :player-result
       :display-guess-level="showCurrentScore"
     />

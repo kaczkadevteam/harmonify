@@ -13,6 +13,7 @@ const resultHeight = 32
 const resultsWidth = scoreBarMaxWidth + 240
 const maxVisibleResults = 6
 const intervalBeforeFirstPlace = 1000
+const playerAnimationDuration = 1000
 
 function getIntervalForIndex(index: number) {
   switch (index) {
@@ -27,6 +28,7 @@ function getIntervalForIndex(index: number) {
   }
 }
 
+const animationPending = ref(true)
 const results = computed(() => {
   const results = resultStore.game.players
 
@@ -80,6 +82,9 @@ const { pause } = useIntervalFn(() => {
         })
       }
     }, intervalBeforeFirstPlace / 2)
+    setTimeout(() => {
+      animationPending.value = false
+    }, intervalBeforeFirstPlace + playerAnimationDuration)
   }
 
   else { interval.value = getIntervalForIndex(resultsLeft.value) }
@@ -95,7 +100,7 @@ const { pause } = useIntervalFn(() => {
       :key="playerResult.guid"
       :style="{ height: `${resultHeight}px` }"
       :player-result
-      animated
+      :animation="animationPending && { duration: `${playerAnimationDuration / 1000}s` }"
     />
   </TransitionGroup>
 </template>
