@@ -67,7 +67,7 @@ function connectToSpotify() {
 <template>
   <div class="grid h-screen place-content-center place-items-center">
     <header class=" grid justify-items-center gap-5">
-      <h1 class="flex h-min items-center gap-5 text-[3.3rem] font-bold italic text-primary md:text-8xl">
+      <h1 class="flex h-min items-center gap-5 text-[13vw] font-bold italic text-primary md:text-8xl">
         <img src="@/assets/logo.png" alt="Logo" class="h-[1.2em]">
         <span>Harmonify!</span>
       </h1>
