@@ -22,6 +22,7 @@ const intervalBeforeFirstPlace = 1000
 const playerAnimationDuration = 1000
 const resultsGap = 16
 const resultHeight = 40
+const mobilePadding = 8
 
 function getIntervalForIndex(index: number) {
   switch (index) {
@@ -74,7 +75,7 @@ const displayedResults = ref<(PlayerScoreDto & { width: number })[]>(props.anima
 const resultsLeft = ref(results.value.length - displayedResults.value.length)
 
 const resultsHeight = computed(() => {
-  return `min(100%,${(resultHeight + resultsGap) * results.value.length - resultsGap}px)`
+  return `min(100%,${(resultHeight + resultsGap) * results.value.length - resultsGap + mobilePadding * 2}px)`
 })
 
 const interval = ref(getIntervalForIndex(resultsLeft.value - 1))
@@ -104,7 +105,7 @@ const { pause } = useIntervalFn(() => {
 </script>
 
 <template>
-  <ScrollArea class="max-h-full py-2 lg:py-0" :style="{ width: `${resultsWidth}px`, height: resultsHeight }">
+  <ScrollArea class="max-h-full" :style="{ width: `${resultsWidth}px`, height: resultsHeight, padding: isMobileSize ? `${mobilePadding}px 0` : '0' }">
     <TransitionGroup name="results" tag="div" class="flex h-full flex-col-reverse rounded-lg" :style="{ gap: `${resultsGap}px` }">
       <PlayerResult
         v-for="playerResult in displayedResults"
