@@ -72,7 +72,7 @@ const isMobileSize = computed(() => screenWidth.value < 1024)
           </button>
         </div>
       </div>
-      <ScrollArea v-if="!isMobileSize" class="max-h-[calc(100vh_-_120px)]">
+      <ScrollArea v-if="!isMobileSize" class="max-h-[calc(100vh_-_200px)]">
         <div class="space-y-3">
           <Player
             v-for="player of gameDataStore.players" :key="player.guid"

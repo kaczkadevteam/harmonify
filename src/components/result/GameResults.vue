@@ -5,22 +5,23 @@ import confetti from 'canvas-confetti'
 import PlayerResult from '@/components/roundResult/PlayerResult.vue'
 import { useResultStore } from '@/stores'
 import type { PlayerScoreDto } from '@/types'
+import { ScrollArea } from '@/components/ui/scroll-area'
 
-defineProps<{
+const props = defineProps<{
   isMobileSize: boolean
+  animate?: boolean
 }>()
 
 const emit = defineEmits<{
   animationFinished: []
 }>()
 
-const resultStore = useResultStore()
 const scoreBarMaxWidth = 220
-const resultsGap = 16
-const resultHeight = 40
 const resultsWidth = scoreBarMaxWidth + 100
 const intervalBeforeFirstPlace = 1000
 const playerAnimationDuration = 1000
+const resultsGap = 16
+const resultHeight = 40
 
 function getIntervalForIndex(index: number) {
   switch (index) {
@@ -33,7 +34,35 @@ function getIntervalForIndex(index: number) {
   }
 }
 
-const animationPending = ref(true)
+function launchConfetti() {
+  const velocities: number[] = Array.from({ length: 5 }).map(() => Math.random() * 50 + 65)
+
+  for (let i = 0; i < 5; i++) {
+    confetti({
+      particleCount: 40,
+      angle: 40,
+      spread: 45,
+      startVelocity: velocities[i],
+      origin: { x: -0.15 },
+      drift: -0.1,
+    })
+  }
+
+  for (let i = 0; i < 5; i++) {
+    confetti({
+      particleCount: 40,
+      angle: 140,
+      spread: 45,
+      startVelocity: velocities[i],
+      origin: { x: 1.15 },
+      drift: 0.1,
+    })
+  }
+}
+
+const resultStore = useResultStore()
+const animationPending = ref(props.animate)
+
 const results = computed(() => {
   const results = resultStore.game.players
 
@@ -41,41 +70,26 @@ const results = computed(() => {
 
   return results.map(r => ({ ...r, width: (r.score / bestScore) * scoreBarMaxWidth }))
 })
+const displayedResults = ref<(PlayerScoreDto & { width: number })[]>(props.animate ? [] : [...results.value].reverse())
+const resultsLeft = ref(results.value.length - displayedResults.value.length)
 
-const displayedResults = ref<(PlayerScoreDto & { width: number })[]>([])
-
-const resultsLeft = ref(results.value.length)
+const resultsHeight = computed(() => {
+  return `min(100%,${(resultHeight + resultsGap) * results.value.length - resultsGap}px)`
+})
 
 const interval = ref(getIntervalForIndex(resultsLeft.value - 1))
 const { pause } = useIntervalFn(() => {
+  if (!props.animate) {
+    pause()
+    return
+  }
+
   resultsLeft.value--
 
   if (resultsLeft.value <= 0) {
-    const velocities: number[] = Array.from({ length: 5 }).map(() => Math.random() * 50 + 65)
-
     pause()
     setTimeout(() => {
-      for (let i = 0; i < 5; i++) {
-        confetti({
-          particleCount: 40,
-          angle: 40,
-          spread: 45,
-          startVelocity: velocities[i],
-          origin: { x: -0.15 },
-          drift: -0.1,
-        })
-      }
-
-      for (let i = 0; i < 5; i++) {
-        confetti({
-          particleCount: 40,
-          angle: 140,
-          spread: 45,
-          startVelocity: velocities[i],
-          origin: { x: 1.15 },
-          drift: 0.1,
-        })
-      }
+      launchConfetti()
     }, intervalBeforeFirstPlace / 2)
 
     setTimeout(() => {
@@ -83,7 +97,6 @@ const { pause } = useIntervalFn(() => {
       emit('animationFinished')
     }, intervalBeforeFirstPlace + playerAnimationDuration)
   }
-
   else { interval.value = getIntervalForIndex(resultsLeft.value) }
 
   displayedResults.value.push(results.value[resultsLeft.value])
@@ -91,16 +104,18 @@ const { pause } = useIntervalFn(() => {
 </script>
 
 <template>
-  <TransitionGroup name="results" tag="div" class=" flex flex-col-reverse gap-4 rounded-lg" :style="{ width: `${resultsWidth}px`, gap: `${resultsGap}px` }">
-    <PlayerResult
-      v-for="playerResult in displayedResults"
-      :key="playerResult.guid"
-      class="ml-2"
-      :style="{ height: `${resultHeight}px` }"
-      :player-result
-      :animation="animationPending && { duration: `${playerAnimationDuration / 1000}s` }"
-    />
-  </TransitionGroup>
+  <ScrollArea class="max-h-full py-2 lg:py-0" :style="{ width: `${resultsWidth}px`, height: resultsHeight }">
+    <TransitionGroup name="results" tag="div" class="flex h-full flex-col-reverse rounded-lg" :style="{ gap: `${resultsGap}px` }">
+      <PlayerResult
+        v-for="playerResult in displayedResults"
+        :key="playerResult.guid"
+        class="ml-2"
+        :style="{ height: `${resultHeight}px` }"
+        :player-result
+        :animation="animationPending && { duration: `${playerAnimationDuration / 1000}s` }"
+      />
+    </TransitionGroup>
+  </ScrollArea>
 </template>
 
 <style scoped>

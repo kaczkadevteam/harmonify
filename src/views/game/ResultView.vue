@@ -86,9 +86,11 @@ onMounted(() => {
       </div>
 
       <TabsContent value="leaderboard" class="h-[60vh] max-h-[60vh] border" force-mount>
-        <ScrollArea class="h-full py-2">
-          <GameResults :points-bar-max-width="20" :is-mobile-size @animation-finished="handleResultsAnimationFinish" />
-        </ScrollArea>
+        <GameResults
+          :is-mobile-size
+          animate
+          @animation-finished="handleResultsAnimationFinish"
+        />
       </TabsContent>
       <TabsContent value="tracks" class="h-[60vh] max-h-[60vh]">
         <ScrollArea v-if="displayTracks" class="row-span-2 h-full rounded-lg border lg:w-full">
@@ -116,7 +118,7 @@ onMounted(() => {
       </Transition>
     </div>
   </div>
-  <div v-else class="box-border grid h-screen w-screen grid-cols-[650px_auto] grid-rows-[minmax(0,auto)_150px] place-content-center place-items-center gap-5 p-8">
+  <div v-else class="box-border grid h-screen w-screen grid-cols-[650px_auto] grid-rows-[minmax(0,100%)_150px] place-content-center place-items-center gap-5 p-8">
     <Transition name="fade-left">
       <ScrollArea v-if="displayTracks" class="row-span-2 size-full rounded-lg border p-4">
         <div class="space-y-4">
@@ -128,10 +130,14 @@ onMounted(() => {
         </div>
       </ScrollArea>
     </Transition>
-    <div ref="gameResultsEl" :class="cn('game-results col-start-2 h-full max-h-full', !resultsAnimationPending && 'game-results-animation')">
-      <ScrollArea class="h-full">
-        <GameResults :points-bar-max-width="20" :is-mobile-size @animation-finished="handleResultsAnimationFinish" />
-      </ScrollArea>
+    <div class="col-start-2 h-full max-h-full self-start">
+      <GameResults
+        ref="gameResultsEl"
+        :class="cn('max-h-full', true && 'game-results', !resultsAnimationPending && 'game-results-animation')"
+        :is-mobile-size
+        animate
+        @animation-finished="handleResultsAnimationFinish"
+      />
     </div>
 
     <Transition name="fade-bottom">
