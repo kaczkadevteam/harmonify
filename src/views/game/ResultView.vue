@@ -20,7 +20,9 @@ const gameResultsDimensions = useElementBounding(gameResultsEl)
 const startingTransform = ref('')
 const displayTracks = ref(false)
 const displayButton = ref(false)
+const resultsAnimationPending = ref(true)
 const { width: screenWidth } = useWindowSize()
+const isMobileSize = computed(() => screenWidth.value < 1024)
 
 function handlePlayAgain() {
   router.push({ name: 'home' })
@@ -29,11 +31,13 @@ function handlePlayAgain() {
 function handleResultsAnimationFinish() {
   setTimeout(() => {
     displayTracks.value = true
-  }, 200)
+  }, isMobileSize.value ? 200 : 1500)
 
   setTimeout(() => {
     displayButton.value = true
-  }, 800)
+  }, isMobileSize.value ? 800 : 2000)
+
+  resultsAnimationPending.value = false
 }
 
 const playedTracks = computed<TPlayedTrack[]>(() => {
@@ -63,8 +67,6 @@ onMounted(() => {
 
   startingTransform.value = `translate( ${deltaX}px, ${deltaY}px)`
 })
-
-const isMobileSize = computed(() => screenWidth.value < 1024)
 </script>
 
 <template>
@@ -126,7 +128,7 @@ const isMobileSize = computed(() => screenWidth.value < 1024)
         </div>
       </ScrollArea>
     </Transition>
-    <div ref="gameResultsEl" class="game-results col-start-2 h-full max-h-full">
+    <div ref="gameResultsEl" :class="cn('game-results col-start-2 h-full max-h-full', !resultsAnimationPending && 'game-results-animation')">
       <ScrollArea class="h-full">
         <GameResults :points-bar-max-width="20" :is-mobile-size @animation-finished="handleResultsAnimationFinish" />
       </ScrollArea>
@@ -149,7 +151,10 @@ const isMobileSize = computed(() => screenWidth.value < 1024)
 <style scoped>
 .game-results {
   transform: v-bind(startingTransform);
-  animation: comeback 2s ease-in-out 5000ms;
+}
+
+.game-results-animation {
+  animation: comeback 1.5s ease-in-out;
   animation-fill-mode: forwards;
 }
 
