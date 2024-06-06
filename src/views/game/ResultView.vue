@@ -114,8 +114,7 @@ const isMobileSize = computed(() => screenWidth.value < 1024)
       </Transition>
     </div>
   </div>
-
-  <div v-else class="box-border grid h-screen w-screen grid-cols-[650px_auto] grid-rows-[minmax(0,auto)_150px] place-items-center gap-5 p-8">
+  <div v-else class="box-border grid h-screen w-screen grid-cols-[650px_auto] grid-rows-[minmax(0,auto)_150px] place-content-center place-items-center gap-5 p-8">
     <Transition name="fade-left">
       <ScrollArea v-if="displayTracks" class="row-span-2 size-full rounded-lg border p-4">
         <div class="space-y-4">

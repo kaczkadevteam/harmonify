@@ -37,8 +37,8 @@ const isMobileSize = computed(() => screenWidth.value < 1024)
 </script>
 
 <template>
-  <main class="grid content-center justify-center gap-4 lg:grid-cols-[260px_auto]">
-    <div class="grid gap-3 lg:mt-2 lg:place-content-start">
+  <main class="grid content-center justify-center gap-4 px-4 lg:grid-cols-[260px_auto] lg:justify-center lg:justify-items-center">
+    <div class="grid gap-3 lg:mt-2 lg:place-content-start lg:justify-self-start">
       <div class="flex items-center justify-between">
         <Sheet v-if="isMobileSize">
           <SheetTrigger>

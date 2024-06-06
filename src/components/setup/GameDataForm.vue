@@ -8,7 +8,7 @@ const gameDataStore = useGameDataStore()
 
 <template>
   <div class="grid h-full auto-rows-min items-start gap-2 rounded-lg border px-5 py-4">
-    <h2 class="mb-2 text-center text-xl font-bold lg:text-right lg:text-3xl">
+    <h2 class="mb-2 text-center text-xl font-bold lg:text-3xl">
       Game settings
     </h2>
     <div class="flex items-center justify-between gap-5">
