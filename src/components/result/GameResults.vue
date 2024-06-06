@@ -19,7 +19,6 @@ const scoreBarMaxWidth = 220
 const resultsGap = 16
 const resultHeight = 40
 const resultsWidth = scoreBarMaxWidth + 100
-const maxVisibleResults = 6
 const intervalBeforeFirstPlace = 1000
 const playerAnimationDuration = 1000
 
@@ -29,10 +28,8 @@ function getIntervalForIndex(index: number) {
       return intervalBeforeFirstPlace
     case 2:
       return 800
-    case 3:
-      return 500
     default:
-      return 300
+      return 500
   }
 }
 
@@ -48,15 +45,6 @@ const results = computed(() => {
 const displayedResults = ref<(PlayerScoreDto & { width: number })[]>([])
 
 const resultsLeft = ref(results.value.length)
-const containerHeight = computed(() => {
-  let resultsToShow = 0
-  if (results.value.length > maxVisibleResults)
-    resultsToShow = maxVisibleResults
-  else
-    resultsToShow = results.value.length
-
-  return resultsToShow * (resultHeight + resultsGap) - resultsGap
-})
 
 const interval = ref(getIntervalForIndex(resultsLeft.value - 1))
 const { pause } = useIntervalFn(() => {
@@ -103,7 +91,7 @@ const { pause } = useIntervalFn(() => {
 </script>
 
 <template>
-  <TransitionGroup name="results" tag="div" class=" flex flex-col-reverse gap-4 overflow-hidden rounded-lg" :style="{ height: `${containerHeight}px`, width: `${resultsWidth}px`, gap: `${resultsGap}px` }">
+  <TransitionGroup name="results" tag="div" class=" flex flex-col-reverse gap-4 rounded-lg" :style="{ width: `${resultsWidth}px`, gap: `${resultsGap}px` }">
     <PlayerResult
       v-for="playerResult in displayedResults"
       :key="playerResult.guid"
@@ -119,7 +107,7 @@ const { pause } = useIntervalFn(() => {
 .results-move,
 .results-enter-active,
 .results-leave-active {
-  transition: all 1s ease;
+  transition: all 0.5s ease;
 }
 
 .results-enter-from,

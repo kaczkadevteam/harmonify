@@ -83,11 +83,13 @@ const isMobileSize = computed(() => screenWidth.value < 1024)
         </Transition>
       </div>
 
-      <TabsContent value="leaderboard" class="h-[60vh] border py-2" force-mount>
-        <GameResults :points-bar-max-width="20" :is-mobile-size @animation-finished="handleResultsAnimationFinish" />
+      <TabsContent value="leaderboard" class="h-[60vh] max-h-[60vh] border" force-mount>
+        <ScrollArea class="h-full py-2">
+          <GameResults :points-bar-max-width="20" :is-mobile-size @animation-finished="handleResultsAnimationFinish" />
+        </ScrollArea>
       </TabsContent>
-      <TabsContent value="tracks" class="h-[60vh]">
-        <ScrollArea v-if="displayTracks" class="row-span-2 h-4/5 rounded-lg border lg:w-full">
+      <TabsContent value="tracks" class="h-[60vh] max-h-[60vh]">
+        <ScrollArea v-if="displayTracks" class="row-span-2 h-full rounded-lg border lg:w-full">
           <div class="w-[320px] space-y-4 divide-y py-4 ">
             <PlayedTrack
               v-for="playedTrack, idx of playedTracks"
@@ -113,9 +115,9 @@ const isMobileSize = computed(() => screenWidth.value < 1024)
     </div>
   </div>
 
-  <div v-else class="grid h-screen grid-cols-[650px_auto] grid-rows-2 place-items-center gap-5">
+  <div v-else class="box-border grid h-screen w-screen grid-cols-[650px_auto] grid-rows-[minmax(0,auto)_150px] place-items-center gap-5 p-8">
     <Transition name="fade-left">
-      <ScrollArea v-if="displayTracks" class="row-span-2 h-4/5 w-full rounded-lg border p-4">
+      <ScrollArea v-if="displayTracks" class="row-span-2 size-full rounded-lg border p-4">
         <div class="space-y-4">
           <PlayedTrack
             v-for="playedTrack, idx of playedTracks"
@@ -125,8 +127,10 @@ const isMobileSize = computed(() => screenWidth.value < 1024)
         </div>
       </ScrollArea>
     </Transition>
-    <div ref="gameResultsEl" class="game-results col-start-2">
-      <GameResults :points-bar-max-width="20" :is-mobile-size @animation-finished="handleResultsAnimationFinish" />
+    <div ref="gameResultsEl" class="game-results col-start-2 h-full max-h-full">
+      <ScrollArea class="h-full">
+        <GameResults :points-bar-max-width="20" :is-mobile-size @animation-finished="handleResultsAnimationFinish" />
+      </ScrollArea>
     </div>
 
     <Transition name="fade-bottom">

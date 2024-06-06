@@ -7,6 +7,7 @@ import { GuessDisplay, TrackDisplay } from '@/components/trackDisplay'
 import { useConnectionStore, useGameDataStore, useResultStore } from '@/stores'
 import PlayerResults from '@/components/roundResult/PlayerResults.vue'
 import LoadingIndicator from '@/components/roundResult/LoadingIndicator.vue'
+import { ScrollArea } from '@/components/ui/scroll-area'
 
 const router = useRouter()
 const gameDataStore = useGameDataStore()
@@ -35,11 +36,14 @@ const pointsBarMaxWidth = computed(() => screenWidth.value >= 1024 ? 320 : 220)
 
 <template>
   <LoadingIndicator />
-  <div class="grid place-content-center gap-4 overflow-y-auto py-8 md:grid-cols-2 md:gap-10">
-    <div class="max-w-80 justify-self-center md:max-w-none">
-      <PlayerResults :points-bar-max-width />
-    </div>
-    <div class=" justify-self-center">
+  <div class="grid max-h-screen grid-rows-[auto_350px] place-content-center gap-4 overflow-y-auto py-8 md:grid-cols-2 md:grid-rows-1 md:gap-10">
+    <ScrollArea>
+      <div class="max-w-80 justify-self-center md:max-h-[calc(100vh_-_100px)] md:max-w-none">
+        <PlayerResults :points-bar-max-width />
+      </div>
+    </ScrollArea>
+
+    <div class="justify-self-center md:self-center">
       <div class="w-80 lg:w-96">
         <div class="mb-2 grid justify-items-center gap-1 text-center">
           <img :src="track.album.images[0].url" alt="Album cover" width="200" height="200">

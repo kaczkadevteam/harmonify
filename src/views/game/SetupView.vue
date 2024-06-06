@@ -10,6 +10,7 @@ import Player from '@/components/Player.vue'
 import { useToast } from '@/components/ui/toast/use-toast'
 import { Button } from '@/components/ui/button'
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
+import { ScrollArea } from '@/components/ui/scroll-area'
 
 const router = useRouter()
 const gameDataStore = useGameDataStore()
@@ -36,7 +37,7 @@ const isMobileSize = computed(() => screenWidth.value < 1024)
 </script>
 
 <template>
-  <main class="grid place-content-center gap-4 lg:grid-cols-[200px_auto]">
+  <main class="grid content-center justify-center gap-4 lg:grid-cols-[260px_auto]">
     <div class="grid gap-3 lg:mt-2 lg:place-content-start">
       <div class="flex items-center justify-between">
         <Sheet v-if="isMobileSize">
@@ -50,14 +51,16 @@ const isMobileSize = computed(() => screenWidth.value < 1024)
             <SheetHeader class="mb-2">
               <SheetTitle>Players</SheetTitle>
             </SheetHeader>
-            <div class="space-y-3">
-              <Player
-                v-for="player of gameDataStore.players" :key="player.guid"
-                :is-self="player.guid === gameDataStore.selfPlayer.guid"
-                :editable="player.guid === gameDataStore.selfPlayer.guid"
-                :player
-              />
-            </div>
+            <ScrollArea class="h-[calc(100%_-_30px)]">
+              <div class="space-y-3">
+                <Player
+                  v-for="player of gameDataStore.players" :key="player.guid"
+                  :is-self="player.guid === gameDataStore.selfPlayer.guid"
+                  :editable="player.guid === gameDataStore.selfPlayer.guid"
+                  :player
+                />
+              </div>
+            </ScrollArea>
           </SheetContent>
         </Sheet>
         <div class="flex gap-3">
@@ -69,14 +72,16 @@ const isMobileSize = computed(() => screenWidth.value < 1024)
           </button>
         </div>
       </div>
-      <template v-if="!isMobileSize">
-        <Player
-          v-for="player of gameDataStore.players" :key="player.guid"
-          :is-self="player.guid === gameDataStore.selfPlayer.guid"
-          :editable="player.guid === gameDataStore.selfPlayer.guid"
-          :player
-        />
-      </template>
+      <ScrollArea v-if="!isMobileSize" class="max-h-[calc(100vh_-_120px)]">
+        <div class="space-y-3">
+          <Player
+            v-for="player of gameDataStore.players" :key="player.guid"
+            :is-self="player.guid === gameDataStore.selfPlayer.guid"
+            :editable="player.guid === gameDataStore.selfPlayer.guid"
+            :player
+          />
+        </div>
+      </ScrollArea>
     </div>
     <HostView v-if="gameDataStore.selfPlayer.isHost" :is-mobile-size />
     <div v-else class="flex items-center gap-5 self-center text-2xl">
