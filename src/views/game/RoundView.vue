@@ -58,7 +58,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div v-if="!isGuessSubmitted" class="-mt-10 mb-32 grid grid-cols-2 place-items-center gap-x-40 gap-y-10 md:mt-0">
+  <div v-if="!isGuessSubmitted" class="grid grid-cols-2 place-content-center place-items-center gap-x-40 gap-y-10 self-start p-4 md:mb-60 md:self-center md:justify-self-center md:p-0">
     <span class=" justify-self-start text-xl">Round: {{ gameDataStore.round }}</span>
 
     <div class=" flex items-center gap-6 justify-self-end">
