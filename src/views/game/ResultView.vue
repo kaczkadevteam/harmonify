@@ -68,7 +68,7 @@ const isMobileSize = computed(() => screenWidth.value < 1024)
 </script>
 
 <template>
-  <template v-if="isMobileSize">
+  <div v-if="isMobileSize" class="grid place-content-center">
     <Tabs default-value="leaderboard">
       <div class="h-10">
         <Transition name="fade-top">
@@ -111,7 +111,7 @@ const isMobileSize = computed(() => screenWidth.value < 1024)
         </div>
       </Transition>
     </div>
-  </template>
+  </div>
 
   <div v-else class="grid h-screen grid-cols-[650px_auto] grid-rows-2 place-items-center gap-5">
     <Transition name="fade-left">
