@@ -1,5 +1,18 @@
 import { defineStore } from 'pinia'
-import type { CreatedGameDto, GameData, GameStartedDto, PlayerDto } from '@/types'
+import { z } from 'zod'
+import { type CreatedGameDto, type GameStartedDto, type PlayerDto, displayedGuessDtoSchema, gameSettingsDtoSchema, musicPlayDataSchema, playerDtoSchema, playerSchema } from '@/types'
+
+export const gameDataSchema = z.object({
+  id: z.string().length(4),
+  selfPlayer: playerSchema,
+  players: z.array(playerDtoSchema),
+  round: z.number(),
+  gameSettings: gameSettingsDtoSchema,
+  possibleGuesses: z.array(displayedGuessDtoSchema),
+  musicPlayData: musicPlayDataSchema,
+  isPaused: z.boolean(),
+})
+export type GameData = z.infer<typeof gameDataSchema>
 
 export const useGameDataStore = defineStore('gameData', {
   state: (): GameData => {
@@ -26,6 +39,7 @@ export const useGameDataStore = defineStore('gameData', {
         uri: '',
         trackStart_ms: 0,
       },
+      isPaused: false,
     }
   },
   actions: {

@@ -260,17 +260,6 @@ export const playerSchema = playerDtoSchema.and(z.object({
 }))
 export type Player = z.infer<typeof playerSchema>
 
-export const gameDataSchema = z.object({
-  id: z.string().length(4),
-  selfPlayer: playerSchema,
-  players: z.array(playerDtoSchema),
-  round: z.number(),
-  gameSettings: gameSettingsDtoSchema,
-  possibleGuesses: z.array(displayedGuessDtoSchema),
-  musicPlayData: musicPlayDataSchema,
-})
-export type GameData = z.infer<typeof gameDataSchema>
-
 export interface MusicPlayer {
   _turnOn: () => Promise<void>
   _play: (track: MusicPlayData) => Promise<void>
