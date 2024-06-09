@@ -11,6 +11,7 @@ import { useToast } from '@/components/ui/toast/use-toast'
 import { Button } from '@/components/ui/button'
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
 import { ScrollArea } from '@/components/ui/scroll-area'
+import { BREAKPOINT } from '@/consts'
 
 const router = useRouter()
 const gameDataStore = useGameDataStore()
@@ -33,14 +34,14 @@ function copyId() {
   toast({ description: 'Room ID copied to clipboard!' })
 }
 
-const isMobileSize = computed(() => screenWidth.value < 1024)
+const isDesktop = computed(() => screenWidth.value >= BREAKPOINT.LG)
 </script>
 
 <template>
   <main class="grid content-center justify-center gap-4 px-4 lg:grid-cols-[260px_auto] lg:justify-center lg:justify-items-center">
     <div class="grid gap-3 lg:mt-2 lg:place-content-start lg:justify-self-start">
       <div class="flex items-center justify-between">
-        <Sheet v-if="isMobileSize">
+        <Sheet v-if="!isDesktop">
           <SheetTrigger>
             <Button variant="outline" size="icon" class="w-fit gap-1 px-1">
               <Users />
@@ -72,7 +73,7 @@ const isMobileSize = computed(() => screenWidth.value < 1024)
           </button>
         </div>
       </div>
-      <ScrollArea v-if="!isMobileSize" class="max-h-[calc(100vh_-_200px)]">
+      <ScrollArea v-if="isDesktop" class="max-h-[calc(100vh_-_200px)]">
         <div class="space-y-3">
           <Player
             v-for="player of gameDataStore.players" :key="player.guid"
@@ -83,7 +84,7 @@ const isMobileSize = computed(() => screenWidth.value < 1024)
         </div>
       </ScrollArea>
     </div>
-    <HostView v-if="gameDataStore.selfPlayer.isHost" :is-mobile-size />
+    <HostView v-if="gameDataStore.selfPlayer.isHost" :is-desktop />
     <div v-else class="flex items-center gap-5 self-center text-2xl">
       <span>Waiting for host to start game</span><LoadingCircle size="60px" />
     </div>

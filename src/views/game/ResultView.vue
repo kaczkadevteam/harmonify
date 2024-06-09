@@ -10,6 +10,7 @@ import type { PlayedTrack as TPlayedTrack } from '@/types'
 import GameResults from '@/components/result/GameResults.vue'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { cn } from '@/lib/utils'
+import { BREAKPOINT } from '@/consts'
 
 const resultStore = useResultStore()
 
@@ -22,7 +23,7 @@ const displayTracks = ref(false)
 const displayButton = ref(false)
 const resultsAnimationPending = ref(true)
 const { width: screenWidth } = useWindowSize()
-const isMobileSize = computed(() => screenWidth.value < 1024)
+const isDesktop = computed(() => screenWidth.value >= BREAKPOINT.LG)
 
 function handlePlayAgain() {
   router.push({ name: 'home' })
@@ -31,11 +32,11 @@ function handlePlayAgain() {
 function handleResultsAnimationFinish() {
   setTimeout(() => {
     displayTracks.value = true
-  }, isMobileSize.value ? 200 : 1500)
+  }, isDesktop.value ? 1500 : 200)
 
   setTimeout(() => {
     displayButton.value = true
-  }, isMobileSize.value ? 800 : 2000)
+  }, isDesktop.value ? 2000 : 800)
 
   resultsAnimationPending.value = false
 }
@@ -70,7 +71,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div v-if="isMobileSize" class="grid place-content-center">
+  <div v-if="!isDesktop" class="grid place-content-center">
     <Tabs default-value="leaderboard">
       <div class="h-10">
         <Transition name="fade-top">
@@ -87,7 +88,7 @@ onMounted(() => {
 
       <TabsContent value="leaderboard" class="h-[60vh] max-h-[60vh] border" force-mount>
         <GameResults
-          :is-mobile-size
+          :is-desktop
           animate
           @animation-finished="handleResultsAnimationFinish"
         />
@@ -134,7 +135,7 @@ onMounted(() => {
       <GameResults
         ref="gameResultsEl"
         :class="cn('max-h-full', true && 'game-results', !resultsAnimationPending && 'game-results-animation')"
-        :is-mobile-size
+        :is-desktop
         animate
         @animation-finished="handleResultsAnimationFinish"
       />
