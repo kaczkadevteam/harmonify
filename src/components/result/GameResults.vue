@@ -16,18 +16,18 @@ const emit = defineEmits<{
   animationFinished: []
 }>()
 
-const scoreBarMaxWidth = 220
-const resultsWidth = scoreBarMaxWidth + 100
-const intervalBeforeFirstPlace = 1000
-const playerAnimationDuration = 1000
-const resultsGap = 16
-const resultHeight = 40
-const mobilePadding = 8
+const SCORE_BAR_MAX_WIDTH = 220
+const RESULTS_WIDTH = SCORE_BAR_MAX_WIDTH + 100
+const INTERVAL_BEFORE_FIRST_PLACE = 1000
+const PLAYER_ANIMATION_DURATION = 1000
+const RESULTS_GAP = 16
+const RESULTS_HEIGHT = 40
+const MOBILE_PADDING = 8
 
 function getIntervalForIndex(index: number) {
   switch (index) {
     case 1:
-      return intervalBeforeFirstPlace
+      return INTERVAL_BEFORE_FIRST_PLACE
     case 2:
       return 800
     default:
@@ -69,13 +69,13 @@ const results = computed(() => {
 
   const bestScore: number = results[0]?.score ?? 0
 
-  return results.map(r => ({ ...r, width: (r.score / bestScore) * scoreBarMaxWidth }))
+  return results.map(r => ({ ...r, width: (r.score / bestScore) * SCORE_BAR_MAX_WIDTH }))
 })
 const displayedResults = ref<(PlayerScoreDto & { width: number })[]>(props.animate ? [] : [...results.value].reverse())
 const resultsLeft = ref(results.value.length - displayedResults.value.length)
 
 const resultsHeight = computed(() => {
-  return `min(100%,${(resultHeight + resultsGap) * results.value.length - resultsGap + mobilePadding * 2}px)`
+  return `min(100%,${(RESULTS_HEIGHT + RESULTS_GAP) * results.value.length - RESULTS_GAP + MOBILE_PADDING * 2}px)`
 })
 
 const interval = ref(getIntervalForIndex(resultsLeft.value - 1))
@@ -91,12 +91,12 @@ const { pause } = useIntervalFn(() => {
     pause()
     setTimeout(() => {
       launchConfetti()
-    }, intervalBeforeFirstPlace / 2)
+    }, INTERVAL_BEFORE_FIRST_PLACE / 2)
 
     setTimeout(() => {
       animationPending.value = false
       emit('animationFinished')
-    }, intervalBeforeFirstPlace + playerAnimationDuration)
+    }, INTERVAL_BEFORE_FIRST_PLACE + PLAYER_ANIMATION_DURATION)
   }
   else { interval.value = getIntervalForIndex(resultsLeft.value) }
 
@@ -105,15 +105,15 @@ const { pause } = useIntervalFn(() => {
 </script>
 
 <template>
-  <ScrollArea class="max-h-full" :style="{ width: `${resultsWidth}px`, height: resultsHeight, padding: isDesktop ? '0' : `${mobilePadding}px 0` }">
-    <TransitionGroup name="results" tag="div" class="flex h-full flex-col-reverse rounded-lg" :style="{ gap: `${resultsGap}px` }">
+  <ScrollArea class="max-h-full" :style="{ width: `${RESULTS_WIDTH}px`, height: resultsHeight, padding: isDesktop ? '0' : `${MOBILE_PADDING}px 0` }">
+    <TransitionGroup name="results" tag="div" class="flex h-full flex-col-reverse rounded-lg" :style="{ gap: `${RESULTS_GAP}px` }">
       <PlayerResult
         v-for="playerResult in displayedResults"
         :key="playerResult.guid"
         class="ml-2"
-        :style="{ height: `${resultHeight}px` }"
+        :style="{ height: `${RESULTS_HEIGHT}px` }"
         :player-result
-        :animation="animationPending && { duration: `${playerAnimationDuration / 1000}s` }"
+        :animation="animationPending && { duration: `${PLAYER_ANIMATION_DURATION / 1000}s` }"
       />
     </TransitionGroup>
   </ScrollArea>
