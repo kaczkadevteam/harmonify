@@ -2,7 +2,6 @@
 import { computed, onBeforeMount } from 'vue'
 import { useRouter } from 'vue-router'
 import { useWindowSize } from '@vueuse/core'
-import { cn } from '@/lib/utils'
 import { GuessDisplay, TrackDisplay } from '@/components/trackDisplay'
 import { useConnectionStore, useGameDataStore, useResultStore } from '@/stores'
 import PlayerResults from '@/components/roundResult/PlayerResults.vue'
@@ -37,7 +36,7 @@ const pointsBarMaxWidth = computed(() => screenWidth.value >= BREAKPOINT.LG ? 32
 
 <template>
   <LoadingIndicator />
-  <div class="grid max-h-screen grid-rows-[auto_350px] place-content-center gap-4 overflow-y-auto py-8 md:grid-cols-2 md:grid-rows-1 md:gap-10">
+  <div class="grid max-h-screen grid-rows-[auto_350px] place-content-center gap-4 overflow-y-auto py-8 md:grid-cols-[minmax(auto,420px)_minmax(0,auto)] md:grid-rows-1 md:gap-10 md:self-center md:justify-self-center">
     <ScrollArea>
       <div class="max-w-80 justify-self-center md:max-h-[calc(100vh_-_100px)] md:max-w-none">
         <PlayerResults :points-bar-max-width />
