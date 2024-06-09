@@ -1,23 +1,18 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router'
 import { computed, onMounted, ref } from 'vue'
-import { useElementBounding, useWindowSize } from '@vueuse/core'
-import { Button } from '@/components/ui/button'
-import { ScrollArea } from '@/components/ui/scroll-area'
+import { useWindowSize } from '@vueuse/core'
 import { useResultStore } from '@/stores'
-import PlayedTrack from '@/components/result/PlayedTrack.vue'
 import type { PlayedTrack as TPlayedTrack } from '@/types'
-import GameResults from '@/components/result/GameResults.vue'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { cn } from '@/lib/utils'
 import { AnimationDuration, Breakpoint } from '@/consts'
+import DesktopResultView from '@/components/result/DesktopResultView.vue'
+import MobileResultView from '@/components/result/MobileResultView.vue'
 
 const resultStore = useResultStore()
 
 const router = useRouter()
-const gameResultsEl = ref<HTMLDivElement | null>(null)
 const windowDimensions = useWindowSize()
-const gameResultsDimensions = useElementBounding(gameResultsEl)
+const resultView = ref<InstanceType<typeof DesktopResultView> | null>(null)
 const startingTransform = ref('')
 const displayTracks = ref(false)
 const displayButton = ref(false)
@@ -57,6 +52,8 @@ const playedTracks = computed<TPlayedTrack[]>(() => {
 })
 
 onMounted(() => {
+  const gameResultsDimensions = resultView.value!.gameResultsDimensions
+
   const windowMiddleX = windowDimensions.width.value / 2
   const windowMiddleY = windowDimensions.height.value / 2
 
@@ -71,130 +68,27 @@ onMounted(() => {
 </script>
 
 <template>
-  <div v-if="!isDesktop" class="grid place-content-center">
-    <Tabs default-value="leaderboard">
-      <div class="h-10">
-        <Transition name="fade-top">
-          <TabsList v-if="displayTracks" class="w-full">
-            <TabsTrigger value="leaderboard" class="flex-1">
-              Leaderboard
-            </TabsTrigger>
-            <TabsTrigger value="tracks" class="flex-1">
-              Tracks
-            </TabsTrigger>
-          </TabsList>
-        </Transition>
-      </div>
-
-      <TabsContent value="leaderboard" class="h-[60vh] max-h-[60vh] border" force-mount>
-        <GameResults
-          :is-desktop
-          animate
-          @animation-finished="handleResultsAnimationFinish"
-        />
-      </TabsContent>
-      <TabsContent value="tracks" class="h-[60vh] max-h-[60vh]">
-        <ScrollArea v-if="displayTracks" class="row-span-2 h-full rounded-lg border lg:w-full">
-          <div class="w-[320px] space-y-4 divide-y py-4 ">
-            <PlayedTrack
-              v-for="playedTrack, idx of playedTracks"
-              :key="`${playedTrack.track.uri}-${idx}`"
-              :played-track="playedTrack"
-            />
-          </div>
-        </ScrollArea>
-      </TabsContent>
-    </Tabs>
-    <div class="h-14">
-      <Transition name="fade-bottom">
-        <div v-if="displayButton" class="mt-4 flex items-center justify-center gap-5">
-          <div class="text-2xl">
-            <span>Score: </span>
-            <span>{{ resultStore.gameSelfPlayer.score }}</span>
-          </div>
-          <Button class="text-base" size="default" @click="handlePlayAgain">
-            Play again?
-          </Button>
-        </div>
-      </Transition>
-    </div>
-  </div>
-  <div v-else class="box-border grid h-screen w-screen grid-cols-[650px_auto] grid-rows-[minmax(0,100%)_150px] place-content-center place-items-center gap-5 p-8">
-    <Transition name="fade-left">
-      <ScrollArea v-if="displayTracks" class="row-span-2 size-full rounded-lg border p-4">
-        <div class="space-y-4">
-          <PlayedTrack
-            v-for="playedTrack, idx of playedTracks"
-            :key="`${playedTrack.track.uri}-${idx}`"
-            :played-track="playedTrack"
-          />
-        </div>
-      </ScrollArea>
-    </Transition>
-    <div class="col-start-2 h-full max-h-full self-start">
-      <GameResults
-        ref="gameResultsEl"
-        :class="cn('max-h-full', true && 'game-results', !resultsAnimationPending && 'game-results-animation')"
-        :is-desktop
-        animate
-        @animation-finished="handleResultsAnimationFinish"
-      />
-    </div>
-
-    <Transition name="fade-bottom">
-      <div v-if="displayButton" class="grid place-items-center gap-5">
-        <div class="text-4xl">
-          <span>Score: </span>
-          <span>{{ resultStore.gameSelfPlayer.score }}</span>
-        </div>
-        <Button class="text-xl" size="lg" @click="handlePlayAgain">
-          Play again?
-        </Button>
-      </div>
-    </Transition>
-  </div>
+  <DesktopResultView
+    v-if="isDesktop"
+    ref="resultView"
+    :played-tracks
+    :score="resultStore.gameSelfPlayer.score"
+    :is-desktop
+    :display-tracks
+    :display-button
+    :results-animation-pending
+    :starting-transform
+    @animation-finished="handleResultsAnimationFinish"
+    @play-again="handlePlayAgain"
+  />
+  <MobileResultView
+    v-else
+    :played-tracks
+    :score="resultStore.gameSelfPlayer.score"
+    :is-desktop
+    :display-tracks
+    :display-button
+    @animation-finished="handleResultsAnimationFinish"
+    @play-again="handlePlayAgain"
+  />
 </template>
-
-<style scoped>
-.game-results {
-  transform: v-bind(startingTransform);
-}
-
-.game-results-animation {
-  animation: comeback 1.5s ease-in-out;
-  animation-fill-mode: forwards;
-}
-
-.fade-left-leave-active,
-.fade-left-enter-active,
-.fade-top-leave-active,
-.fade-top-enter-active,
-.fade-bottom-leave-active,
-.fade-bottom-enter-active {
-  transition: all 1s ease-out;
-}
-
-.fade-top-enter-from,
-.fade-top-leave-to {
-  transform: translateY(-20px);
-  opacity: 0;
-}
-
-.fade-bottom-enter-from,
-.fade-bottom-leave-to {
-  transform: translateY(40px);
-  opacity: 0;
-}
-
-.fade-left-enter-from,
-.fade-left-leave-to {
-  transform: translateX(-40px);
-  opacity: 0;
-}
-
-@keyframes comeback {
-  to {
-    transform: translate(0, 0);
-  }
-}
-</style>
