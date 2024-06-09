@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import { computed, onBeforeMount } from 'vue'
+import { computed, onBeforeMount, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { cn } from '@/lib/utils'
 import { GuessDisplay, TrackDisplay } from '@/components/trackDisplay'
 import { useConnectionStore, useGameDataStore, useResultStore } from '@/stores'
 import PlayerResults from '@/components/roundResult/PlayerResults.vue'
 import LoadingIndicator from '@/components/roundResult/LoadingIndicator.vue'
+import PauseBackdrop from '@/components/roundResult/PauseBackdrop.vue'
 
 const router = useRouter()
 const gameDataStore = useGameDataStore()
@@ -32,7 +33,8 @@ const roundFinishedTitle = computed(() => isFullyGuessed.value ? 'Correct :)' : 
 </script>
 
 <template>
-  <LoadingIndicator />
+  <LoadingIndicator v-if="!gameDataStore.isPaused" />
+  <PauseBackdrop v-else />
   <div class=" grid grid-cols-2 place-content-center gap-10">
     <div class=" justify-self-center">
       <PlayerResults :points-bar-max-width="320" />
