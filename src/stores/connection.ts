@@ -38,6 +38,12 @@ export const useConnectionStore = defineStore('connection', {
         if (message.$type === 'message/playerList')
           gameDataStore.updatePlayersList(message.data)
 
+        if (message.type === 'gamePaused')
+          gameDataStore.isPaused = true
+
+        if (message.type === 'gameResumed')
+          gameDataStore.isPaused = false
+
         if (this.handleMessage)
           this.handleMessage(message)
       }

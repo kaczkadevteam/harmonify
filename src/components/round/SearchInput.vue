@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, watch, watchEffect } from 'vue'
+import { computed, onUnmounted, ref, watch, watchEffect } from 'vue'
 import { onStartTyping, useFocus } from '@vueuse/core'
 import { X } from 'lucide-vue-next'
 import SearchInputOption from './searchInput/SearchInputOption.vue'
@@ -95,6 +95,13 @@ watch<[number, boolean]>(() => [matchingGuesses.value.length, focused.value], ([
   if (newGuessesCount > 0 && newIsFocused) {
     window.addEventListener('keydown', handleSelectionMovement)
     window.addEventListener('keydown', handleSelectionInput)
+  }
+})
+
+onUnmounted(() => {
+  if (matchingGuesses.value.length > 0 && focused.value) {
+    window.removeEventListener('keydown', handleSelectionMovement)
+    window.removeEventListener('keydown', handleSelectionInput)
   }
 })
 

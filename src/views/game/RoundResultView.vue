@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onBeforeMount } from 'vue'
+import { computed, onBeforeMount, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { useWindowSize } from '@vueuse/core'
 import { GuessDisplay, TrackDisplay } from '@/components/trackDisplay'
@@ -8,6 +8,7 @@ import PlayerResults from '@/components/roundResult/PlayerResults.vue'
 import LoadingIndicator from '@/components/roundResult/LoadingIndicator.vue'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Breakpoint } from '@/consts'
+import PauseBackdrop from '@/components/roundResult/PauseBackdrop.vue'
 
 const router = useRouter()
 const gameDataStore = useGameDataStore()
@@ -35,7 +36,8 @@ const pointsBarMaxWidth = computed(() => screenWidth.value >= Breakpoint.LG ? 32
 </script>
 
 <template>
-  <LoadingIndicator />
+  <LoadingIndicator v-if="!gameDataStore.isPaused" />
+  <PauseBackdrop v-else />
   <div class="grid max-h-screen grid-rows-[auto_350px] place-content-center gap-4 overflow-y-auto py-8 md:grid-cols-[minmax(auto,420px)_minmax(0,auto)] md:grid-rows-1 md:gap-10 md:self-center md:justify-self-center">
     <ScrollArea>
       <div class="max-w-80 justify-self-center md:max-h-[calc(100vh_-_100px)] md:max-w-none">

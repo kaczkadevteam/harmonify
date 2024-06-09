@@ -1,17 +1,19 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router'
-import { onBeforeMount, onMounted, ref } from 'vue'
+import { onBeforeMount, onMounted, ref, watch } from 'vue'
 import { useIntervalFn } from '@vueuse/core'
 import { Button } from '@/components/ui/button'
 import { useConnectionStore, useGameDataStore, useResultStore } from '@/stores'
 import SearchInput from '@/components/round/SearchInput.vue'
 import CircularTimer from '@/components/round/CircularTimer.vue'
 import PlaybackControls from '@/components/round/PlaybackControls.vue'
+import { useToast } from '@/components/ui/toast'
 
 const router = useRouter()
 const gameDataStore = useGameDataStore()
 const connectionStore = useConnectionStore()
 const resultStore = useResultStore()
+const { toast } = useToast()
 
 const guess = ref('')
 
@@ -51,6 +53,13 @@ async function handleGuessSubmit(e: Event) {
 
   isGuessSubmitted.value = true
 }
+
+watch(() => gameDataStore.isPaused, (isPaused, wasPaused) => {
+  if (isPaused)
+    toast({ description: 'Game will be paused after this round' })
+  else if (wasPaused)
+    toast({ description: 'Game pause was cancelled' })
+}, { immediate: true })
 
 onMounted(() => {
   searchInput.value = document.getElementById('searchInput')! as HTMLInputElement
