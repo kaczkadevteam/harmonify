@@ -54,10 +54,10 @@ async function handleGuessSubmit(e: Event) {
   isGuessSubmitted.value = true
 }
 
-watch(() => gameDataStore.isPaused, (isPaused, previousIsPaused) => {
+watch(() => gameDataStore.isPaused, (isPaused, wasPaused) => {
   if (isPaused)
     toast({ description: 'Game will be paused after this round' })
-  else if (previousIsPaused)
+  else if (wasPaused)
     toast({ description: 'Game pause was cancelled' })
 }, { immediate: true })
 
