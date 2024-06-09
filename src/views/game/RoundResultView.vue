@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onBeforeMount } from 'vue'
+import { computed, onBeforeMount, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { cn } from '@/lib/utils'
 import { GuessDisplay, TrackDisplay } from '@/components/trackDisplay'
@@ -32,7 +32,10 @@ const roundFinishedTitle = computed(() => isFullyGuessed.value ? 'Correct :)' : 
 </script>
 
 <template>
-  <LoadingIndicator />
+  <LoadingIndicator v-if="!gameDataStore.isPaused" />
+  <div v-else class="fixed inset-0 z-10 grid place-items-center bg-black/30 text-4xl font-bold backdrop-blur-sm">
+    Game is paused!
+  </div>
   <div class=" grid grid-cols-2 place-content-center gap-10">
     <div class=" justify-self-center">
       <PlayerResults :points-bar-max-width="320" />
