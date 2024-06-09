@@ -6,6 +6,7 @@ import type { PlayerScoreDto } from '@/types'
 import { useGameDataStore } from '@/stores'
 import { cn } from '@/lib/utils'
 import GuessLevelIcon from '@/components/GuessLevelIcon.vue'
+import { AnimationDuration } from '@/consts'
 
 const props = defineProps<{
   animation?: false | { duration: string }
@@ -15,7 +16,7 @@ const props = defineProps<{
 
 const gameDataStore = useGameDataStore()
 const width = useTransition(() => props.playerResult.width, {
-  duration: 1000,
+  duration: AnimationDuration.D1000,
   transition: TransitionPresets.linear,
 })
 const guessLevel = computed(() => props.playerResult.roundResults.at(-1)!.guessLevel)

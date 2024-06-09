@@ -10,7 +10,7 @@ import type { PlayedTrack as TPlayedTrack } from '@/types'
 import GameResults from '@/components/result/GameResults.vue'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { cn } from '@/lib/utils'
-import { BREAKPOINT } from '@/consts'
+import { AnimationDuration, Breakpoint } from '@/consts'
 
 const resultStore = useResultStore()
 
@@ -23,7 +23,7 @@ const displayTracks = ref(false)
 const displayButton = ref(false)
 const resultsAnimationPending = ref(true)
 const { width: screenWidth } = useWindowSize()
-const isDesktop = computed(() => screenWidth.value >= BREAKPOINT.LG)
+const isDesktop = computed(() => screenWidth.value >= Breakpoint.LG)
 
 function handlePlayAgain() {
   router.push({ name: 'home' })
@@ -32,11 +32,11 @@ function handlePlayAgain() {
 function handleResultsAnimationFinish() {
   setTimeout(() => {
     displayTracks.value = true
-  }, isDesktop.value ? 1500 : 200)
+  }, isDesktop.value ? AnimationDuration.D1500 : AnimationDuration.D200)
 
   setTimeout(() => {
     displayButton.value = true
-  }, isDesktop.value ? 2000 : 800)
+  }, isDesktop.value ? AnimationDuration.D2000 : AnimationDuration.D800)
 
   resultsAnimationPending.value = false
 }

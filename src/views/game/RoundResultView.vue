@@ -7,7 +7,7 @@ import { useConnectionStore, useGameDataStore, useResultStore } from '@/stores'
 import PlayerResults from '@/components/roundResult/PlayerResults.vue'
 import LoadingIndicator from '@/components/roundResult/LoadingIndicator.vue'
 import { ScrollArea } from '@/components/ui/scroll-area'
-import { BREAKPOINT } from '@/consts'
+import { Breakpoint } from '@/consts'
 
 const router = useRouter()
 const gameDataStore = useGameDataStore()
@@ -31,7 +31,7 @@ onBeforeMount(() => {
 const track = computed(() => resultStore.round.track)
 const selfPlayerRoundResult = computed(() => resultStore.roundSelfPlayer.roundResults.at(-1)!)
 const isFullyGuessed = computed(() => selfPlayerRoundResult.value.guess === resultStore.round.track.guess)
-const pointsBarMaxWidth = computed(() => screenWidth.value >= BREAKPOINT.LG ? 320 : 220)
+const pointsBarMaxWidth = computed(() => screenWidth.value >= Breakpoint.LG ? 320 : 220)
 </script>
 
 <template>

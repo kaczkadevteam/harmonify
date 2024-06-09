@@ -6,6 +6,7 @@ import PlayerResult from '@/components/roundResult/PlayerResult.vue'
 import { useResultStore } from '@/stores'
 import type { PlayerScoreDto } from '@/types'
 import { ScrollArea } from '@/components/ui/scroll-area'
+import { AnimationDuration } from '@/consts'
 
 const props = defineProps<{
   isDesktop: boolean
@@ -18,8 +19,8 @@ const emit = defineEmits<{
 
 const SCORE_BAR_MAX_WIDTH = 220
 const RESULTS_WIDTH = SCORE_BAR_MAX_WIDTH + 100
-const INTERVAL_BEFORE_FIRST_PLACE = 1000
-const PLAYER_ANIMATION_DURATION = 1000
+const INTERVAL_BEFORE_FIRST_PLACE = AnimationDuration.D1000
+const PLAYER_ANIMATION_DURATION = AnimationDuration.D1000
 const RESULTS_GAP = 16
 const RESULTS_HEIGHT = 40
 const MOBILE_PADDING = 8
@@ -29,9 +30,9 @@ function getIntervalForIndex(index: number) {
     case 1:
       return INTERVAL_BEFORE_FIRST_PLACE
     case 2:
-      return 800
+      return AnimationDuration.D800
     default:
-      return 500
+      return AnimationDuration.D500
   }
 }
 

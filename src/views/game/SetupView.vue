@@ -11,7 +11,7 @@ import { useToast } from '@/components/ui/toast/use-toast'
 import { Button } from '@/components/ui/button'
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
 import { ScrollArea } from '@/components/ui/scroll-area'
-import { BREAKPOINT } from '@/consts'
+import { Breakpoint } from '@/consts'
 
 const router = useRouter()
 const gameDataStore = useGameDataStore()
@@ -34,7 +34,7 @@ function copyId() {
   toast({ description: 'Room ID copied to clipboard!' })
 }
 
-const isDesktop = computed(() => screenWidth.value >= BREAKPOINT.LG)
+const isDesktop = computed(() => screenWidth.value >= Breakpoint.LG)
 </script>
 
 <template>
