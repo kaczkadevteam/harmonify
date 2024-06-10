@@ -1,5 +1,4 @@
-import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
+import { type RouteLocationNormalized, createRouter, createWebHistory } from 'vue-router'
 import { useConnectionStore, useGameDataStore } from '@/stores'
 
 const router = createRouter({
@@ -13,38 +12,7 @@ const router = createRouter({
     {
       path: '/game',
       component: () => import('@/views/GameLayout.vue'),
-      beforeEnter: async (to) => {
-        const connectionStore = useConnectionStore()
-
-        if (connectionStore.ws)
-          return
-
-        const gameDataStore = useGameDataStore()
-        const roomId = to.params.id.toString()
-
-        try {
-          await new Promise<void>((resolve, reject) => {
-            connectionStore.openConnection(`/game/${roomId}`, {
-              handleOpen() {},
-              handleError() {
-                reject(new Error('Couldn\'t connect to server'))
-              },
-              handleMessage(message) {
-                if (message.$type === 'message/playerInfoDto') {
-                  gameDataStore.joinGame(roomId, message.data)
-                  resolve()
-                }
-              },
-              handleClose() {},
-            })
-          })
-
-          return { name: 'setup', params: to.params }
-        }
-        catch (e) {
-          return { name: 'home' }
-        }
-      },
+      beforeEnter: beforeGameEnter,
       children: [
         {
           path: ':id/setup',
@@ -76,5 +44,37 @@ const router = createRouter({
     },
   ],
 })
+
+async function beforeGameEnter(to: RouteLocationNormalized) {
+  const connectionStore = useConnectionStore()
+
+  if (connectionStore.ws)
+    return
+
+  const gameDataStore = useGameDataStore()
+  const roomId = to.params.id.toString()
+
+  try {
+    await new Promise<void>((resolve, reject) => {
+      connectionStore.openConnection(`/game/${roomId}`, {
+        handleOpen() {},
+        handleError() {
+          reject(new Error('Couldn\'t connect to server'))
+        },
+        handleMessage(message) {
+          if (message.$type === 'message/playerInfoDto') {
+            gameDataStore.joinGame(roomId, message.data)
+            resolve()
+          }
+        },
+      })
+    })
+
+    return { name: 'setup', params: to.params }
+  }
+  catch (e) {
+    return { name: 'home' }
+  }
+}
 
 export default router
