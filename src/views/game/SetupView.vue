@@ -4,7 +4,7 @@ import { useRouter } from 'vue-router'
 import { useClipboard, useWindowSize } from '@vueuse/core'
 import { Copy, Users } from 'lucide-vue-next'
 import HostView from '@/components/setup/HostView.vue'
-import { useConnectionStore, useGameDataStore } from '@/stores'
+import { useConnectionStore, useGameDataStore, useResultStore } from '@/stores'
 import LoadingCircle from '@/components/LoadingCircle.vue'
 import Player from '@/components/Player.vue'
 import { useToast } from '@/components/ui/toast/use-toast'
@@ -14,6 +14,7 @@ import { ScrollArea } from '@/components/ui/scroll-area'
 import { Breakpoint } from '@/consts'
 
 const router = useRouter()
+const resultStore = useResultStore()
 const gameDataStore = useGameDataStore()
 const connectionStore = useConnectionStore()
 const { width: screenWidth } = useWindowSize()
@@ -21,6 +22,7 @@ const { copy } = useClipboard()
 const { toast } = useToast()
 
 onBeforeMount(() => {
+  resultStore.$reset()
   connectionStore.handleMessage = (message) => {
     if (message.$type === 'message/gameStartedDto') {
       gameDataStore.startGame(message.data)
