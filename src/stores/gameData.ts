@@ -64,7 +64,7 @@ export const useGameDataStore = defineStore('gameData', {
     },
     updatePlayersList(playersList: PlayerDto[]) {
       this.players = playersList
-      this.selfPlayer.nickname = playersList.find(p => p.guid === this.selfPlayer.guid)!.nickname
+      this.selfPlayer.nickname = playersList.find(p => p.guid === this.selfPlayer.guid)?.nickname ?? ''
     },
   },
 })
