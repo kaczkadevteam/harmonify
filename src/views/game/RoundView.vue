@@ -34,11 +34,6 @@ onBeforeMount(() => {
       resultStore.setRoundResult(message.data)
       router.push({ name: 'roundResult', params: router.currentRoute.value.params })
     }
-
-    else if (message.$type === 'message/endGameResultsDto') {
-      resultStore.setGameResult(message.data)
-      router.push({ name: 'result', params: router.currentRoute.value.params })
-    }
   }
 })
 

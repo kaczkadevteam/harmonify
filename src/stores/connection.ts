@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
-import { useGameDataStore } from '.'
+import { useGameDataStore, useResultStore } from '.'
 import { type Message, messageSchema } from '@/types'
+import router from '@/router'
 
 export const useConnectionStore = defineStore('connection', {
   state: (): {
@@ -21,18 +22,22 @@ export const useConnectionStore = defineStore('connection', {
         handleOpen: () => void
         handleMessage: (message: Message) => void
         handleError: (event: Event) => void
-        handleClose: () => void
       },
     ) {
       if (this.ws)
         this.ws.close()
 
+      const resultStore = useResultStore()
       const gameDataStore = useGameDataStore()
 
       this.handleOpen = handlers.handleOpen
       this.handleMessage = handlers.handleMessage
       this.handleError = handlers.handleError
-      this.handleClose = handlers.handleClose
+      this.handleClose = () => {
+        this.ws = undefined
+        if (router.currentRoute.value.name !== 'result' && resultStore.game.players.length === 0)
+          router.push({ name: 'home' })
+      }
       this.handleMessageWrapper = (event) => {
         const message = messageSchema.parse(JSON.parse(event.data))
         if (message.$type === 'message/playerList')
@@ -43,6 +48,11 @@ export const useConnectionStore = defineStore('connection', {
 
         if (message.type === 'gameResumed')
           gameDataStore.isPaused = false
+
+        if (message.$type === 'message/endGameResultsDto') {
+          resultStore.setGameResult(message.data)
+          router.push({ name: 'result', params: router.currentRoute.value.params })
+        }
 
         if (this.handleMessage)
           this.handleMessage(message)

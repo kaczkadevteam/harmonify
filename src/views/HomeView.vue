@@ -33,7 +33,6 @@ function joinRoom() {
         router.push({ name: 'setup', params: { id: room } })
       }
     },
-    handleClose() {},
   })
 }
 
@@ -55,7 +54,6 @@ function createRoom() {
         router.push({ name: 'setup', params: { id: message.data.gameId } })
       }
     },
-    handleClose() {},
   })
 }
 
