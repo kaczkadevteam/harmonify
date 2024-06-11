@@ -14,7 +14,7 @@ const displayPauseButton = computed(() => gameDataStore.selfPlayer.isHost && (ro
 </script>
 
 <template>
-  <div class="grid min-h-screen grid-rows-[minmax(0,auto)_1fr] place-content-stretch">
+  <div class="grid h-screen min-h-screen grid-rows-[minmax(0,auto)_minmax(0,1fr)] place-content-stretch">
     <div class="z-20 grid grid-cols-[minmax(auto,1300px)] justify-center border-b">
       <div class="flex items-center justify-end p-1">
         <Settings />

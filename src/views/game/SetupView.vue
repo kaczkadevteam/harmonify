@@ -40,8 +40,8 @@ const isDesktop = computed(() => screenWidth.value >= Breakpoint.LG)
 </script>
 
 <template>
-  <main class="grid content-center justify-center gap-4 px-4 lg:grid-cols-[260px_auto] lg:justify-center lg:justify-items-center">
-    <div class="grid gap-3 lg:mt-2 lg:place-content-start lg:justify-self-start">
+  <main class="grid grid-rows-[minmax(0,auto)_minmax(0,1fr)] content-center justify-center gap-4 p-4 lg:grid-cols-[260px_auto] lg:grid-rows-none lg:justify-center lg:justify-items-center">
+    <div class="grid gap-3 self-start lg:mt-2 lg:place-content-start lg:justify-self-start">
       <div class="flex items-center justify-between">
         <Sheet v-if="!isDesktop">
           <SheetTrigger>
@@ -87,7 +87,7 @@ const isDesktop = computed(() => screenWidth.value >= Breakpoint.LG)
       </ScrollArea>
     </div>
     <HostView v-if="gameDataStore.selfPlayer.isHost" :is-desktop />
-    <div v-else class="flex items-center gap-5 self-center text-2xl">
+    <div v-else class="flex items-center gap-5 text-2xl">
       <span>Waiting for host to start game</span><LoadingCircle size="60px" />
     </div>
   </main>
