@@ -13,13 +13,14 @@ const displayPauseButton = computed(() => gameDataStore.selfPlayer.isHost && (ro
 </script>
 
 <template>
-  <div class="grid min-h-screen place-content-stretch">
-    <div class="fixed right-2 top-2 z-20 flex items-center">
-      <PauseGameButton v-if="displayPauseButton" />
-      <QuitGameButton />
+  <div class="grid min-h-screen grid-rows-[minmax(0,auto)_1fr] place-content-stretch">
+    <div class="z-20 grid grid-cols-[minmax(auto,1300px)] justify-center border-b">
+      <div class="flex items-center justify-end p-1">
+        <PauseGameButton v-if="displayPauseButton" />
+        <QuitGameButton />
+      </div>
     </div>
-
-    <RouterView />
+    <RouterView class="relative" />
     <PreviewPlayer />
   </div>
 </template>
