@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-import { useElementBounding } from '@vueuse/core'
+import { onMounted, ref } from 'vue'
+import { useElementBounding, useWindowSize } from '@vueuse/core'
 import GameResults from '@/components/result/GameResults.vue'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import PlayedTrack from '@/components/result/PlayedTrack.vue'
@@ -15,7 +15,6 @@ defineProps<{
   displayTracks: boolean
   displayButton: boolean
   resultsAnimationPending: boolean
-  startingTransform: string
 }>()
 
 const emit = defineEmits<{
@@ -25,9 +24,20 @@ const emit = defineEmits<{
 
 const gameResultsEl = ref<HTMLDivElement | null>(null)
 const gameResultsDimensions = useElementBounding(gameResultsEl)
+const windowDimensions = useWindowSize()
+const startingTransform = ref('')
 
-defineExpose({
-  gameResultsDimensions,
+onMounted(() => {
+  const windowMiddleX = windowDimensions.width.value / 2
+  const windowMiddleY = windowDimensions.height.value / 2
+
+  const elementMiddleX = gameResultsDimensions.x.value + (gameResultsDimensions.width.value / 2)
+  const elementMiddleY = gameResultsDimensions.y.value + (gameResultsDimensions.height.value / 2)
+
+  const deltaX = windowMiddleX - elementMiddleX
+  const deltaY = windowMiddleY - elementMiddleY
+
+  startingTransform.value = `translate( ${deltaX}px, ${deltaY}px)`
 })
 </script>
 

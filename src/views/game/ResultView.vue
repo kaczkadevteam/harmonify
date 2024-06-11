@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router'
-import { computed, onMounted, ref } from 'vue'
+import { computed, ref } from 'vue'
 import { useWindowSize } from '@vueuse/core'
 import { useResultStore } from '@/stores'
 import type { PlayedTrack as TPlayedTrack } from '@/types'
@@ -11,9 +11,6 @@ import MobileResultView from '@/components/result/MobileResultView.vue'
 const resultStore = useResultStore()
 
 const router = useRouter()
-const windowDimensions = useWindowSize()
-const resultView = ref<InstanceType<typeof DesktopResultView> | null>(null)
-const startingTransform = ref('')
 const displayTracks = ref(false)
 const displayButton = ref(false)
 const resultsAnimationPending = ref(true)
@@ -50,34 +47,17 @@ const playedTracks = computed<TPlayedTrack[]>(() => {
       }
     })
 })
-
-onMounted(() => {
-  const gameResultsDimensions = resultView.value!.gameResultsDimensions
-
-  const windowMiddleX = windowDimensions.width.value / 2
-  const windowMiddleY = windowDimensions.height.value / 2
-
-  const elementMiddleX = gameResultsDimensions.x.value + (gameResultsDimensions.width.value / 2)
-  const elementMiddleY = gameResultsDimensions.y.value + (gameResultsDimensions.height.value / 2)
-
-  const deltaX = windowMiddleX - elementMiddleX
-  const deltaY = windowMiddleY - elementMiddleY
-
-  startingTransform.value = `translate( ${deltaX}px, ${deltaY}px)`
-})
 </script>
 
 <template>
   <DesktopResultView
     v-if="isDesktop"
-    ref="resultView"
     :played-tracks
     :score="resultStore.gameSelfPlayer.score"
     :is-desktop
     :display-tracks
     :display-button
     :results-animation-pending
-    :starting-transform
     @animation-finished="handleResultsAnimationFinish"
     @play-again="handlePlayAgain"
   />
