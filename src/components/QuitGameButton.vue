@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router'
+import { X } from 'lucide-vue-next'
 import { useConnectionStore } from '@/stores'
 import { Button } from '@/components/ui/button'
 
@@ -15,7 +16,7 @@ function handleClick() {
 </script>
 
 <template>
-  <Button variant="outline" @click="handleClick">
-    <span>Quit game</span>
+  <Button variant="ghost" size="icon" @click="handleClick">
+    <X />
   </Button>
 </template>
