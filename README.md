@@ -25,7 +25,7 @@ Web app for playing the "Name that tune" game with playlists and albums from use
 
 </br>
 
-![Game UI](/public/showcase/game.png)
+![Round page](/public/showcase/game.png)
 
 </br>
 
@@ -34,6 +34,12 @@ Web app for playing the "Name that tune" game with playlists and albums from use
 </br>
 
 ![Game result page](/public/showcase/result.png)
+
+</br>
+
+<img align="left" width="250" alt="Mobile selecting playlists and albums window" src="./public/showcase/mobileSelection.png" style="padding: 0 20px 16px 0"/>
+<img align="left" width="250" alt="Mobile round result page" src="./public/showcase/mobileGuessed.png" style="padding: 0 20px 16px 0"/>
+<img  width="250" alt="Mobile game result page" src="./public/showcase/mobileResult.png" style="padding: 0 20px 16px 0"/>
 
 ## Notice
 
