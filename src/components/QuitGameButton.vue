@@ -7,10 +7,8 @@ const router = useRouter()
 const connectionStore = useConnectionStore()
 
 function handleClick() {
-  const message: { $type: 'message', type: string } = { $type: 'message', type: 'quitGame' }
-
   if (connectionStore.ws)
-    connectionStore.sendMessage(message)
+    connectionStore.sendMessage({ $type: 'message', type: 'quitGame' })
   else
     router.push({ name: 'home' })
 }
