@@ -1,4 +1,7 @@
-export const VOLUME_KEY = 'volume'
+export const LOCAL_STORAGE = {
+  VOLUME: 'volume',
+  AUTOPLAY: 'autoplay',
+} as const
 
 export enum AnimationDuration {
   D200 = 200,

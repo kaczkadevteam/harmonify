@@ -4,10 +4,11 @@ import { onUnmounted, ref, watch } from 'vue'
 import { useAnimate, watchOnce } from '@vueuse/core'
 import VolumeInput from './VolumeInput.vue'
 import { Button } from '@/components/ui/button'
-import { useGameDataStore, useMusicPlayerStore } from '@/stores'
+import { useGameDataStore, useMusicPlayerStore, useSettingsStore } from '@/stores'
 
 const gameDataStore = useGameDataStore()
 const musicPlayerStore = useMusicPlayerStore()
+const settingsStore = useSettingsStore()
 
 const isPlayingStarted = ref(false)
 const isPlaying = ref(false)
@@ -22,13 +23,36 @@ const trackTimer = useAnimate(
 function handlePlayingStarted() {
   trackTimer.playbackRate.value = 1
   trackTimer.animate.value!.onfinish = handleTrackTimerFinish
-  isPlaying.value = true
+
+  if (settingsStore.autoplay === 'never') {
+    trackTimer.pause()
+    isPlaying.value = false
+  }
+  else {
+    isPlaying.value = true
+  }
 }
 
 function handleTrackTimerFinish() {
-  trackTimer.currentTime.value = 0
   musicPlayerStore.seek(gameDataStore.musicPlayData.trackStart_ms)
-  isPlaying.value = false
+
+  if (settingsStore.autoplay === 'always') {
+    if (isPlaying.value) {
+      trackTimer.currentTime.value = gameDataStore.gameSettings.trackDuration * 1000 - 1
+      trackTimer.playbackRate.value = -(gameDataStore.gameSettings.trackDuration)
+      isPlaying.value = false
+    }
+    else {
+      trackTimer.currentTime.value = 0
+      trackTimer.playbackRate.value = 1
+      isPlaying.value = true
+    }
+  }
+  else {
+    trackTimer.currentTime.value = 0
+    trackTimer.playbackRate.value = 1
+    isPlaying.value = false
+  }
 }
 
 watchOnce(() => trackTimer.animate.value, (value) => {
@@ -65,7 +89,12 @@ watch(isPlaying, (isPlaying) => {
   }
 
   else {
-    trackTimer.pause()
+    /**
+     * Pause music but don't pause animation if it's going in reverse, it's loading autoplay animation
+     */
+    if (trackTimer.playbackRate.value > 0)
+      trackTimer.pause()
+
     stopPlaying()
   }
 })
@@ -78,7 +107,7 @@ onUnmounted(() => {
 <template>
   <div class="relative">
     <!-- eslint-disable-next-line tailwindcss/no-contradicting-classname -->
-    <Button ref="playButton" class="h-20 w-32 rounded-xl bg-[linear-gradient(0.25turn,#1b3162_49%,50%,transparent)] bg-[length:200%_200%] bg-[position:100%_0]" :disabled="!isPlayingStarted" @click="togglePlay">
+    <Button ref="playButton" class="h-20 w-32 rounded-xl bg-[linear-gradient(0.25turn,#1b3162_49%,50%,transparent)] bg-[length:200%_200%] bg-[position:100%_0]" :disabled="trackTimer.playbackRate.value < 0" @click="togglePlay">
       <Pause v-if="isPlaying" class="size-12" />
       <Play v-else class="size-12" />
     </Button>

@@ -36,29 +36,31 @@ const pointsBarMaxWidth = computed(() => screenWidth.value >= Breakpoint.LG ? 32
 </script>
 
 <template>
-  <LoadingIndicator v-if="!gameDataStore.isPaused" />
-  <PauseBackdrop v-else />
-  <div class="grid max-h-screen grid-rows-[auto_350px] place-content-center gap-4 overflow-y-auto py-8 md:grid-cols-[minmax(auto,420px)_minmax(0,auto)] md:grid-rows-1 md:gap-10 md:self-center md:justify-self-center">
-    <ScrollArea>
-      <div class="max-w-80 justify-self-center md:max-h-[calc(100vh_-_100px)] md:max-w-none">
-        <PlayerResults :points-bar-max-width />
-      </div>
-    </ScrollArea>
-
-    <div class="justify-self-center md:self-center">
-      <div class="w-80 lg:w-96">
-        <div class="mb-2 grid justify-items-center gap-1 text-center">
-          <img :src="track.album.images[0].url" alt="Album cover" width="200" height="200">
-          <TrackDisplay :track="track" />
-          <div v-if="!isFullyGuessed" class="mt-4">
-            <span class="mr-3 text-sm md:text-base">Your guess:</span>
-            <GuessDisplay :guess="selfPlayerRoundResult.guess" />
-          </div>
+  <div class="relative grid place-content-stretch">
+    <LoadingIndicator v-if="!gameDataStore.isPaused" />
+    <PauseBackdrop v-else />
+    <div class="grid max-h-screen grid-rows-[auto_350px] place-content-center gap-4 overflow-y-auto py-8 md:grid-cols-[minmax(auto,420px)_minmax(0,auto)] md:grid-rows-1 md:gap-10 md:self-center md:justify-self-center">
+      <ScrollArea>
+        <div class="max-w-80 justify-self-center md:max-h-[calc(100vh_-_100px)] md:max-w-none">
+          <PlayerResults :points-bar-max-width />
         </div>
-        <div class="flex items-center sm:justify-between">
-          <div class="md:text-lg">
-            <span>Points </span>
-            <span>{{ `${resultStore.roundSelfPlayer.score - selfPlayerRoundResult.score} + ${selfPlayerRoundResult.score}` }}</span>
+      </ScrollArea>
+
+      <div class="justify-self-center md:self-center">
+        <div class="w-80 lg:w-96">
+          <div class="mb-2 grid justify-items-center gap-1 text-center">
+            <img :src="track.album.images[0].url" alt="Album cover" width="200" height="200">
+            <TrackDisplay :track="track" />
+            <div v-if="!isFullyGuessed" class="mt-4">
+              <span class="mr-3 text-sm md:text-base">Your guess:</span>
+              <GuessDisplay :guess="selfPlayerRoundResult.guess" />
+            </div>
+          </div>
+          <div class="flex items-center sm:justify-between">
+            <div class="md:text-lg">
+              <span>Points </span>
+              <span>{{ `${resultStore.roundSelfPlayer.score - selfPlayerRoundResult.score} + ${selfPlayerRoundResult.score}` }}</span>
+            </div>
           </div>
         </div>
       </div>

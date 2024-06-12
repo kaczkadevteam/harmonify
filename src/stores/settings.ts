@@ -1,10 +1,15 @@
-import { ref } from 'vue'
 import { defineStore } from 'pinia'
+import { type RemovableRef, useStorage } from '@vueuse/core'
+import { LOCAL_STORAGE } from '@/consts'
 
-type PlayerType = 'spotify'
+export type Autoplay = 'always' | 'once' | 'never'
 
-export const useSettingsStore = defineStore('settings', () => {
-  const player = ref<PlayerType>('spotify')
-
-  return { player }
+export const useSettingsStore = defineStore('settings', {
+  state: (): {
+    autoplay: RemovableRef<Autoplay>
+  } => {
+    return {
+      autoplay: useStorage<Autoplay>(LOCAL_STORAGE.AUTOPLAY, 'always'),
+    }
+  },
 })

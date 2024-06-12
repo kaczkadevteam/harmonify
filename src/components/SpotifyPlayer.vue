@@ -5,7 +5,7 @@ import { useCookies } from '@vueuse/integrations/useCookies'
 import { useStorage } from '@vueuse/core'
 import { useMusicPlayerStore } from '@/stores'
 import { SpotifyService } from '@/services'
-import { VOLUME_KEY } from '@/consts'
+import { LOCAL_STORAGE } from '@/consts'
 import type { MusicPlayer } from '@/types'
 
 declare global {
@@ -19,7 +19,7 @@ const scriptTag = ref<HTMLDivElement | null>(null)
 const cookies = useCookies()
 const router = useRouter()
 const access_token = cookies.get('access_token')
-const volume = useStorage(VOLUME_KEY, 0.05)
+const volume = useStorage(LOCAL_STORAGE.VOLUME, 0.05)
 
 const musicPlayerStore = useMusicPlayerStore()
 
