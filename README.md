@@ -2,6 +2,7 @@
 
 ![Vercel](https://vercelbadge.vercel.app/api/marcinskic/harmonify)
 ![License](https://img.shields.io/github/license/kaczkadevteam/harmonify.svg)
+[![wakatime](https://wakatime.com/badge/user/018b0ba7-22f9-4c17-bb49-ab8b3549faaf/project/018e86db-5637-47bf-9e7a-348e13a3a311.svg)](https://wakatime.com/badge/user/018b0ba7-22f9-4c17-bb49-ab8b3549faaf/project/018e86db-5637-47bf-9e7a-348e13a3a311)
 ![Release](https://img.shields.io/github/release/kaczkadevteam/harmonify.svg)
 
 ## Description
