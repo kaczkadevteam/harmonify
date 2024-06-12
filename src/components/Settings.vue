@@ -19,7 +19,7 @@ const settingsStore = useSettingsStore()
     <SheetContent>
       <SheetHeader class="mb-2">
         <SheetTitle>Settings</SheetTitle>
-        <div class="mt-2 grid grid-cols-[200px_minmax(0,1fr)] items-center">
+        <div class="mt-2 grid grid-cols-[min-content_minmax(0,1fr)] items-center gap-4">
           <Label>Autoplay</Label>
           <Select v-model:model-value="settingsStore.autoplay">
             <SelectTrigger>
