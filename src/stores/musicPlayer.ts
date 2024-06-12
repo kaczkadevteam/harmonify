@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { type RemovableRef, useStorage } from '@vueuse/core'
 import type { MusicPlayData, MusicPlayer } from '@/types'
-import { VOLUME_KEY } from '@/consts'
+import { LOCAL_STORAGE } from '@/consts'
 
 export const useMusicPlayerStore = defineStore('musicPlayer', {
   state: (): {
@@ -12,7 +12,7 @@ export const useMusicPlayerStore = defineStore('musicPlayer', {
     volume: RemovableRef<number>
   } => {
     return {
-      volume: useStorage(VOLUME_KEY, 0.05),
+      volume: useStorage(LOCAL_STORAGE.VOLUME, 0.05),
     }
   },
   getters: {
