@@ -90,7 +90,7 @@ watch(isPlaying, (isPlaying) => {
 
   else {
     /**
-     * Don't pause animation if it is in reverse
+     * Pause music but don't pause animation if it's going in reverse, it's loading autoplay animation
      */
     if (trackTimer.playbackRate.value > 0)
       trackTimer.pause()
