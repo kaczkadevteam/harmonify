@@ -2,6 +2,36 @@
 
 <div align="right">
 
+## v3.1.0 (2024-06-13)
+
+</div>
+
+## Mobile
+
+<img align="left" width="250" alt="Mobile selecting playlists and albums window" src="./changelog/6.png" style="padding: 0 20px 16px 0"/>
+<img align="left" width="250" alt="Mobile round result page" src="./changelog/7.png" style="padding: 0 20px 16px 0"/>
+<img  width="250" alt="Mobile game result page" src="./changelog/8.png" style="padding: 0 20px 16px 0"/>
+
+Game now supports mobile, tablet and small desktops UI. This change brings also many quality of life and bugfixes to original UI.
+
+## Pause
+
+Room host can now pause game, no more missing tracks for person going AFK
+
+## Quitting
+
+Players can now quit game properly which removes them from leaderboard for other players. If left in the middle of the game it displays results so far for leaving player
+
+## Autoplay
+
+Add setting to change how autoplay behaves during round, possible options are: always, once and never.
+
+---
+
+**Full Changelog**: https://github.com/kaczkadevteam/harmonify/compare/v3.0.0...v3.1.0
+
+<div align="right">
+
 ## v3.0.0 (2024-05-29)
 
 </div>
