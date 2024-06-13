@@ -5,6 +5,7 @@ import { useElementHover } from '@vueuse/core'
 import { useMusicPlayerStore } from '@/stores'
 import { Slider } from '@/components/ui/slider'
 import { cn } from '@/lib/utils'
+import { Button } from '@/components/ui/button'
 
 const SCROLL_DELTA = -120
 const VOLUME_CHANGE_ON_SCROLL_TICK = 0.05
@@ -50,18 +51,21 @@ function handleIconClick() {
 <template>
   <div
     ref="rootElement"
-    :class="cn('flex items-center text-primary', isSliderVisible && 'text-primary/80')"
+    :class="cn('relative flex items-center text-primary', isSliderVisible && 'text-primary/80')"
     @wheel="handleWheelScroll"
   >
-    <component :is="volumeIcon" class="size-12 " @click="handleIconClick" />
+    <Button size="icon" variant="ghost" class="size-12 hover:bg-inherit hover:text-inherit">
+      <component :is="volumeIcon" class="size-full" @click="handleIconClick" />
+    </Button>
     <Transition
       enter-active-class="transition duration-300"
       leave-active-class="transition duration-300"
       enter-from-class="opacity-0 -translate-x-2"
       leave-to-class="opacity-0 -translate-x-2"
     >
-      <div v-show="isSliderVisible" class="ml-2 w-28 ">
+      <div v-show="isSliderVisible" class="relative">
         <Slider
+          class="absolute inset-y-0 left-full ml-2 w-28"
           :model-value="[musicPlayerStore.volume]"
           :min="0"
           :max="1"
