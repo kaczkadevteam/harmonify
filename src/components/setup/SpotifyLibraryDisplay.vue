@@ -18,7 +18,7 @@ const favouritesSelected = defineModel<boolean>('favouritesSelected', { required
       <h2 class="sticky -top-1 z-10 -m-1 bg-gradient bg-fixed p-1 text-center text-xl font-semibold tracking-tight lg:py-2 lg:text-3xl">
         Playlists
       </h2>
-      <div class="grid grid-cols-[repeat(auto-fill,minmax(120px,1fr))] gap-5 lg:mt-5">
+      <div class="grid grid-cols-[repeat(auto-fill,minmax(116px,1fr))] gap-5 lg:mt-5">
         <CheckableCard
           id="favourites"
           v-model="favouritesSelected"
@@ -44,7 +44,7 @@ const favouritesSelected = defineModel<boolean>('favouritesSelected', { required
       <h2 class="sticky -top-1 z-10 -m-1 bg-gradient bg-fixed p-1 py-2 text-center text-xl font-semibold tracking-tight lg:text-3xl">
         Albums
       </h2>
-      <div class="grid grid-cols-[repeat(auto-fill,minmax(120px,1fr))] gap-5 lg:mt-5">
+      <div class="grid grid-cols-[repeat(auto-fill,minmax(116px,1fr))] gap-5 lg:mt-5">
         <CheckableCard
           v-for="album of albums"
           :id="album.id"
