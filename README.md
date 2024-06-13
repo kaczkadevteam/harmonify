@@ -22,15 +22,15 @@ Web app for playing the "Name that tune" game with playlists and albums from use
 
 ## Showcase
 
-![Selecting playlists and albums window](/public/showcase/selection.png)
+![Selecting playlists and albums window](/public/showcase/setup.png)
 
 </br>
 
-![Round page](/public/showcase/game.png)
+![Round page](/public/showcase/round.png)
 
 </br>
 
-![Round result page](/public/showcase/guessed.png)
+![Round result page](/public/showcase/roundResult.png)
 
 </br>
 
@@ -38,9 +38,9 @@ Web app for playing the "Name that tune" game with playlists and albums from use
 
 </br>
 
-<img align="left" width="250" alt="Mobile selecting playlists and albums window" src="./public/showcase/mobileSelection.png" style="padding: 0 20px 16px 0"/>
-<img align="left" width="250" alt="Mobile round result page" src="./public/showcase/mobileGuessed.png" style="padding: 0 20px 16px 0"/>
-<img  width="250" alt="Mobile game result page" src="./public/showcase/mobileResult.png" style="padding: 0 20px 16px 0"/>
+<img align="left" width="250" alt="Mobile selecting playlists and albums window" src="./public/showcase/setupM.png" style="padding: 0 20px 16px 0"/>
+<img align="left" width="250" alt="Mobile round result page" src="./public/showcase/roundResultM.png" style="padding: 0 20px 16px 0"/>
+<img  width="250" alt="Mobile game result page" src="./public/showcase/resultM.png" style="padding: 0 20px 16px 0"/>
 
 ## Notice
 
