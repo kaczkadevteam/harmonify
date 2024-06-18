@@ -13,9 +13,13 @@ const resultStore = useResultStore()
 const router = useRouter()
 const displayTracks = ref(false)
 const displayButton = ref(false)
+const selectedPlayerGuid = ref(resultStore.gameSelfPlayer.guid)
 const resultsAnimationPending = ref(true)
 const { width: screenWidth } = useWindowSize()
 const isDesktop = computed(() => screenWidth.value >= Breakpoint.LG)
+const selectablePlayers = computed(() => {
+  return resultStore.game.players.map(p => ({ guid: p.guid, nickname: p.nickname }))
+})
 
 function handlePlayAgain() {
   router.push({ name: 'home' })
@@ -35,8 +39,10 @@ function handleResultsAnimationFinish() {
 
 const playedTracks = computed<TPlayedTrack[]>(() => {
   return resultStore
-    .gameSelfPlayer
-    .roundResults
+    .game
+    .players
+    .find(p => p.guid === selectedPlayerGuid.value)
+    ?.roundResults
     .map((roundResult, i) => {
       const track = resultStore.game.tracks[i]
       return {
@@ -45,7 +51,7 @@ const playedTracks = computed<TPlayedTrack[]>(() => {
         guessLevel: roundResult.guessLevel,
         score: roundResult.score,
       }
-    })
+    }) ?? []
 })
 </script>
 
