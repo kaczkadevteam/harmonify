@@ -69,6 +69,8 @@ const playedTracks = computed<TPlayedTrack[]>(() => {
   />
   <MobileResultView
     v-else
+    v-model="selectedPlayerGuid"
+    :selectable-players
     :played-tracks
     :score="resultStore.gameSelfPlayer.score"
     :is-desktop

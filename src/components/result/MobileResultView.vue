@@ -4,9 +4,15 @@ import GameResults from '@/components/result/GameResults.vue'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import PlayedTrack from '@/components/result/PlayedTrack.vue'
 import { Button } from '@/components/ui/button'
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Label } from '@/components/ui/label'
 import type { PlayedTrack as TPlayedTrack } from '@/types'
 
 defineProps<{
+  selectablePlayers: {
+    guid: string
+    nickname: string
+  }[]
   playedTracks: TPlayedTrack[]
   score: number
   isDesktop: boolean
@@ -18,6 +24,8 @@ const emit = defineEmits<{
   animationFinished: []
   playAgain: []
 }>()
+
+const selectedPlayer = defineModel<string>()
 </script>
 
 <template>
@@ -44,15 +52,37 @@ const emit = defineEmits<{
         />
       </TabsContent>
       <TabsContent value="tracks" class="h-[60vh] max-h-[60vh]">
-        <ScrollArea v-if="displayTracks" class="row-span-2 h-full rounded-lg border lg:w-full">
-          <div class="w-[320px] space-y-4 divide-y py-4 ">
-            <PlayedTrack
-              v-for="playedTrack, idx of playedTracks"
-              :key="`${playedTrack.track.uri}-${idx}`"
-              :played-track="playedTrack"
-            />
+        <div class="row-span-2 grid h-full grid-rows-[minmax(0,auto)_minmax(0,1fr)] gap-2">
+          <div class="flex items-center gap-2">
+            <Label for="player">Player</Label>
+            <Select v-model:model-value="selectedPlayer">
+              <SelectTrigger id="player">
+                <SelectValue placeholder="Select autoplay behaviour" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectItem
+                    v-for="player of selectablePlayers"
+                    :key="player.guid"
+                    :value="player.guid"
+                  >
+                    {{ player.nickname }}
+                  </SelectItem>
+                </SelectGroup>
+              </SelectContent>
+            </Select>
           </div>
-        </ScrollArea>
+
+          <ScrollArea v-if="displayTracks" class="h-full rounded-lg border">
+            <div class="w-[320px] space-y-4 divide-y py-4 ">
+              <PlayedTrack
+                v-for="playedTrack, idx of playedTracks"
+                :key="`${playedTrack.track.uri}-${idx}`"
+                :played-track="playedTrack"
+              />
+            </div>
+          </ScrollArea>
+        </div>
       </TabsContent>
     </Tabs>
     <div class="h-14">
