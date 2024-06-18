@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import { toRefs } from '@vueuse/core'
 import { type HTMLAttributes, computed } from 'vue'
-import { CircleCheck, CircleMinus, CircleX } from 'lucide-vue-next'
+import { CircleCheck, CircleMinus, CircleX, ShieldQuestion, Unplug } from 'lucide-vue-next'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { cn } from '@/lib/utils'
+import type { GuessLevel } from '@/types'
 
 const props = defineProps<{
-  guessLevel: string
+  guessLevel: GuessLevel
   class?: HTMLAttributes['class']
 }>()
 
@@ -18,8 +19,12 @@ const [icon, color, message] = toRefs(computed(() => {
       return [CircleMinus, 'text-yellow-500', 'Guessed album']
     case 'artist':
       return [CircleMinus, 'text-yellow-500', 'Guessed artist']
-    default:
+    case 'none':
       return [CircleX, 'text-red-500', 'Incorrect guess']
+    case 'disconnected':
+      return [Unplug, 'text-gray-500', 'Player is not connected']
+    default:
+      return [ShieldQuestion, 'text-purple-500', 'Unknown status']
   }
 }))
 </script>

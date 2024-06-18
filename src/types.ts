@@ -70,7 +70,7 @@ export const trackSchema = simplifiedTrackObjectSchema.extend({
 })
 export type Track = z.infer<typeof trackSchema>
 
-export const guessLevelSchema = z.enum(['full', 'album', 'artist', 'none'])
+export const guessLevelSchema = z.enum(['full', 'album', 'artist', 'none', 'disconnected'])
 export type GuessLevel = z.infer<typeof guessLevelSchema>
 
 export const playedTrackSchema = z.object({
