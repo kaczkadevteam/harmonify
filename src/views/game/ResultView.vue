@@ -2,20 +2,25 @@
 import { useRouter } from 'vue-router'
 import { computed, ref } from 'vue'
 import { useWindowSize } from '@vueuse/core'
-import { useResultStore } from '@/stores'
+import { useGameDataStore, useResultStore } from '@/stores'
 import type { PlayedTrack as TPlayedTrack } from '@/types'
 import { AnimationDuration, Breakpoint } from '@/consts'
 import DesktopResultView from '@/components/result/DesktopResultView.vue'
 import MobileResultView from '@/components/result/MobileResultView.vue'
 
 const resultStore = useResultStore()
+const gameDataStore = useGameDataStore()
 
 const router = useRouter()
 const displayTracks = ref(false)
 const displayButton = ref(false)
+const selectedPlayerGuid = ref(resultStore.gameSelfPlayer.guid)
 const resultsAnimationPending = ref(true)
 const { width: screenWidth } = useWindowSize()
 const isDesktop = computed(() => screenWidth.value >= Breakpoint.LG)
+const selectablePlayers = computed(() => {
+  return resultStore.game.players.map(p => ({ guid: p.guid, nickname: gameDataStore.selfPlayer.guid === p.guid ? 'You' : p.nickname }))
+})
 
 function handlePlayAgain() {
   router.push({ name: 'home' })
@@ -35,8 +40,10 @@ function handleResultsAnimationFinish() {
 
 const playedTracks = computed<TPlayedTrack[]>(() => {
   return resultStore
-    .gameSelfPlayer
-    .roundResults
+    .game
+    .players
+    .find(p => p.guid === selectedPlayerGuid.value)
+    ?.roundResults
     .map((roundResult, i) => {
       const track = resultStore.game.tracks[i]
       return {
@@ -45,13 +52,15 @@ const playedTracks = computed<TPlayedTrack[]>(() => {
         guessLevel: roundResult.guessLevel,
         score: roundResult.score,
       }
-    })
+    }) ?? []
 })
 </script>
 
 <template>
   <DesktopResultView
     v-if="isDesktop"
+    v-model="selectedPlayerGuid"
+    :selectable-players
     :played-tracks
     :score="resultStore.gameSelfPlayer.score"
     :is-desktop
@@ -63,6 +72,8 @@ const playedTracks = computed<TPlayedTrack[]>(() => {
   />
   <MobileResultView
     v-else
+    v-model="selectedPlayerGuid"
+    :selectable-players
     :played-tracks
     :score="resultStore.gameSelfPlayer.score"
     :is-desktop
