@@ -2,13 +2,14 @@
 import { useRouter } from 'vue-router'
 import { computed, ref } from 'vue'
 import { useWindowSize } from '@vueuse/core'
-import { useResultStore } from '@/stores'
+import { useGameDataStore, useResultStore } from '@/stores'
 import type { PlayedTrack as TPlayedTrack } from '@/types'
 import { AnimationDuration, Breakpoint } from '@/consts'
 import DesktopResultView from '@/components/result/DesktopResultView.vue'
 import MobileResultView from '@/components/result/MobileResultView.vue'
 
 const resultStore = useResultStore()
+const gameDataStore = useGameDataStore()
 
 const router = useRouter()
 const displayTracks = ref(false)
@@ -18,7 +19,7 @@ const resultsAnimationPending = ref(true)
 const { width: screenWidth } = useWindowSize()
 const isDesktop = computed(() => screenWidth.value >= Breakpoint.LG)
 const selectablePlayers = computed(() => {
-  return resultStore.game.players.map(p => ({ guid: p.guid, nickname: p.nickname }))
+  return resultStore.game.players.map(p => ({ guid: p.guid, nickname: gameDataStore.selfPlayer.guid === p.guid ? 'You' : p.nickname }))
 })
 
 function handlePlayAgain() {
