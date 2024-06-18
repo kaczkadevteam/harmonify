@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed } from 'vue'
 import { useCookies } from '@vueuse/integrations/useCookies'
 import { useRouter } from 'vue-router'
 import { useConnectionStore, useGameDataStore, useMusicPlayerStore, useSpotifyLibraryStore } from '@/stores'

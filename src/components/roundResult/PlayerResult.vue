@@ -29,7 +29,7 @@ const isSelf = computed(() => props.playerResult.guid === gameDataStore.selfPlay
   <div class="grid">
     <div class="relative flex items-center gap-2">
       <GuessLevelIcon v-if="displayGuessLevel" :guess-level="guessLevel" class="relative -bottom-2 -mr-2 self-end" />
-      <div v-else class="min-w-4 min-h-4 relative -bottom-2 -mr-2 self-end"></div>
+      <div v-else class="relative -bottom-2 -mr-2 min-h-4 min-w-4 self-end" />
       <CircleUserRound :class="cn('min-w-8 min-h-8', isSelf && 'text-primary')" />
       <div class="grid grid-rows-2">
         <div class="mr-3 text-sm">
@@ -39,7 +39,7 @@ const isSelf = computed(() => props.playerResult.guid === gameDataStore.selfPlay
       </div>
       <div>{{ playerResult.score }}</div>
     </div>
-    <div v-if="displayGuessLevel && guessLevel !== 'full' && guess !== ''" class="text-sm text-nowrap">
+    <div v-if="displayGuessLevel && guessLevel !== 'full' && guess !== ''" class="text-nowrap text-sm">
       <span>Guess: </span>
       <GuessDisplay :guess="guess" />
     </div>
