@@ -58,6 +58,8 @@ const playedTracks = computed<TPlayedTrack[]>(() => {
 <template>
   <DesktopResultView
     v-if="isDesktop"
+    v-model="selectedPlayerGuid"
+    :selectable-players
     :played-tracks
     :score="resultStore.gameSelfPlayer.score"
     :is-desktop

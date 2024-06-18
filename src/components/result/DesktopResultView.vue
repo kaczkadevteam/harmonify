@@ -5,10 +5,16 @@ import GameResults from '@/components/result/GameResults.vue'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import PlayedTrack from '@/components/result/PlayedTrack.vue'
 import { Button } from '@/components/ui/button'
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Label } from '@/components/ui/label'
 import type { PlayedTrack as TPlayedTrack } from '@/types'
 import { cn } from '@/lib/utils'
 
 defineProps<{
+  selectablePlayers: {
+    guid: string
+    nickname: string
+  }[]
   playedTracks: TPlayedTrack[]
   score: number
   isDesktop: boolean
@@ -21,6 +27,8 @@ const emit = defineEmits<{
   animationFinished: []
   playAgain: []
 }>()
+
+const selectedPlayer = defineModel<string>()
 
 const gameResultsEl = ref<HTMLDivElement | null>(null)
 const gameResultsDimensions = useElementBounding(gameResultsEl)
@@ -44,15 +52,36 @@ onMounted(() => {
 <template>
   <div class="box-border grid h-full w-screen grid-cols-[650px_auto] grid-rows-[minmax(0,100%)_150px] place-content-center place-items-center gap-5 p-8">
     <Transition name="fade-left">
-      <ScrollArea v-if="displayTracks" class="row-span-2 size-full rounded-lg border p-4">
-        <div class="space-y-4">
-          <PlayedTrack
-            v-for="playedTrack, idx of playedTracks"
-            :key="`${playedTrack.track.uri}-${idx}`"
-            :played-track="playedTrack"
-          />
+      <div v-if="displayTracks" class="row-span-2 grid size-full grid-rows-[minmax(0,auto)_minmax(0,1fr)] gap-2">
+        <div class="flex items-center gap-2">
+          <Label for="player">Player</Label>
+          <Select v-model:model-value="selectedPlayer">
+            <SelectTrigger id="player">
+              <SelectValue placeholder="Select autoplay behaviour" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                <SelectItem
+                  v-for="player of selectablePlayers"
+                  :key="player.guid"
+                  :value="player.guid"
+                >
+                  {{ player.nickname }}
+                </SelectItem>
+              </SelectGroup>
+            </SelectContent>
+          </Select>
         </div>
-      </ScrollArea>
+        <ScrollArea class="size-full rounded-lg border p-4">
+          <div class="space-y-4">
+            <PlayedTrack
+              v-for="playedTrack, idx of playedTracks"
+              :key="`${playedTrack.track.uri}-${idx}`"
+              :played-track="playedTrack"
+            />
+          </div>
+        </ScrollArea>
+      </div>
     </Transition>
     <div class="col-start-2 h-full max-h-full self-start">
       <GameResults
