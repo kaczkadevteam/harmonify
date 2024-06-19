@@ -22,6 +22,7 @@ export const useGameDataStore = defineStore('gameData', {
         isHost: false,
         guid: '',
         nickname: '',
+        connected: true,
       },
       players: [],
       round: 1,
@@ -64,7 +65,9 @@ export const useGameDataStore = defineStore('gameData', {
     },
     updatePlayersList(playersList: PlayerDto[]) {
       this.players = playersList
-      this.selfPlayer.nickname = playersList.find(p => p.guid === this.selfPlayer.guid)?.nickname ?? ''
+      const selfPlayer = playersList.find(p => p.guid === this.selfPlayer.guid)
+      this.selfPlayer.nickname = selfPlayer?.nickname ?? ''
+      this.selfPlayer.connected = selfPlayer?.connected ?? false
     },
   },
 })
