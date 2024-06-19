@@ -16,6 +16,7 @@ defineProps<{
   playedTracks: TPlayedTrack[]
   score: number
   isDesktop: boolean
+  isPlayAgainEnabled: boolean
   displayTracks: boolean
   displayButton: boolean
 }>()
@@ -23,6 +24,7 @@ defineProps<{
 const emit = defineEmits<{
   animationFinished: []
   playAgain: []
+  quitGame: []
 }>()
 
 const selectedPlayer = defineModel<string>()
@@ -92,8 +94,11 @@ const selectedPlayer = defineModel<string>()
             <span>Score: </span>
             <span>{{ score }}</span>
           </div>
-          <Button class="text-base" size="default" @click="emit('playAgain')">
+          <Button v-if="isPlayAgainEnabled" class="text-base" size="default" @click="emit('playAgain')">
             Play again?
+          </Button>
+          <Button v-else class="text-base" size="default" @click="emit('quitGame')">
+            Quit
           </Button>
         </div>
       </Transition>

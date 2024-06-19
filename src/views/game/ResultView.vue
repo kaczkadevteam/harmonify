@@ -18,6 +18,7 @@ const displayButton = ref(false)
 const selectedPlayerGuid = ref(resultStore.gameSelfPlayer.guid)
 const resultsAnimationPending = ref(true)
 const { width: screenWidth } = useWindowSize()
+const isPlayAgainEnabled = computed(() => !!connectionStore.ws)
 const isDesktop = computed(() => screenWidth.value >= Breakpoint.LG)
 const selectablePlayers = computed(() => {
   return resultStore.game.players.map(p => ({ guid: p.guid, nickname: gameDataStore.selfPlayer.guid === p.guid ? 'You' : p.nickname }))
@@ -28,6 +29,13 @@ function handlePlayAgain() {
     $type: 'message',
     type: 'playAgain',
   })
+}
+
+function handleQuitGame() {
+  if (connectionStore.ws)
+    connectionStore.sendMessage({ $type: 'message', type: 'quitGame' })
+
+  router.push({ name: 'home' })
 }
 
 whenever(() => gameDataStore.selfPlayer.connected, () => {
@@ -72,11 +80,13 @@ const playedTracks = computed<TPlayedTrack[]>(() => {
     :played-tracks
     :score="resultStore.gameSelfPlayer.score"
     :is-desktop
+    :is-play-again-enabled
     :display-tracks
     :display-button
     :results-animation-pending
     @animation-finished="handleResultsAnimationFinish"
     @play-again="handlePlayAgain"
+    @quit-game="handleQuitGame"
   />
   <MobileResultView
     v-else
@@ -85,9 +95,11 @@ const playedTracks = computed<TPlayedTrack[]>(() => {
     :played-tracks
     :score="resultStore.gameSelfPlayer.score"
     :is-desktop
+    :is-play-again-enabled
     :display-tracks
     :display-button
     @animation-finished="handleResultsAnimationFinish"
     @play-again="handlePlayAgain"
+    @quit-game="handleQuitGame"
   />
 </template>
