@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router'
 import { computed, ref } from 'vue'
-import { useWindowSize } from '@vueuse/core'
-import { useGameDataStore, useResultStore } from '@/stores'
+import { useWindowSize, whenever } from '@vueuse/core'
+import { useConnectionStore, useGameDataStore, useResultStore } from '@/stores'
 import type { PlayedTrack as TPlayedTrack } from '@/types'
 import { AnimationDuration, Breakpoint } from '@/consts'
 import DesktopResultView from '@/components/result/DesktopResultView.vue'
@@ -10,6 +10,7 @@ import MobileResultView from '@/components/result/MobileResultView.vue'
 
 const resultStore = useResultStore()
 const gameDataStore = useGameDataStore()
+const connectionStore = useConnectionStore()
 
 const router = useRouter()
 const displayTracks = ref(false)
@@ -23,8 +24,15 @@ const selectablePlayers = computed(() => {
 })
 
 function handlePlayAgain() {
-  router.push({ name: 'home' })
+  connectionStore.sendMessage({
+    $type: 'message',
+    type: 'playAgain',
+  })
 }
+
+whenever(() => gameDataStore.selfPlayer.connected, () => {
+  router.push({ name: 'setup', params: router.currentRoute.value.params })
+})
 
 function handleResultsAnimationFinish() {
   setTimeout(() => {
