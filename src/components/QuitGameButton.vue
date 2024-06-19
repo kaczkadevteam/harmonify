@@ -28,7 +28,8 @@ function handleClick() {
 function quitGame() {
   if (connectionStore.ws)
     connectionStore.sendMessage({ $type: 'message', type: 'quitGame' })
-  else
+
+  if (router.currentRoute.value.name === 'result')
     router.push({ name: 'home' })
 }
 </script>
