@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input'
 import { PinInput, PinInputGroup, PinInputInput } from '@/components/ui/pin-input'
 import { Button } from '@/components/ui/button'
 import { useConnectionStore, useGameDataStore } from '@/stores'
-import { playerDtoSchema } from '@/types'
+import { nicknameSchema } from '@/types'
 
 const cookies = useCookies()
 const connectionStore = useConnectionStore()
@@ -37,7 +37,7 @@ function joinRoom() {
 }
 
 function createRoom() {
-  const parseResult = playerDtoSchema.shape.nickname.safeParse(username.value)
+  const parseResult = nicknameSchema.safeParse(username.value)
   if (!parseResult.success) {
     usernameError.value = parseResult.error.issues[0].message
     return

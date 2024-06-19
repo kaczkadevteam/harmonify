@@ -22,6 +22,7 @@ export const useGameDataStore = defineStore('gameData', {
         isHost: false,
         guid: '',
         nickname: '',
+        connected: true,
       },
       players: [],
       round: 1,

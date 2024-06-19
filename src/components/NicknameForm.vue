@@ -4,7 +4,7 @@ import { watchDebounced } from '@vueuse/core'
 import Input from '@/components/ui/input/Input.vue'
 import { useConnectionStore, useGameDataStore } from '@/stores'
 import { useToast } from '@/components/ui/toast/use-toast'
-import { playerDtoSchema } from '@/types'
+import { nicknameSchema } from '@/types'
 
 const props = defineProps<{
   nickname: string
@@ -21,7 +21,7 @@ watch(() => props.nickname, (newNickname) => {
 })
 
 watchDebounced(nickname, () => {
-  const result = playerDtoSchema.shape.nickname.safeParse(nickname.value)
+  const result = nicknameSchema.safeParse(nickname.value)
 
   if (!result.success) {
     nickname.value = gameDataStore.selfPlayer.nickname
