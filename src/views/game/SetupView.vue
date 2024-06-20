@@ -3,6 +3,7 @@ import { computed, onBeforeMount, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useClipboard, useWindowSize } from '@vueuse/core'
 import { Copy, Users } from 'lucide-vue-next'
+import { cva } from 'class-variance-authority'
 import HostView from '@/components/setup/HostView.vue'
 import { useConnectionStore, useGameDataStore, useResultStore } from '@/stores'
 import LoadingCircle from '@/components/LoadingCircle.vue'
@@ -12,6 +13,7 @@ import { Button } from '@/components/ui/button'
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Breakpoint } from '@/consts'
+import { cn } from '@/lib/utils'
 
 const router = useRouter()
 const resultStore = useResultStore()
@@ -44,11 +46,24 @@ function copyId() {
 }
 
 const isDesktop = computed(() => screenWidth.value >= Breakpoint.LG)
+const desktopPlayerContainerVariants = cva('', {
+  variants: {
+    variant: {
+      host: 'space-y-3',
+      guest: 'grid min-h-[60vh] w-full grid-cols-[repeat(auto-fit,minmax(240px,1fr))] content-start gap-5',
+    },
+  },
+  defaultVariants: {
+    variant: 'guest',
+  },
+})
 </script>
 
 <template>
-  <main class="grid grid-rows-[minmax(0,auto)_minmax(0,1fr)] content-center justify-center gap-4 p-4 lg:grid-cols-[260px_auto] lg:grid-rows-none lg:justify-center lg:justify-items-center">
-    <div class="grid gap-3 self-start lg:mt-2 lg:place-content-start lg:justify-self-start">
+  <main
+    :class="cn('grid grid-rows-[minmax(0,auto)_minmax(0,1fr)] content-center justify-center gap-4 p-4 lg:grid-rows-none lg:justify-center lg:grid-cols-[minmax(auto,1200px)] lg:mx-10', gameDataStore.selfPlayer.isHost && 'lg:grid-cols-[260px_auto] lg:justify-items-center lg:mx-0')"
+  >
+    <div :class="cn('grid gap-6 self-start lg:mt-2 lg:justify-items-center', gameDataStore.selfPlayer.isHost && 'lg:justify-items-start gap-3')">
       <div class="flex items-center justify-between">
         <Sheet v-if="!isDesktop">
           <SheetTrigger>
@@ -82,8 +97,8 @@ const isDesktop = computed(() => screenWidth.value >= Breakpoint.LG)
           </button>
         </div>
       </div>
-      <ScrollArea v-if="isDesktop" class="max-h-[calc(100vh_-_200px)]">
-        <div class="space-y-3">
+      <ScrollArea v-if="isDesktop" class="max-h-[calc(100vh_-_200px)] w-full">
+        <div :class="desktopPlayerContainerVariants({ variant: gameDataStore.selfPlayer.isHost ? 'host' : 'guest' })">
           <Player
             v-for="player of gameDataStore.players" :key="player.guid"
             :is-self="player.guid === gameDataStore.selfPlayer.guid"
@@ -93,8 +108,8 @@ const isDesktop = computed(() => screenWidth.value >= Breakpoint.LG)
         </div>
       </ScrollArea>
     </div>
-    <HostView v-if="gameDataStore.selfPlayer.isHost" ref="hostView" is-desktop />
-    <div v-else class="flex items-center gap-5 text-2xl">
+    <HostView v-if="gameDataStore.selfPlayer.isHost" ref="hostView" :is-desktop />
+    <div v-else class="flex items-center gap-5 justify-self-center text-2xl">
       <span>Waiting for host to start game</span><LoadingCircle size="60px" />
     </div>
   </main>
