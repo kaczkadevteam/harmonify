@@ -1,19 +1,20 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, onBeforeMount, ref } from 'vue'
 import { useCookies } from '@vueuse/integrations/useCookies'
 import { useRouter } from 'vue-router'
+import { z } from 'zod'
 import { useConnectionStore, useGameDataStore, useMusicPlayerStore, useSpotifyLibraryStore } from '@/stores'
-import SpotifyLibraryLoading from '@/components/setup/SpotifyLibraryLoading.vue'
 import SpotifyLibraryDisplay from '@/components/setup/SpotifyLibraryDisplay.vue'
 import { Button } from '@/components/ui/button'
 import GameDataForm from '@/components/setup/GameDataForm.vue'
-import type { SelectableAlbum, SelectablePlaylist } from '@/types'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { SpotifyService } from '@/services'
 
 defineProps<{
   isDesktop: boolean
 }>()
 
+const isLoading = ref(false)
 const musicPlayerStore = useMusicPlayerStore()
 const spotifyLibraryStore = useSpotifyLibraryStore()
 const router = useRouter()
@@ -22,14 +23,19 @@ const access_token = cookies.get('access_token')
 const connectionStore = useConnectionStore()
 const gameData = useGameDataStore()
 
-function handleLoadingFinished(playlists: SelectablePlaylist[], albums: SelectableAlbum[]) {
-  spotifyLibraryStore.playlists = playlists
-  spotifyLibraryStore.albums = albums
+async function loadData() {
+  const access_token = z.string().parse(cookies.get('access_token'))
+
+  spotifyLibraryStore.favourites = await SpotifyService.getTracksFromFavourites(access_token, router)
+  spotifyLibraryStore.playlists = await SpotifyService.getPlaylists(access_token, router)
+  spotifyLibraryStore.albums = await SpotifyService.getAlbums(access_token, router)
 }
 
 async function handleGameStart() {
   if (!musicPlayerStore.ready)
     return
+
+  isLoading.value = true
 
   await musicPlayerStore.turnOn()
   const tracks = await spotifyLibraryStore.getTracksFromSelectedSets(access_token, router)
@@ -43,24 +49,39 @@ async function handleGameStart() {
   })
 }
 
+function disableLoading() {
+  isLoading.value = false
+}
+
+onBeforeMount(() => {
+  loadData()
+})
+
 const selectedAnything = computed(() => {
   return spotifyLibraryStore.playlists?.some(i => i.selected)
     || spotifyLibraryStore.albums?.some(i => i.selected)
     || spotifyLibraryStore.favouritesSelected
 })
 
+const selectedAnyTrack = computed(() => selectedAnything.value && spotifyLibraryStore.totalSelectedTracks !== 0)
+
 const startButtonText = computed(() => {
   if (!musicPlayerStore.ready)
     return 'Connecting...'
   else if (!selectedAnything.value)
     return 'Select tracks'
+  else if (!selectedAnyTrack.value)
+    return 'Selected empty playlists'
+  else if (isLoading.value)
+    return 'Loading...'
   else return 'Play!'
 })
+
+defineExpose({ disableLoading })
 </script>
 
 <template>
-  <SpotifyLibraryLoading v-if="!spotifyLibraryStore.playlists || !spotifyLibraryStore.albums" @loaded="handleLoadingFinished" />
-  <form v-else class="grid h-[80vh] max-h-[80vh] w-[80vw] lg:w-auto lg:grid-cols-[minmax(auto,600px)_270px] lg:grid-rows-[1fr_50px] lg:items-start lg:gap-5" @submit.prevent="handleGameStart">
+  <form class="grid h-[80vh] max-h-[80vh] w-[80vw] lg:w-auto lg:grid-cols-[minmax(auto,600px)_270px] lg:grid-rows-[1fr_50px] lg:items-start lg:gap-5" @submit.prevent="handleGameStart">
     <Tabs v-if="!isDesktop" default-value="tracks">
       <TabsList class="w-full">
         <TabsTrigger value="tracks" class="flex-1">
@@ -90,8 +111,8 @@ const startButtonText = computed(() => {
       <GameDataForm />
     </template>
     <Button
-      class=" w-28 place-self-center"
-      :disabled="!musicPlayerStore.player || !selectedAnything"
+      class="min-w-32 place-self-center"
+      :disabled="!musicPlayerStore.player || !selectedAnyTrack || isLoading"
       type="submit"
     >
       {{ startButtonText }}
