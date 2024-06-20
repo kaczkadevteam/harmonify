@@ -81,9 +81,9 @@ export const playedTrackSchema = z.object({
 })
 export type PlayedTrack = z.infer<typeof playedTrackSchema>
 
-export const selectablePlaylistSchema = simplePlaylistObjectSchema.and(z.object({
+export const selectablePlaylistSchema = simplePlaylistObjectSchema.extend({
   selected: z.boolean(),
-}))
+})
 export type SelectablePlaylist = z.infer<typeof selectablePlaylistSchema>
 
 export const selectableAlbumSchema = getAlbumSchema(trackSchema.extend({ preview_url: z.string().nullable() })).extend({
@@ -260,9 +260,9 @@ export const musicPlayDataSchema = z.object({
 })
 export type MusicPlayData = z.infer<typeof musicPlayDataSchema>
 
-export const playerSchema = playerDtoSchema.and(z.object({
+export const playerSchema = playerDtoSchema.extend({
   isHost: z.boolean(),
-}))
+})
 export type Player = z.infer<typeof playerSchema>
 
 export interface MusicPlayer {
