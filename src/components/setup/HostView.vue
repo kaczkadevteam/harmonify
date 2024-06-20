@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onBeforeMount } from 'vue'
+import { computed, onBeforeMount, ref } from 'vue'
 import { useCookies } from '@vueuse/integrations/useCookies'
 import { useRouter } from 'vue-router'
 import { z } from 'zod'
@@ -14,6 +14,7 @@ defineProps<{
   isDesktop: boolean
 }>()
 
+const isLoading = ref(false)
 const musicPlayerStore = useMusicPlayerStore()
 const spotifyLibraryStore = useSpotifyLibraryStore()
 const router = useRouter()
@@ -34,6 +35,8 @@ async function handleGameStart() {
   if (!musicPlayerStore.ready)
     return
 
+  isLoading.value = true
+
   await musicPlayerStore.turnOn()
   const tracks = await spotifyLibraryStore.getTracksFromSelectedSets(access_token, router)
   connectionStore.sendMessage({
@@ -44,6 +47,10 @@ async function handleGameStart() {
       gameSettings: gameData.gameSettings,
     },
   })
+}
+
+function disableLoading() {
+  isLoading.value = false
 }
 
 onBeforeMount(() => {
@@ -65,8 +72,12 @@ const startButtonText = computed(() => {
     return 'Select tracks'
   else if (!selectedAnyTrack.value)
     return 'Selected empty playlists'
+  else if (isLoading.value)
+    return 'Loading...'
   else return 'Play!'
 })
+
+defineExpose({ disableLoading })
 </script>
 
 <template>
@@ -101,7 +112,7 @@ const startButtonText = computed(() => {
     </template>
     <Button
       class="min-w-32 place-self-center"
-      :disabled="!musicPlayerStore.player || !selectedAnyTrack"
+      :disabled="!musicPlayerStore.player || !selectedAnyTrack || isLoading"
       type="submit"
     >
       {{ startButtonText }}

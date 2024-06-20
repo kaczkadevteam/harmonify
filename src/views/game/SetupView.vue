@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onBeforeMount } from 'vue'
+import { computed, onBeforeMount, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useClipboard, useWindowSize } from '@vueuse/core'
 import { Copy, Users } from 'lucide-vue-next'
@@ -21,12 +21,19 @@ const { width: screenWidth } = useWindowSize()
 const { copy } = useClipboard()
 const { toast } = useToast()
 
+const hostView = ref<InstanceType<typeof HostView> | null>(null)
+
 onBeforeMount(() => {
   resultStore.$reset()
   connectionStore.handleMessage = (message) => {
     if (message.$type === 'message/gameStartedDto') {
       gameDataStore.startGame(message.data)
       router.push({ name: 'round', params: router.currentRoute.value.params })
+    }
+    else if (message.$type === 'messageError') {
+      toast({ title: 'Error', description: message.errorMessage, variant: 'destructive', duration: 4000 })
+      if (hostView.value)
+        hostView.value.disableLoading()
     }
   }
 })
@@ -86,7 +93,7 @@ const isDesktop = computed(() => screenWidth.value >= Breakpoint.LG)
         </div>
       </ScrollArea>
     </div>
-    <HostView v-if="gameDataStore.selfPlayer.isHost" :is-desktop />
+    <HostView v-if="gameDataStore.selfPlayer.isHost" ref="hostView" is-desktop />
     <div v-else class="flex items-center gap-5 text-2xl">
       <span>Waiting for host to start game</span><LoadingCircle size="60px" />
     </div>
