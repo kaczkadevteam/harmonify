@@ -25,11 +25,9 @@ const gameData = useGameDataStore()
 async function loadData() {
   const access_token = z.string().parse(cookies.get('access_token'))
 
-  const playlists = await SpotifyService.getPlaylists(access_token, router)
-  const albums = await SpotifyService.getAlbums(access_token, router)
-
-  spotifyLibraryStore.playlists = playlists
-  spotifyLibraryStore.albums = albums
+  spotifyLibraryStore.favourites = await SpotifyService.getTracksFromFavourites(access_token, router)
+  spotifyLibraryStore.playlists = await SpotifyService.getPlaylists(access_token, router)
+  spotifyLibraryStore.albums = await SpotifyService.getAlbums(access_token, router)
 }
 
 async function handleGameStart() {

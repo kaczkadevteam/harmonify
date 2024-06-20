@@ -17,7 +17,7 @@ const favouritesSelected = defineModel<boolean>('favouritesSelected', { required
         Playlists
       </h2>
       <div class="grid grid-cols-[repeat(auto-fill,minmax(116px,1fr))] gap-5 lg:mt-5">
-        <template v-if="spotifyLibraryStore.playlists">
+        <template v-if="spotifyLibraryStore.favourites && spotifyLibraryStore.playlists">
           <CheckableCard
             id="favourites"
             v-model="favouritesSelected"

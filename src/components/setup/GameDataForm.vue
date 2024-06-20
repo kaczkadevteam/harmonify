@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import { Slash } from 'lucide-vue-next'
 import { Label } from '@/components/ui/label'
-import { useGameDataStore } from '@/stores'
+import { useGameDataStore, useSpotifyLibraryStore } from '@/stores'
 import { NumberField, NumberFieldContent, NumberFieldDecrement, NumberFieldIncrement, NumberFieldInput } from '@/components/ui/number-field'
 
 const gameDataStore = useGameDataStore()
+const spotifyLibraryStore = useSpotifyLibraryStore()
 </script>
 
 <template>
@@ -27,8 +28,7 @@ const gameDataStore = useGameDataStore()
         </NumberFieldContent>
         <div class="flex w-max items-center rounded-r-md border border-l-0 bg-muted pr-3 text-muted-foreground">
           <Slash class="size-5 rotate-[-32deg]" />
-          <span class="mr-1">{{ 0 }}</span>
-          <span>tracks</span>
+          <span class="mr-1 text-nowrap">{{ spotifyLibraryStore.totalSelectedTracks }}</span>
         </div>
       </NumberField>
 
