@@ -11,22 +11,20 @@ export const useSpotifyLibraryStore = defineStore('spotifyLibrary', () => {
   const playlists = ref<SelectablePlaylist[]>()
   const albums = ref<SelectableAlbum[]>()
   const totalSelectedTracks = computed(() => {
-    if (!favourites.value || !playlists.value || !albums.value)
-      return 'loading...'
-
     let count = 0
 
     if (favouritesSelected.value)
-      count += favourites.value.length
+      count += favourites.value?.length ?? 0
 
     count += playlists.value
-      .filter((p => p.selected))
-      .reduce((acc, p) => acc + p.tracks.total, 0)
-    count += albums.value
-      .filter((p => p.selected))
-      .reduce((acc, p) => acc + p.tracks.items.length, 0)
+      ?.filter((p => p.selected))
+      .reduce((acc, p) => acc + p.tracks.total, 0) ?? 0
 
-    return `${count} tracks`
+    count += albums.value
+      ?.filter((p => p.selected))
+      .reduce((acc, p) => acc + p.tracks.items.length, 0) ?? 0
+
+    return count
   })
 
   async function getTracksFromSelectedSets(access_token: string, router: Router) {
@@ -36,16 +34,16 @@ export const useSpotifyLibraryStore = defineStore('spotifyLibrary', () => {
   }
 
   async function fetchTracksFromSelectedSets(access_token: string, router: Router): Promise<Track[]> {
-    if (!favourites.value || !playlists.value || !albums.value)
-      throw new Error('Tried to fetch tracks before loading playlists and albums')
+    if (!favourites.value && !playlists.value && !albums.value)
+      throw new Error('Tried to fetch tracks before loaded any playlist or album')
 
     let favouriteTracks: Track[] = []
 
     if (favouritesSelected.value)
-      favouriteTracks = favourites.value
+      favouriteTracks = favourites.value ?? []
 
-    const playlistsTracks = await SpotifyService.getTracksFromPlaylists(playlists.value.filter(p => p.selected), access_token, router)
-    const albumTracks = await SpotifyService.getTracksFromAlbums(albums.value.filter(p => p.selected))
+    const playlistsTracks = playlists.value ? await SpotifyService.getTracksFromPlaylists(playlists.value.filter(p => p.selected), access_token, router) : []
+    const albumTracks = albums.value ? await SpotifyService.getTracksFromAlbums(albums.value.filter(p => p.selected)) : []
 
     return [...favouriteTracks, ...playlistsTracks, ...albumTracks]
   }

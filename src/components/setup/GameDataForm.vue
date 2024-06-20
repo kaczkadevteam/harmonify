@@ -28,7 +28,7 @@ const spotifyLibraryStore = useSpotifyLibraryStore()
         </NumberFieldContent>
         <div class="flex w-max items-center rounded-r-md border border-l-0 bg-muted pr-3 text-muted-foreground">
           <Slash class="size-5 rotate-[-32deg]" />
-          <span class="mr-1 text-nowrap">{{ spotifyLibraryStore.totalSelectedTracks }}</span>
+          <span class="mr-1 text-nowrap">{{ spotifyLibraryStore.totalSelectedTracks }} tracks</span>
         </div>
       </NumberField>
 
