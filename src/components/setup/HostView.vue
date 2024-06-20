@@ -1,14 +1,14 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, onBeforeMount } from 'vue'
 import { useCookies } from '@vueuse/integrations/useCookies'
 import { useRouter } from 'vue-router'
+import { z } from 'zod'
 import { useConnectionStore, useGameDataStore, useMusicPlayerStore, useSpotifyLibraryStore } from '@/stores'
-import SpotifyLibraryLoading from '@/components/setup/SpotifyLibraryLoading.vue'
 import SpotifyLibraryDisplay from '@/components/setup/SpotifyLibraryDisplay.vue'
 import { Button } from '@/components/ui/button'
 import GameDataForm from '@/components/setup/GameDataForm.vue'
-import type { SelectableAlbum, SelectablePlaylist } from '@/types'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { SpotifyService } from '@/services'
 
 defineProps<{
   isDesktop: boolean
@@ -22,7 +22,12 @@ const access_token = cookies.get('access_token')
 const connectionStore = useConnectionStore()
 const gameData = useGameDataStore()
 
-function handleLoadingFinished(playlists: SelectablePlaylist[], albums: SelectableAlbum[]) {
+async function loadData() {
+  const access_token = z.string().parse(cookies.get('access_token'))
+
+  const playlists = await SpotifyService.getPlaylists(access_token, router)
+  const albums = await SpotifyService.getAlbums(access_token, router)
+
   spotifyLibraryStore.playlists = playlists
   spotifyLibraryStore.albums = albums
 }
@@ -43,6 +48,10 @@ async function handleGameStart() {
   })
 }
 
+onBeforeMount(() => {
+  loadData()
+})
+
 const selectedAnything = computed(() => {
   return spotifyLibraryStore.playlists?.some(i => i.selected)
     || spotifyLibraryStore.albums?.some(i => i.selected)
@@ -59,8 +68,7 @@ const startButtonText = computed(() => {
 </script>
 
 <template>
-  <SpotifyLibraryLoading v-if="!spotifyLibraryStore.playlists || !spotifyLibraryStore.albums" @loaded="handleLoadingFinished" />
-  <form v-else class="grid h-[80vh] max-h-[80vh] w-[80vw] lg:w-auto lg:grid-cols-[minmax(auto,600px)_270px] lg:grid-rows-[1fr_50px] lg:items-start lg:gap-5" @submit.prevent="handleGameStart">
+  <form class="grid h-[80vh] max-h-[80vh] w-[80vw] lg:w-auto lg:grid-cols-[minmax(auto,600px)_270px] lg:grid-rows-[1fr_50px] lg:items-start lg:gap-5" @submit.prevent="handleGameStart">
     <Tabs v-if="!isDesktop" default-value="tracks">
       <TabsList class="w-full">
         <TabsTrigger value="tracks" class="flex-1">
