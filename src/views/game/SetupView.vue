@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { computed, onBeforeMount, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { useClipboard, useWindowSize } from '@vueuse/core'
-import { Copy, Users } from 'lucide-vue-next'
+import { useWindowSize } from '@vueuse/core'
+import { Users } from 'lucide-vue-next'
 import { cva } from 'class-variance-authority'
 import HostView from '@/components/setup/HostView.vue'
 import { useConnectionStore, useGameDataStore, useResultStore } from '@/stores'
@@ -20,7 +20,6 @@ const resultStore = useResultStore()
 const gameDataStore = useGameDataStore()
 const connectionStore = useConnectionStore()
 const { width: screenWidth } = useWindowSize()
-const { copy } = useClipboard()
 const { toast } = useToast()
 
 const hostView = ref<InstanceType<typeof HostView> | null>(null)
@@ -39,11 +38,6 @@ onBeforeMount(() => {
     }
   }
 })
-
-function copyId() {
-  copy(router.currentRoute.value.params.id.toString())
-  toast({ description: 'Room ID copied to clipboard!' })
-}
 
 const isDesktop = computed(() => screenWidth.value >= Breakpoint.LG)
 const desktopPlayerContainerVariants = cva('', {
@@ -88,14 +82,6 @@ const desktopPlayerContainerVariants = cva('', {
             </ScrollArea>
           </SheetContent>
         </Sheet>
-        <div class="flex gap-3">
-          <span>
-            Room: {{ router.currentRoute.value.params.id }}
-          </span>
-          <button>
-            <Copy @click="copyId" />
-          </button>
-        </div>
       </div>
       <ScrollArea v-if="isDesktop" class="max-h-[calc(100vh_-_200px)] w-full">
         <div :class="desktopPlayerContainerVariants({ variant: gameDataStore.selfPlayer.isHost ? 'host' : 'guest' })">
