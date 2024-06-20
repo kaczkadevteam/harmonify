@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useRoute } from 'vue-router'
 import { computed } from 'vue'
-import { useClipboard } from '@vueuse/core'
+import { useClipboard, useWindowSize } from '@vueuse/core'
 import { Copy } from 'lucide-vue-next'
 import PauseGameButton from '@/components/PauseGameButton.vue'
 import PreviewPlayer from '@/components/PreviewPlayer.vue'
@@ -10,13 +10,18 @@ import QuitGameButton from '@/components/QuitGameButton.vue'
 import Settings from '@/components/Settings.vue'
 import { Button } from '@/components/ui/button'
 import { useToast } from '@/components/ui/toast/use-toast'
+import { Breakpoint } from '@/consts'
+import PlayersSheet from '@/components/PlayersSheet.vue'
 
 const gameDataStore = useGameDataStore()
 const route = useRoute()
+const { width: screenWidth } = useWindowSize()
 const { copy } = useClipboard()
 const { toast } = useToast()
+const isDesktop = computed(() => screenWidth.value >= Breakpoint.LG)
 
 const displayPauseButton = computed(() => gameDataStore.selfPlayer.isHost && (route.name === 'round' || route.name === 'roundResult'))
+const displayPlayersButton = computed(() => !isDesktop.value && route.name === 'setup')
 
 function copyId() {
   copy(new URL(route.fullPath, window.location.origin).href)
@@ -37,6 +42,7 @@ function copyId() {
           </Button>
         </div>
         <Settings />
+        <PlayersSheet v-if="displayPlayersButton" />
         <PauseGameButton v-if="displayPauseButton" />
         <QuitGameButton />
       </div>

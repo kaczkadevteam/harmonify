@@ -2,15 +2,12 @@
 import { computed, onBeforeMount, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useWindowSize } from '@vueuse/core'
-import { Users } from 'lucide-vue-next'
 import { cva } from 'class-variance-authority'
 import HostView from '@/components/setup/HostView.vue'
 import { useConnectionStore, useGameDataStore, useResultStore } from '@/stores'
 import LoadingCircle from '@/components/LoadingCircle.vue'
 import Player from '@/components/Player.vue'
 import { useToast } from '@/components/ui/toast/use-toast'
-import { Button } from '@/components/ui/button'
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Breakpoint } from '@/consts'
 import { cn } from '@/lib/utils'
@@ -58,31 +55,6 @@ const desktopPlayerContainerVariants = cva('', {
     :class="cn('grid grid-rows-[minmax(0,auto)_minmax(0,1fr)] content-center justify-center gap-4 p-4 lg:grid-rows-none lg:justify-center lg:grid-cols-[minmax(auto,1200px)] lg:mx-10', gameDataStore.selfPlayer.isHost && 'lg:grid-cols-[260px_auto] lg:justify-items-center lg:mx-0')"
   >
     <div :class="cn('grid gap-6 self-start lg:mt-2 lg:justify-items-center', gameDataStore.selfPlayer.isHost && 'lg:justify-items-start gap-3')">
-      <div class="flex items-center justify-between">
-        <Sheet v-if="!isDesktop">
-          <SheetTrigger>
-            <Button variant="outline" size="icon" class="w-fit gap-1 px-1">
-              <Users />
-              <div>{{ gameDataStore.players.length }}</div>
-            </Button>
-          </SheetTrigger>
-          <SheetContent>
-            <SheetHeader class="mb-2">
-              <SheetTitle>Players</SheetTitle>
-            </SheetHeader>
-            <ScrollArea class="h-[calc(100%_-_30px)]">
-              <div class="space-y-3">
-                <Player
-                  v-for="player of gameDataStore.players" :key="player.guid"
-                  :is-self="player.guid === gameDataStore.selfPlayer.guid"
-                  :editable="player.guid === gameDataStore.selfPlayer.guid"
-                  :player
-                />
-              </div>
-            </ScrollArea>
-          </SheetContent>
-        </Sheet>
-      </div>
       <ScrollArea v-if="isDesktop" class="max-h-[calc(100vh_-_200px)] w-full">
         <div :class="desktopPlayerContainerVariants({ variant: gameDataStore.selfPlayer.isHost ? 'host' : 'guest' })">
           <Player
