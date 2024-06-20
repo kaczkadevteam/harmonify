@@ -56,11 +56,15 @@ const selectedAnything = computed(() => {
     || spotifyLibraryStore.favouritesSelected
 })
 
+const selectedAnyTrack = computed(() => selectedAnything.value && spotifyLibraryStore.totalSelectedTracks !== 0)
+
 const startButtonText = computed(() => {
   if (!musicPlayerStore.ready)
     return 'Connecting...'
   else if (!selectedAnything.value)
     return 'Select tracks'
+  else if (!selectedAnyTrack.value)
+    return 'Selected empty playlists'
   else return 'Play!'
 })
 </script>
@@ -96,8 +100,8 @@ const startButtonText = computed(() => {
       <GameDataForm />
     </template>
     <Button
-      class=" w-28 place-self-center"
-      :disabled="!musicPlayerStore.player || !selectedAnything"
+      class="min-w-32 place-self-center"
+      :disabled="!musicPlayerStore.player || !selectedAnyTrack"
       type="submit"
     >
       {{ startButtonText }}
