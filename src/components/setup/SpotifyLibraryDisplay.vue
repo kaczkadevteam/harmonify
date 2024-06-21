@@ -11,9 +11,9 @@ const favouritesSelected = defineModel<boolean>('favouritesSelected', { required
 </script>
 
 <template>
-  <ScrollArea class="flex max-h-full flex-col justify-start space-y-5 rounded-lg border p-4">
+  <ScrollArea class="flex max-h-full flex-col justify-start rounded-lg border p-4">
     <div class="flex flex-col gap-3">
-      <h2 class="sticky -top-1 z-10 -m-1 bg-gradient bg-fixed p-1 text-center text-xl font-semibold tracking-tight lg:py-2 lg:text-3xl">
+      <h2 class="sticky -top-1 z-10 bg-gradient bg-fixed pb-2 text-center text-xl font-semibold tracking-tight lg:pb-4 lg:text-3xl">
         Playlists
       </h2>
       <div class="grid grid-cols-[repeat(auto-fill,minmax(116px,1fr))] gap-5 lg:mt-5">
@@ -47,7 +47,7 @@ const favouritesSelected = defineModel<boolean>('favouritesSelected', { required
       </div>
     </div>
     <div class="flex flex-col gap-3">
-      <h2 class="sticky -top-1 z-10 -m-1 bg-gradient bg-fixed p-1 py-2 text-center text-xl font-semibold tracking-tight lg:text-3xl">
+      <h2 class="sticky -top-1 z-10 bg-gradient bg-fixed pb-2 text-center text-xl font-semibold tracking-tight lg:pb-4  lg:text-3xl">
         Albums
       </h2>
       <div class="grid grid-cols-[repeat(auto-fill,minmax(116px,1fr))] gap-5 lg:mt-5">
