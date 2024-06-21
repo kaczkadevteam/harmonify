@@ -29,19 +29,21 @@ onBeforeMount(() => {
       router.push({ name: 'round', params: router.currentRoute.value.params })
     }
     else if (message.$type === 'messageError') {
-      toast({ title: 'Error', description: message.errorMessage, variant: 'destructive', duration: 4000 })
-      if (hostView.value)
+      toast({ title: 'Error', description: `${message.type}: ${message.errorMessage}`, variant: 'destructive', duration: 4000 })
+      if (message.type === 'dataTooLarge' && hostView.value)
         hostView.value.disableLoading()
     }
   }
 })
 
 const isDesktop = computed(() => screenWidth.value >= Breakpoint.LG)
+
+const showPlayers = computed(() => isDesktop.value || !gameDataStore.selfPlayer.isHost)
 const desktopPlayerContainerVariants = cva('', {
   variants: {
     variant: {
       host: 'space-y-3',
-      guest: 'grid min-h-[60vh] w-full grid-cols-[repeat(auto-fit,minmax(240px,1fr))] content-start gap-5',
+      guest: 'grid min-h-[60vh] w-full grid-cols-[repeat(auto-fill,minmax(240px,1fr))] content-start justify-center gap-5',
     },
   },
   defaultVariants: {
@@ -52,10 +54,10 @@ const desktopPlayerContainerVariants = cva('', {
 
 <template>
   <main
-    :class="cn('grid grid-rows-[minmax(0,auto)_minmax(0,1fr)] content-center justify-center gap-4 p-4 lg:grid-rows-none lg:justify-center lg:grid-cols-[minmax(auto,1200px)] lg:mx-10', gameDataStore.selfPlayer.isHost && 'lg:grid-cols-[260px_auto] lg:justify-items-center lg:mx-0')"
+    :class="cn('grid grid-rows-[minmax(0,auto)_minmax(0,1fr)] content-center justify-center gap-4 p-4 lg:grid-rows-none grid-cols-[minmax(auto,1200px)] mx-10', gameDataStore.selfPlayer.isHost && 'justify-items-center lg:grid-cols-[260px_auto] mx-0')"
   >
-    <div :class="cn('grid gap-6 self-start lg:mt-2 lg:justify-items-center', gameDataStore.selfPlayer.isHost && 'lg:justify-items-start gap-3')">
-      <ScrollArea v-if="isDesktop" class="max-h-[calc(100vh_-_200px)] w-full">
+    <div :class="cn('grid gap-6 self-start lg:mt-2 justify-items-center', gameDataStore.selfPlayer.isHost && 'lg:justify-items-start gap-3')">
+      <ScrollArea v-if="showPlayers" class="max-h-[calc(100vh_-_200px)] w-full">
         <div :class="desktopPlayerContainerVariants({ variant: gameDataStore.selfPlayer.isHost ? 'host' : 'guest' })">
           <Player
             v-for="player of gameDataStore.players" :key="player.guid"

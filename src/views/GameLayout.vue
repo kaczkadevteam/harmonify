@@ -18,7 +18,7 @@ const { width: screenWidth } = useWindowSize()
 const isDesktop = computed(() => screenWidth.value >= Breakpoint.LG)
 
 const displayPauseButton = computed(() => gameDataStore.selfPlayer.isHost && (route.name === 'round' || route.name === 'roundResult'))
-const displayPlayersButton = computed(() => !isDesktop.value && route.name === 'setup')
+const displayPlayersButton = computed(() => !isDesktop.value && gameDataStore.selfPlayer.isHost && route.name === 'setup')
 </script>
 
 <template>
