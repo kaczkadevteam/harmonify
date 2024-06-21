@@ -10,7 +10,7 @@ export type StringOrVNode =
   | VNode
   | (() => VNode)
 
-type ToasterToast = ToastProps & {
+export type ToasterToast = ToastProps & {
   id: string
   title?: string
   description?: StringOrVNode
