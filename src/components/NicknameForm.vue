@@ -58,6 +58,11 @@ function tryUpdateNickname() {
 
 onMounted(() => {
   localNickname.value = localStorage.getItem(LOCAL_STORAGE.NICKNAME) ?? localNickname.value
+  if (isCorrect())
+    return
+
+  localNickname.value = gameDataStore.selfPlayer.nickname
+  error.value = ''
 })
 
 /** Nickname update triggered by server */
