@@ -43,7 +43,7 @@ const desktopPlayerContainerVariants = cva('', {
   variants: {
     variant: {
       host: 'space-y-3',
-      guest: 'grid min-h-[60vh] w-full grid-cols-[repeat(auto-fill,minmax(240px,1fr))] content-start justify-center gap-5',
+      guest: 'grid min-h-[60vh] w-full auto-rows-[40px] grid-cols-[repeat(auto-fill,minmax(240px,1fr))] content-start justify-center gap-5',
     },
   },
   defaultVariants: {
