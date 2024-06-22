@@ -2,6 +2,41 @@
 
 <div align="right">
 
+## v3.2.0 (2024-06-22)
+
+</div>
+
+## UI improvements
+
+![setup view](./changelog/9.png)
+
+Done many quality of life changes in setup view, some of the most notable:
+- New game settings form displays units and how many tracks are selected
+- Loading playlists and albums is now non blocking, game settings form can be edited while waiting
+- Changed player nickname form to better display errors and allow users to fix them
+- Nicknames are now saved locally and loaded after joining room (if they are not conflicting with existing players)
+
+
+## Better round results
+
+![better round results](./changelog/10.png)
+
+Round results now show other players guesses if they sent an incorrect one and special icon for disconnected players
+
+## Other players game results
+
+![better round results](./changelog/11.png)
+
+On results page users can now check in detail how game went for other players
+
+## Play again
+
+Clicking "Play Again" now works as expected, another game can be started in the same room and players keep connection. It works only if host doesn't disconnect, otherwise new room must be created.
+
+**Full Changelog**: https://github.com/kaczkadevteam/harmonify/compare/v3.1.0...v3.2.0
+
+<div align="right">
+
 ## v3.1.0 (2024-06-13)
 
 </div>
