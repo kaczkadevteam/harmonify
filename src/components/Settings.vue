@@ -5,6 +5,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/co
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { useSettingsStore } from '@/stores'
+import Switch from '@/components/ui/switch/Switch.vue'
 
 const settingsStore = useSettingsStore()
 </script>
@@ -39,6 +40,10 @@ const settingsStore = useSettingsStore()
               </SelectGroup>
             </SelectContent>
           </Select>
+        </div>
+        <div class="mt-2 grid grid-cols-[min-content_minmax(0,1fr)] items-center gap-4">
+          <Label class="text-nowrap">Play animations</Label>
+          <Switch :checked="settingsStore.playAnimations" @update:checked="settingsStore.playAnimations = !settingsStore.playAnimations" />
         </div>
       </SheetHeader>
     </SheetContent>
