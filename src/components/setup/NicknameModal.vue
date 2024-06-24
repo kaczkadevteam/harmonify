@@ -1,8 +1,7 @@
 <script setup lang="ts">
-import { onMounted, ref, watch } from 'vue'
+import { onMounted, ref } from 'vue'
 import {
   AlertDialog,
-  AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
   AlertDialogFooter,
@@ -52,7 +51,10 @@ function tryUpdateNickname() {
   if (!isCorrect())
     return
 
-  console.log('da')
+  if (localNickname.value === gameDataStore.selfPlayer.nickname) {
+    model.value = false
+    return
+  }
 
   connectionStore.sendMessage({
     $type: 'message/string',
