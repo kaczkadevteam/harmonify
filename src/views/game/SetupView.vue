@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onBeforeMount, ref } from 'vue'
+import { computed, onBeforeMount, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useWindowSize } from '@vueuse/core'
 import { cva } from 'class-variance-authority'
@@ -11,6 +11,7 @@ import { useToast } from '@/components/ui/toast/use-toast'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Breakpoint } from '@/consts'
 import { cn } from '@/lib/utils'
+import NicknameModal from '@/components/setup/NicknameModal.vue'
 
 const router = useRouter()
 const resultStore = useResultStore()
@@ -18,6 +19,7 @@ const gameDataStore = useGameDataStore()
 const connectionStore = useConnectionStore()
 const { width: screenWidth } = useWindowSize()
 const { toast } = useToast()
+const isNicknameModalOpen = ref(true)
 
 const hostView = ref<InstanceType<typeof HostView> | null>(null)
 
@@ -72,5 +74,6 @@ const desktopPlayerContainerVariants = cva('', {
     <div v-else class="flex items-center gap-5 justify-self-center text-2xl">
       <span>Waiting for host to start game</span><LoadingCircle size="60px" />
     </div>
+    <NicknameModal v-model:open="isNicknameModalOpen" />
   </main>
 </template>

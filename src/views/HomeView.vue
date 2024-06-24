@@ -6,7 +6,6 @@ import { Input } from '@/components/ui/input'
 import { PinInput, PinInputGroup, PinInputInput } from '@/components/ui/pin-input'
 import { Button } from '@/components/ui/button'
 import { useConnectionStore, useGameDataStore } from '@/stores'
-import { nicknameSchema } from '@/types'
 
 const cookies = useCookies()
 const connectionStore = useConnectionStore()
@@ -15,8 +14,8 @@ const router = useRouter()
 
 const isLogged = ref(!!cookies.get('access_token') || !!cookies.get('refresh_token'))
 const roomId = ref<string[]>([])
-const username = ref('')
-const usernameError = ref('')
+const password = ref('')
+const passwordError = ref('')
 const isJoinRoomError = ref(false)
 
 function joinRoom() {
@@ -37,12 +36,6 @@ function joinRoom() {
 }
 
 function createRoom() {
-  const parseResult = nicknameSchema.safeParse(username.value)
-  if (!parseResult.success) {
-    usernameError.value = parseResult.error.issues[0].message
-    return
-  }
-
   connectionStore.openConnection('/create', {
     handleOpen() {},
     handleError() {
@@ -91,10 +84,10 @@ function connectToSpotify() {
           <Button>Join room</Button>
         </form>
         <form v-if="isLogged" class="grid justify-items-center gap-5" @submit.prevent="createRoom">
-          <p v-if="usernameError" class="-mb-3 text-base font-normal text-destructive">
-            {{ usernameError }}
+          <p v-if="passwordError" class="-mb-3 text-base font-normal text-destructive">
+            {{ passwordError }}
           </p>
-          <Input v-model="username" type="text" placeholder="Player name" required @focus="usernameError = ''" />
+          <Input v-model="password" type="text" placeholder="(WIP) Password, leave blank for none" @focus="passwordError = ''" />
           <Button type="submit">
             Create room
           </Button>

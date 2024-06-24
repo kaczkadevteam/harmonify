@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { onMounted, onUnmounted, ref, watch } from 'vue'
-import { useStorage, watchDebounced } from '@vueuse/core'
+import { ref, watch } from 'vue'
+import { watchDebounced } from '@vueuse/core'
 import { TriangleAlert } from 'lucide-vue-next'
 import Input from '@/components/ui/input/Input.vue'
 import { useConnectionStore, useGameDataStore } from '@/stores'
@@ -56,15 +56,6 @@ function tryUpdateNickname() {
   })
 }
 
-onMounted(() => {
-  localNickname.value = localStorage.getItem(LOCAL_STORAGE.NICKNAME) ?? localNickname.value
-  if (isCorrect())
-    return
-
-  localNickname.value = gameDataStore.selfPlayer.nickname
-  error.value = ''
-})
-
 /** Nickname update triggered by server */
 watch(() => props.nickname, (newNickname) => {
   localNickname.value = newNickname
@@ -73,7 +64,8 @@ watch(() => props.nickname, (newNickname) => {
 
 /** Other player nickname change could resolve conflict */
 watch(() => gameDataStore.players, () => {
-  tryUpdateNickname()
+  if (!isCorrect())
+    tryUpdateNickname()
 })
 
 /** Update nick on user typing */
