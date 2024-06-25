@@ -41,6 +41,9 @@ const windowDimensions = useWindowSize()
 const startingTransform = ref('')
 
 onMounted(() => {
+  if (!settingsStore.playAnimations)
+    return
+
   const windowMiddleX = windowDimensions.width.value / 2
   const windowMiddleY = windowDimensions.height.value / 2
 
