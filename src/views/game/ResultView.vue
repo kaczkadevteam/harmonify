@@ -2,7 +2,7 @@
 import { useRouter } from 'vue-router'
 import { computed, ref } from 'vue'
 import { useWindowSize, whenever } from '@vueuse/core'
-import { useConnectionStore, useGameDataStore, useResultStore } from '@/stores'
+import { useConnectionStore, useGameDataStore, useResultStore, useSettingsStore } from '@/stores'
 import type { PlayedTrack as TPlayedTrack } from '@/types'
 import { AnimationDuration, Breakpoint } from '@/consts'
 import DesktopResultView from '@/components/result/DesktopResultView.vue'
@@ -11,10 +11,11 @@ import MobileResultView from '@/components/result/MobileResultView.vue'
 const resultStore = useResultStore()
 const gameDataStore = useGameDataStore()
 const connectionStore = useConnectionStore()
+const settingsStore = useSettingsStore()
 
 const router = useRouter()
-const displayTracks = ref(false)
-const displayButton = ref(false)
+const displayTracks = ref(!settingsStore.playAnimations)
+const displayButton = ref(!settingsStore.playAnimations)
 const selectedPlayerGuid = ref(resultStore.gameSelfPlayer.guid)
 const resultsAnimationPending = ref(true)
 const { width: screenWidth } = useWindowSize()

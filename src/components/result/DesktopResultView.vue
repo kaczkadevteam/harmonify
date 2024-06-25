@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectVa
 import { Label } from '@/components/ui/label'
 import type { PlayedTrack as TPlayedTrack } from '@/types'
 import { cn } from '@/lib/utils'
+import { useSettingsStore } from '@/stores'
 
 defineProps<{
   selectablePlayers: {
@@ -30,6 +31,8 @@ const emit = defineEmits<{
   quitGame: []
 }>()
 
+const settingsStore = useSettingsStore()
+
 const selectedPlayer = defineModel<string>()
 
 const gameResultsEl = ref<HTMLDivElement | null>(null)
@@ -38,6 +41,9 @@ const windowDimensions = useWindowSize()
 const startingTransform = ref('')
 
 onMounted(() => {
+  if (!settingsStore.playAnimations)
+    return
+
   const windowMiddleX = windowDimensions.width.value / 2
   const windowMiddleY = windowDimensions.height.value / 2
 
@@ -88,9 +94,9 @@ onMounted(() => {
     <div class="col-start-2 h-full max-h-full self-start">
       <GameResults
         ref="gameResultsEl"
-        :class="cn('max-h-full', true && 'game-results', !resultsAnimationPending && 'game-results-animation')"
+        :class="cn('max-h-full', settingsStore.playAnimations && 'game-results', !resultsAnimationPending && 'game-results-animation')"
         :is-desktop
-        animate
+        :animate="settingsStore.playAnimations"
         @animation-finished="emit('animationFinished')"
       />
     </div>

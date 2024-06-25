@@ -2,6 +2,7 @@ export const LOCAL_STORAGE = {
   VOLUME: 'volume',
   AUTOPLAY: 'autoplay',
   NICKNAME: 'nickname',
+  PLAY_ANIMATIONS: 'play_animations',
 } as const
 
 export enum AnimationDuration {

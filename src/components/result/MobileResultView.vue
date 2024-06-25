@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button'
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Label } from '@/components/ui/label'
 import type { PlayedTrack as TPlayedTrack } from '@/types'
+import { useSettingsStore } from '@/stores'
 
 defineProps<{
   selectablePlayers: {
@@ -27,6 +28,7 @@ const emit = defineEmits<{
   quitGame: []
 }>()
 
+const settingsStore = useSettingsStore()
 const selectedPlayer = defineModel<string>()
 </script>
 
@@ -49,7 +51,7 @@ const selectedPlayer = defineModel<string>()
       <TabsContent value="leaderboard" class="h-[60vh] max-h-[60vh] border" force-mount>
         <GameResults
           :is-desktop
-          animate
+          :animate="settingsStore.playAnimations"
           @animation-finished="emit('animationFinished')"
         />
       </TabsContent>
