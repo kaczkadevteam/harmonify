@@ -18,9 +18,11 @@ const settingsStore = useSettingsStore()
       </Button>
     </SheetTrigger>
     <SheetContent>
-      <SheetHeader class="mb-2">
+      <SheetHeader>
         <SheetTitle>Settings</SheetTitle>
-        <div class="mt-2 grid grid-cols-[min-content_minmax(0,1fr)] items-center gap-4">
+      </SheetHeader>
+      <div class="mt-4 space-y-6">
+        <div class="grid grid-cols-[min-content_minmax(0,1fr)] items-center gap-4">
           <Label>Autoplay</Label>
           <Select v-model:model-value="settingsStore.autoplay">
             <SelectTrigger>
@@ -41,11 +43,11 @@ const settingsStore = useSettingsStore()
             </SelectContent>
           </Select>
         </div>
-        <div class="mt-2 grid grid-cols-[min-content_minmax(0,1fr)] items-center gap-4">
+        <div class="grid grid-cols-[min-content_minmax(0,1fr)] items-center gap-4">
           <Label class="text-nowrap">Play animations</Label>
           <Switch :checked="settingsStore.playAnimations" @update:checked="settingsStore.playAnimations = !settingsStore.playAnimations" />
         </div>
-      </SheetHeader>
+      </div>
     </SheetContent>
   </Sheet>
 </template>
