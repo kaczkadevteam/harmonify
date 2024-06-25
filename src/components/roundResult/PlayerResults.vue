@@ -2,7 +2,7 @@
 import { computed } from 'vue'
 import { useTimeout } from '@vueuse/core'
 import PlayerResult from './PlayerResult.vue'
-import { useResultStore } from '@/stores'
+import { useResultStore, useSettingsStore } from '@/stores'
 
 const props = defineProps<{
   /**
@@ -12,10 +12,11 @@ const props = defineProps<{
 }>()
 
 const resultStore = useResultStore()
+const settingsStore = useSettingsStore()
 
 const showCurrentScore = useTimeout(1000)
 const playerResults = computed(() => {
-  const results = showCurrentScore.value
+  const results = showCurrentScore.value || !settingsStore.playAnimations
     ? resultStore.round.players
     : resultStore.round.previousPlayerScores
 
@@ -35,9 +36,9 @@ const isFirstRound = computed(() => resultStore.round.previousPlayerScores.lengt
     <PlayerResult
       v-for="playerResult in playerResults"
       :key="playerResult.guid"
-      :animation="isFirstRound && { duration: `1s` }"
+      :animation="isFirstRound && settingsStore.playAnimations && { duration: `1s` }"
       :player-result
-      :display-guess-level="showCurrentScore"
+      :display-guess-level="showCurrentScore || !settingsStore.playAnimations"
     />
   </TransitionGroup>
 </template>
