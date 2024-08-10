@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import { ChevronLeft, ChevronRight } from 'lucide-vue-next'
+import { computed, ref } from 'vue'
+import type { COVERS_KEYS } from '@/consts'
 import { COVERS } from '@/consts'
 import CircularText from '@/components/coverCreator/CircularText.vue'
 import { cn } from '@/lib/utils'
@@ -8,7 +11,22 @@ const cssSize = `${size}px`
 const centerX = size / 2
 const centerY = size
 
-const currentTrack = COVERS.tv1
+const currentTrackIndex = ref(1)
+const currentTrack = computed(() => COVERS[(Object.keys(COVERS) as COVERS_KEYS[])[currentTrackIndex.value]])
+
+function selectNextCover() {
+  if (currentTrackIndex.value === Object.keys(COVERS).length - 1)
+    currentTrackIndex.value = 0
+  else
+    currentTrackIndex.value++
+}
+
+function selectPrevCover() {
+  if (currentTrackIndex.value === 0)
+    currentTrackIndex.value = Object.keys(COVERS).length - 1
+  else
+    currentTrackIndex.value--
+}
 </script>
 
 <template>
@@ -58,6 +76,12 @@ const currentTrack = COVERS.tv1
         text="MOVIES"
         :offset-correction="-10"
       />
+      <div class="grid w-20 cursor-pointer place-items-center bg-black/60 opacity-0 transition-all duration-300 hover:opacity-100" @click="selectPrevCover">
+        <ChevronLeft class="size-10" />
+      </div>
+      <div class="grid w-20 cursor-pointer place-items-center justify-self-end bg-black/60 opacity-0 transition-all duration-300 hover:opacity-100" @click="selectNextCover">
+        <ChevronRight class="size-10" />
+      </div>
     </div>
   </div>
 </template>

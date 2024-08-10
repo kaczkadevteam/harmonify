@@ -20,18 +20,7 @@ export enum Breakpoint {
   LG = 1024,
 }
 
-export const COVERS: Record<string, {
-  hue: number
-  saturation: number
-  lightness: number
-  title: string
-  titleOffset?: number
-  subtitle: string
-  subtitleOffset?: number
-  example: string
-  exampleOffset?: number
-  lightnessOffset?: number
-}> = {
+const COVERS_BASE = {
   superheroes1: {
     hue: 0, // red-700
     saturation: 74,
@@ -196,3 +185,18 @@ export const COVERS: Record<string, {
     example: 'You really think I will tell you?',
   },
 }
+
+export type COVERS_KEYS = keyof typeof COVERS_BASE
+
+export const COVERS: Record<COVERS_KEYS, {
+  hue: number
+  saturation: number
+  lightness: number
+  title: string
+  titleOffset?: number
+  subtitle: string
+  subtitleOffset?: number
+  example: string
+  exampleOffset?: number
+  lightnessOffset?: number
+}> = COVERS_BASE
