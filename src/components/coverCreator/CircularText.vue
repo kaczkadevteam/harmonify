@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { type SVGAttributes, computed, ref, watchEffect } from 'vue'
+import { computed, ref, watchEffect } from 'vue'
 
-export interface CircularTextProps extends SVGAttributes {
+export interface CircularTextProps {
   centerX: number
   centerY: number
   radius: number
@@ -9,7 +9,7 @@ export interface CircularTextProps extends SVGAttributes {
   fontSize: number
   offsetCorrection?: number
   text: string
-  id: string
+  pathId: string
 }
 
 const props = defineProps<CircularTextProps>()
@@ -28,15 +28,15 @@ watchEffect(() => {
 <template>
   <svg v-bind="props" :style="{ width: sizeCSS, height: sizeCSS }" :viewBox="`0 0 ${size} ${size}`" xmlns="http://www.w3.org/2000/svg">
     <path
-      :id="id"
+      :id="`${pathId}`"
       fill="none"
       :d="`
         M ${centerX - radius}, ${centerY}
         a ${radius}, ${radius} 0 1, 1 ${2 * radius}, 0
         a ${radius}, ${radius} 0 1, 1 ${-2 * radius}, 0`"
     />
-    <text id="text" :fontSize="fontSize" fill="currentColor">
-      <textPath id="textPath" ref="textPathRef" :href="`#${id}`" :startOffset="offsetTextToBeInTheMiddle">{{ text }}</textPath>
+    <text id="text" fill="currentColor" :style="{ fontSize: `${fontSize}px` }">
+      <textPath :id="`textPath${pathId}`" ref="textPathRef" :href="`#${pathId}`" :startOffset="offsetTextToBeInTheMiddle">{{ text }}</textPath>
     </text>
   </svg>
 </template>
