@@ -38,6 +38,11 @@ const router = createRouter({
       ],
     },
     {
+      path: '/cover',
+      name: 'cover',
+      component: () => import(`@/views/CoverCreatorView.vue`),
+    },
+    {
       path: '/disclaimer',
       name: 'disclaimer',
       component: () => import(`@/views/DisclaimerView.vue`),
