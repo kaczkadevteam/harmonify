@@ -69,7 +69,7 @@ const currentTrack = COVERS.tv1
   --h: v-bind('currentTrack.hue');
   --s: v-bind('currentTrack.saturation');
   --l: v-bind('`${currentTrack.lightness}%`');
-  --lightness-offset: v-bind('`${currentTrack.lightnessOffset}%`');
+  --lightness-offset: v-bind('`${currentTrack.lightnessOffset ?? 0}%`');
 }
 
 .outer-background {
@@ -77,10 +77,10 @@ const currentTrack = COVERS.tv1
   --pattern-color: hsl(var(--h) var(--s) calc(var(--l) + 10%));
   --pattern-color-2: hsl(var(--h) var(--s) calc(var(--l) + 5%));
   --secondary-color: hsl(
-    var(--h) var(--s) calc(var(--l) - 10% + var(--lightness-offset, 0))
+    var(--h) var(--s) calc(var(--l) - 10% + var(--lightness-offset))
   );
   --border-color: hsl(
-    var(--h) var(--s) calc(var(--l) - 12% + var(--lightness-offset, 0))
+    var(--h) var(--s) calc(var(--l) - 12% + var(--lightness-offset))
   );
   --muted-color: hsl(var(--h) var(--s) 90%);
 
