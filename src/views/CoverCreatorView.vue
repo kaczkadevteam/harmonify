@@ -1,17 +1,18 @@
 <script setup lang="ts">
 import { COVERS } from '@/consts'
 import CircularText from '@/components/coverCreator/CircularText.vue'
+import { cn } from '@/lib/utils'
 
 const size = 800
 const cssSize = `${size}px`
 const centerX = size / 2
 const centerY = size
 
-const currentTrack = COVERS.animated
+const currentTrack = COVERS.tv1
 </script>
 
 <template>
-  <div class="outer-base outer-background">
+  <div :class="cn('outer-base', currentTrack.title === COVERS.memes.title ? 'outer-meme-background' : 'outer-background')">
     <div class="inner grid size-full justify-center overflow-hidden font-sans *:col-start-1 *:row-start-1">
       <CircularText
         path-id="title"
@@ -93,6 +94,23 @@ const currentTrack = COVERS.animated
     var(--pattern-color) 220deg,
     var(--primary-color) 240deg
   );
+}
+
+.outer-meme-background {
+  --primary-color: hsl(var(--h) var(--s) var(--l));
+  --pattern-color: hsl(calc(var(--h) + 240) var(--s) var(--l));
+  --pattern-color-2: hsl(var(--h) var(--s) calc(var(--l) + 5%));
+  --secondary-color: hsl(0deg 0% 0% / 35%);
+  --border-color: hsl(0deg 0% 0% / 60%);
+  --muted-color: #d9f99d;
+
+  background:
+    url('@/assets/pepe.png') 50% 60% / 50%,
+    conic-gradient(
+      from 180deg at bottom in hsl longer hue,
+      var(--primary-color) 90deg,
+      var(--pattern-color) 270deg
+    );
 }
 
 .inner {
