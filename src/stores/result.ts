@@ -52,8 +52,6 @@ export const useResultStore = defineStore('result', {
       }
     },
     setGameResult(data: EndGameResultsDto) {
-      console.log(new Set(data.tracks.map(t => t.uri)).size)
-
       this.game = {
         ...data,
         players: [...data.players].sort((a, b) => b.score - a.score),
