@@ -87,7 +87,7 @@ function connectToSpotify() {
           <p v-if="passwordError" class="-mb-3 text-base font-normal text-destructive">
             {{ passwordError }}
           </p>
-          <Input v-model="password" type="text" placeholder="(WIP) Password, leave blank for none" @focus="passwordError = ''" />
+          <Input v-model="password" type="text" placeholder="(WIP) Password, leave blank for none" class="invisible" @focus="passwordError = ''" />
           <Button type="submit">
             Create room
           </Button>
