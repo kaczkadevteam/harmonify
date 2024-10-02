@@ -52,7 +52,7 @@ export const simplifiedTrackObjectSchema = z.object({
   duration_ms: z.number(),
   name: z.string(),
   uri: z.string(),
-  preview_url: z.string().url().nullable(),
+  preview_url: z.string().url().nullable().optional(),
 })
 export type SimplifiedTrackObject = z.infer<typeof simplifiedTrackObjectSchema>
 
@@ -86,7 +86,7 @@ export const selectablePlaylistSchema = simplePlaylistObjectSchema.extend({
 })
 export type SelectablePlaylist = z.infer<typeof selectablePlaylistSchema>
 
-export const selectableAlbumSchema = getAlbumSchema(trackSchema.extend({ preview_url: z.string().nullable() })).extend({
+export const selectableAlbumSchema = getAlbumSchema(trackSchema).extend({
   selected: z.boolean(),
 })
 export type SelectableAlbum = z.infer<typeof selectableAlbumSchema>
