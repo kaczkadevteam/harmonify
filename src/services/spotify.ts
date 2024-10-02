@@ -40,7 +40,7 @@ export async function getAlbums(access_token: string, router: Router): Promise<S
     return {
       ...a,
       tracks: {
-        items: (a.tracks.items = a.tracks.items.map((t) => {
+        items: (a.tracks.items = (a.tracks.items.filter(t => !!t.preview_url) as Track[]).map((t) => {
           return {
             ...t,
             album: { name: a.name, images: a.images },
@@ -56,7 +56,7 @@ export async function getAlbums(access_token: string, router: Router): Promise<S
 
 export async function getTracksFromFavourites(access_token: string, router: Router): Promise<Track[]> {
   return (await getAllPaginatedItems(
-    'https://api.spotify.com/v1/me/tracks?fields=next,items(track(album.images,artists(name,id),duration_ms,name,uri,is_local))&limit=50',
+    'https://api.spotify.com/v1/me/tracks?fields=next,total,items(track(album(name,images),artists(name,id),duration_ms,name,uri,is_local,preview_url))&limit=50',
     access_token,
     router,
     z.union([
