@@ -11,6 +11,7 @@ const { playing, currentTime, volume } = useMediaControls(audioEl)
 
 onMounted(() => {
   volume.value = musicPlayerStore.volume
+  musicPlayerStore.audioElement = audioEl.value
 })
 
 musicPlayerStore.player = {
@@ -37,5 +38,5 @@ musicPlayerStore.player = {
 </script>
 
 <template>
-  <audio ref="audioEl" :src />
+  <audio ref="audioEl" :src crossorigin="anonymous" />
 </template>
