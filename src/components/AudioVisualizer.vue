@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import AudioMotionAnalyzer from 'audiomotion-analyzer'
+import AudioMotionAnalyzer, { type ConstructorOptions as AudioMotionOptions } from 'audiomotion-analyzer'
 import { onMounted, onUnmounted, ref } from 'vue'
 import { useMusicPlayerStore } from '@/stores'
 
@@ -8,7 +8,27 @@ const musicPlayerStore = useMusicPlayerStore()
 const audioVisualizer = ref<AudioMotionAnalyzer>()
 
 onMounted(() => {
-  audioVisualizer.value = new AudioMotionAnalyzer(container.value!, { source: musicPlayerStore.audioSource ?? undefined })
+  const options: AudioMotionOptions = {
+    source: musicPlayerStore.audioSource ?? undefined,
+    mode: 6,
+    gradient: 'classic',
+    overlay: true,
+    showBgColor: false,
+    showPeaks: false,
+    fftSize: 16384,
+    smoothing: 0,
+    minDecibels: -75,
+    maxFreq: 16000,
+    showScaleX: false,
+  }
+
+  audioVisualizer.value = new AudioMotionAnalyzer(container.value!, options)
+  audioVisualizer.value.registerGradient('classic', {
+    bgColor: '#111',
+    colorStops: [
+      'hsla(38, 92%, 50%, 100%)',
+    ],
+  })
 })
 
 onUnmounted(() => {
