@@ -41,8 +41,11 @@ onMounted(() => {
 
   /* Let broken sound from previous round play silently before turning on visualizer */
   setTimeout(() => {
-    audioVisualizer.value!.start()
-    audioVisualizer.value!.volume = musicPlayerStore.volume
+    if (!audioVisualizer.value)
+      return
+
+    audioVisualizer.value.start()
+    audioVisualizer.value.volume = musicPlayerStore.volume
   }, 300)
 })
 
