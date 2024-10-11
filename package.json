@@ -20,6 +20,7 @@
     "@types/canvas-confetti": "^1.6.4",
     "@vueuse/core": "^10.9.0",
     "@vueuse/integrations": "^10.9.0",
+    "audiomotion-analyzer": "^4.5.0",
     "canvas-confetti": "^1.9.3",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",

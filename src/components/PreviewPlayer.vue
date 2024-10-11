@@ -6,11 +6,14 @@ import { useMusicPlayerStore } from '@/stores'
 const audioEl = ref<HTMLAudioElement | null>(null)
 const src = ref<string | undefined>()
 const musicPlayerStore = useMusicPlayerStore()
+const audioContext = ref(new AudioContext())
 
 const { playing, currentTime, volume } = useMediaControls(audioEl)
 
 onMounted(() => {
-  volume.value = musicPlayerStore.volume
+  // Volume is controlled by AudioVisualizer
+  volume.value = 1
+  musicPlayerStore.audioSource = audioContext.value.createMediaElementSource(audioEl.value!)
 })
 
 musicPlayerStore.player = {
@@ -30,12 +33,13 @@ musicPlayerStore.player = {
   async _resume() {
     playing.value = true
   },
-  async _setVolume(newVolume) {
-    volume.value = newVolume
+  async _setVolume(_newVolume) {
+    // Volume is controlled by AudioVisualizer
+    volume.value = 1
   },
 }
 </script>
 
 <template>
-  <audio ref="audioEl" :src />
+  <audio ref="audioEl" :src crossorigin="anonymous" />
 </template>

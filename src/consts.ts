@@ -3,6 +3,7 @@ export const LOCAL_STORAGE = {
   AUTOPLAY: 'autoplay',
   NICKNAME: 'nickname',
   PLAY_ANIMATIONS: 'play_animations',
+  DISPLAY_VISUALIZER: 'display_visualizer',
 } as const
 
 export enum AnimationDuration {
@@ -18,6 +19,8 @@ export enum Breakpoint {
   SM = 640,
   MD = 768,
   LG = 1024,
+  XL = 1280,
+  XL2 = 1536,
 }
 
 const COVERS_BASE = {
