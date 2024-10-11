@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import AudioMotionAnalyzer, { type ConstructorOptions as AudioMotionOptions } from 'audiomotion-analyzer'
-import { onMounted, onUnmounted, ref } from 'vue'
+import { nextTick, onMounted, onUnmounted, ref } from 'vue'
 import { useMusicPlayerStore } from '@/stores'
 
 const container = ref<HTMLDivElement | null>(null)
@@ -20,7 +20,8 @@ onMounted(() => {
     minDecibels: -75,
     maxFreq: 16000,
     showScaleX: false,
-    volume: musicPlayerStore.volume,
+    volume: 0,
+    start: false,
   }
 
   audioVisualizer.value = new AudioMotionAnalyzer(container.value!, options)
@@ -30,6 +31,12 @@ onMounted(() => {
       'hsla(38, 92%, 50%, 100%)',
     ],
   })
+
+  /* Let broken sound from previous round play silently before turning on visualizer */
+  setTimeout(() => {
+    audioVisualizer.value!.start()
+    audioVisualizer.value!.volume = musicPlayerStore.volume
+  }, 300)
 })
 
 musicPlayerStore.$subscribe((_, state) => {
@@ -37,7 +44,7 @@ musicPlayerStore.$subscribe((_, state) => {
     audioVisualizer.value.volume = state.volume
 })
 
-onUnmounted(() => {
+onUnmounted(async () => {
   audioVisualizer.value?.destroy()
 })
 </script>
