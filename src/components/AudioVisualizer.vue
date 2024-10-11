@@ -20,6 +20,7 @@ onMounted(() => {
     minDecibels: -75,
     maxFreq: 16000,
     showScaleX: false,
+    volume: musicPlayerStore.volume,
   }
 
   audioVisualizer.value = new AudioMotionAnalyzer(container.value!, options)
@@ -29,6 +30,11 @@ onMounted(() => {
       'hsla(38, 92%, 50%, 100%)',
     ],
   })
+})
+
+musicPlayerStore.$subscribe((_, state) => {
+  if (audioVisualizer.value)
+    audioVisualizer.value.volume = state.volume
 })
 
 onUnmounted(() => {

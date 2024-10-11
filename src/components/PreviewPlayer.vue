@@ -11,7 +11,8 @@ const audioContext = ref(new AudioContext())
 const { playing, currentTime, volume } = useMediaControls(audioEl)
 
 onMounted(() => {
-  volume.value = musicPlayerStore.volume
+  // Volume is controlled by AudioVisualizer
+  volume.value = 1
   musicPlayerStore.audioSource = audioContext.value.createMediaElementSource(audioEl.value!)
 })
 
@@ -32,8 +33,9 @@ musicPlayerStore.player = {
   async _resume() {
     playing.value = true
   },
-  async _setVolume(newVolume) {
-    volume.value = newVolume
+  async _setVolume(_newVolume) {
+    // Volume is controlled by AudioVisualizer
+    volume.value = 1
   },
 }
 </script>
