@@ -6,12 +6,13 @@ import { useMusicPlayerStore } from '@/stores'
 const audioEl = ref<HTMLAudioElement | null>(null)
 const src = ref<string | undefined>()
 const musicPlayerStore = useMusicPlayerStore()
+const audioContext = ref(new AudioContext())
 
 const { playing, currentTime, volume } = useMediaControls(audioEl)
 
 onMounted(() => {
   volume.value = musicPlayerStore.volume
-  musicPlayerStore.audioElement = audioEl.value
+  musicPlayerStore.audioSource = audioContext.value.createMediaElementSource(audioEl.value!)
 })
 
 musicPlayerStore.player = {

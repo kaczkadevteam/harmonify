@@ -8,7 +8,7 @@ const musicPlayerStore = useMusicPlayerStore()
 const audioVisualizer = ref<AudioMotionAnalyzer>()
 
 onMounted(() => {
-  audioVisualizer.value = new AudioMotionAnalyzer(container.value!, { source: musicPlayerStore.audioElement ?? undefined })
+  audioVisualizer.value = new AudioMotionAnalyzer(container.value!, { source: musicPlayerStore.audioSource ?? undefined })
 })
 
 onUnmounted(() => {

@@ -10,7 +10,7 @@ export const useMusicPlayerStore = defineStore('musicPlayer', {
      */
     player?: MusicPlayer
     volume: RemovableRef<number>
-    audioElement?: HTMLAudioElement | null
+    audioSource?: AudioNode | null
   } => {
     return {
       volume: useStorage(LOCAL_STORAGE.VOLUME, 0.05),
