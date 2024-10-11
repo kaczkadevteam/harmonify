@@ -2,11 +2,13 @@
 import AudioMotionAnalyzer, { type ConstructorOptions as AudioMotionOptions } from 'audiomotion-analyzer'
 import { onMounted, onUnmounted, ref, watch } from 'vue'
 import { useWindowSize } from '@vueuse/core'
-import { useMusicPlayerStore } from '@/stores'
+import { useMusicPlayerStore, useSettingsStore } from '@/stores'
 import { Breakpoint } from '@/consts'
+import { cn } from '@/lib/utils'
 
 const container = ref<HTMLDivElement | null>(null)
 const musicPlayerStore = useMusicPlayerStore()
+const settingsStore = useSettingsStore()
 const audioVisualizer = ref<AudioMotionAnalyzer>()
 const { width: screenWidth } = useWindowSize()
 
@@ -71,5 +73,5 @@ function getModeForWidth(width: number) {
 </script>
 
 <template>
-  <div ref="container" />
+  <div ref="container" :class="cn(!settingsStore.displayVisualizer && 'hidden')" />
 </template>
