@@ -22,11 +22,13 @@ onMounted(() => {
     showPeaks: false,
     fftSize: 16384,
     smoothing: 0,
-    minDecibels: -75,
+    minDecibels: -80,
     maxFreq: 16000,
     showScaleX: false,
     volume: 0,
     start: false,
+    channelLayout: 'dual-horizontal',
+    mirror: -1,
   }
 
   audioVisualizer.value = new AudioMotionAnalyzer(container.value!, options)
@@ -62,13 +64,13 @@ onUnmounted(async () => {
 
 function getModeForWidth(width: number) {
   if (width <= Breakpoint.SM)
-    return 7
+    return 8
   else if (width <= Breakpoint.MD)
-    return 6
+    return 7
   else if (width <= Breakpoint.XL2)
-    return 5
+    return 6
   else
-    return 4
+    return 5
 }
 </script>
 
