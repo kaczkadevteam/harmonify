@@ -63,7 +63,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="grid grid-rows-[auto_100px]">
+  <div class="grid grid-rows-[auto_15vh]">
     <div class="grid grid-cols-2 place-content-center place-items-center gap-x-40 gap-y-10 self-start p-4 md:mb-60 md:mt-4 md:self-center md:justify-self-center md:p-0">
       <span class=" justify-self-start text-xl">Round: {{ gameDataStore.round }}</span>
 
