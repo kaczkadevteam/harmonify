@@ -1,16 +1,19 @@
 <script setup lang="ts">
 import AudioMotionAnalyzer, { type ConstructorOptions as AudioMotionOptions } from 'audiomotion-analyzer'
-import { nextTick, onMounted, onUnmounted, ref } from 'vue'
+import { onMounted, onUnmounted, ref, watch } from 'vue'
+import { useWindowSize } from '@vueuse/core'
 import { useMusicPlayerStore } from '@/stores'
+import { Breakpoint } from '@/consts'
 
 const container = ref<HTMLDivElement | null>(null)
 const musicPlayerStore = useMusicPlayerStore()
 const audioVisualizer = ref<AudioMotionAnalyzer>()
+const { width: screenWidth } = useWindowSize()
 
 onMounted(() => {
   const options: AudioMotionOptions = {
     source: musicPlayerStore.audioSource ?? undefined,
-    mode: 6,
+    mode: getModeForWidth(screenWidth.value),
     gradient: 'classic',
     overlay: true,
     showBgColor: false,
@@ -39,6 +42,13 @@ onMounted(() => {
   }, 300)
 })
 
+watch(screenWidth, (newWidth) => {
+  if (!audioVisualizer.value)
+    return
+
+  audioVisualizer.value.mode = getModeForWidth(newWidth)
+})
+
 musicPlayerStore.$subscribe((_, state) => {
   if (audioVisualizer.value)
     audioVisualizer.value.volume = state.volume
@@ -47,6 +57,17 @@ musicPlayerStore.$subscribe((_, state) => {
 onUnmounted(async () => {
   audioVisualizer.value?.destroy()
 })
+
+function getModeForWidth(width: number) {
+  if (width <= Breakpoint.SM)
+    return 7
+  else if (width <= Breakpoint.MD)
+    return 6
+  else if (width <= Breakpoint.XL2)
+    return 5
+  else
+    return 4
+}
 </script>
 
 <template>
