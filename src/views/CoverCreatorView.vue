@@ -6,6 +6,7 @@ import { COVERS } from '@/consts'
 import Cover from '@/components/coverCreator/Cover.vue'
 
 const size = 800
+const cssSize = `${size}px`
 const centerX = size / 2
 const centerY = size
 
@@ -50,7 +51,7 @@ function selectPrevCover() {
 </script>
 
 <template>
-  <div class="grid w-[800px] *:col-start-1 *:row-start-1">
+  <div :class="`grid w-[${cssSize}] *:col-start-1 *:row-start-1`">
     <Cover
       :base-color="currentTrack.color"
       :size
