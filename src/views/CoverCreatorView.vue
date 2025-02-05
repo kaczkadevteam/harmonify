@@ -7,65 +7,57 @@ import Cover from '@/components/coverCreator/Cover.vue'
 
 const size = 800
 const cssSize = `${size}px`
-const centerX = size / 2
-const centerY = size
 
-const currentTrackIndex = ref(1)
-const currentTrack = computed(() => {
-  const keys = Object.keys(COVERS) as COVERS_KEYS[]
-  const track = COVERS[keys[currentTrackIndex.value]]
+const covers = Object.entries(COVERS).map(([key, value]) => {
   return {
+    name: key,
     color: {
-      hue: track.hue,
-      saturation: track.saturation,
-      lightness: track.lightness,
+      hue: value.hue,
+      saturation: value.saturation,
+      lightness: value.lightness,
     },
     title: {
-      value: track.title,
-      offsetCorrection: track.titleOffset,
+      value: value.title,
+      offsetCorrection: value.titleOffset,
     },
     subtitle: {
-      value: track.subtitle,
-      offsetCorrection: track.subtitleOffset,
+      value: value.subtitle,
+      offsetCorrection: value.subtitleOffset,
     },
     example: {
-      value: track.example,
-      offsetCorrection: track.exampleOffset,
+      value: value.example,
+      offsetCorrection: value.exampleOffset,
     },
   }
 })
 
-function selectNextCover() {
-  if (currentTrackIndex.value === Object.keys(COVERS).length - 1)
-    currentTrackIndex.value = 0
-  else
-    currentTrackIndex.value++
-}
+const currentCover = ref(covers[0])
 
-function selectPrevCover() {
-  if (currentTrackIndex.value === 0)
-    currentTrackIndex.value = Object.keys(COVERS).length - 1
-  else
-    currentTrackIndex.value--
+function setCover(index: number) {
+  currentCover.value = covers[index]
 }
 </script>
 
 <template>
+  <div class="flex gap-2">
+    <Cover
+      v-for="cover, idx of covers"
+      :key="idx"
+      :size="100"
+      :base-color="cover.color"
+      :title="cover.title"
+      :subtitle="cover.subtitle"
+      :example="cover.example"
+      @click="setCover(idx)"
+    />
+  </div>
   <div :class="`grid w-[${cssSize}] *:col-start-1 *:row-start-1`">
     <Cover
-      :base-color="currentTrack.color"
       :size
-      :center-x
-      :center-y
-      :title="currentTrack.title"
-      :subtitle="currentTrack.subtitle"
-      :example="currentTrack.example"
+      :base-color="currentCover.color"
+      :title="currentCover.title"
+      :subtitle="currentCover.subtitle"
+      :example="currentCover.example"
     />
-    <div class="grid w-20 cursor-pointer place-items-center bg-black/60 opacity-0 transition-all duration-300 hover:opacity-100" @click="selectPrevCover">
-      <ChevronLeft class="size-10" />
-    </div>
-    <div class="grid w-20 cursor-pointer place-items-center justify-self-end bg-black/60 opacity-0 transition-all duration-300 hover:opacity-100" @click="selectNextCover">
-      <ChevronRight class="size-10" />
-    </div>
   </div>
 </template>

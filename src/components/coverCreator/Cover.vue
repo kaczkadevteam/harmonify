@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts">
 import { computed } from 'vue'
 import type { CurvedText } from './CircularText.vue'
 import CircularText from './CircularText.vue'
@@ -9,60 +9,80 @@ export interface HslColor {
   lightness: number
 }
 
+// TODO: Think if this is a good idea
+let id = 0
+function getId() {
+  return id++
+}
+</script>
+
+<script setup lang="ts">
 const props = defineProps<{
   baseColor: HslColor
   size: number
-  centerX: number
-  centerY: number
   title: CurvedText
   subtitle: CurvedText
   example: CurvedText
 }>()
 
 const cssSize = computed(() => `${props.size}px`)
+const centerX = computed(() => props.size / 2)
+const centerY = computed(() => props.size)
+const radiuses = computed(() => ({
+  title: props.size * 0.8125,
+  subtitle: props.size * 0.6,
+  example: props.size * 0.35,
+  type: props.size * 0.1,
+}))
+const fontSizes = computed(() => ({
+  title: props.size * 0.1125,
+  subtitle: props.size * 0.05,
+  example: props.size * 0.045,
+  type: props.size * 0.04,
+}))
 </script>
 
 <template>
   <div class="outer-base outer-background">
     <div class="inner grid size-full justify-center overflow-hidden font-sans *:col-start-1 *:row-start-1">
       <CircularText
-        path-id="title"
+        :path-id="`title${getId()}`"
         class="font-bold"
         :size="size"
         :center-x="centerX"
         :center-y="centerY"
-        :radius="650"
-        :font-size="90"
+        :radius="radiuses.title"
+        :font-size="fontSizes.title"
         :text="title"
       />
       <CircularText
-        path-id="subtitle"
+        :path-id="`subtitle${getId()}`"
         class="font-bold italic text-white/80"
         :size="size"
         :center-x="centerX"
         :center-y="centerY"
-        :radius="480"
-        :font-size="40"
+        :radius="radiuses.subtitle"
+        :font-size="fontSizes.subtitle"
         :text="subtitle"
       />
       <CircularText
-        path-id="example"
+        :path-id="`example${getId()}`"
         class="font-bold italic text-white/80"
         :size="size"
         :center-x="centerX"
         :center-y="centerY"
-        :radius="280"
-        :font-size="36"
+        :radius="radiuses.example"
+        :font-size="fontSizes.example"
         :text="example"
       />
       <CircularText
-        path-id="type"
+        :path-id="`type${getId()}`"
         class="font-bold"
         :size="size"
         :center-x="centerX"
         :center-y="centerY"
-        :radius="80"
-        :font-size="32"
+        :radius="radiuses.type"
+        :font-size="fontSizes.type"
         :text="{
           value: 'MOVIES',
           offsetCorrection: -10,
