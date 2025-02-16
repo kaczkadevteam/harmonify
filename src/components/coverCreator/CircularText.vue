@@ -18,7 +18,6 @@ export interface CircularTextProps {
 
 const props = defineProps<CircularTextProps>()
 
-const sizeCSS = computed(() => `${props.size}px`)
 const offsetToCenterTopOfCircle = computed(() => (Math.PI * 2 * props.radius) / 4)
 const offsetTextToBeInTheMiddle = computed(() => (offsetToCenterTopOfCircle.value - props.text.value.length * props.fontSize / 3.7) + (props.text.offsetCorrection ?? 0))
 const textPathRef = ref<SVGTextPathElement | null>(null)
@@ -30,7 +29,7 @@ watchEffect(() => {
 </script>
 
 <template>
-  <svg v-bind="props" :style="{ width: sizeCSS, height: sizeCSS }" :viewBox="`0 0 ${size} ${size}`" xmlns="http://www.w3.org/2000/svg">
+  <svg v-bind="props" class="size-full" :viewBox="`0 0 ${size} ${size}`" xmlns="http://www.w3.org/2000/svg">
     <path
       :id="`${pathId}`"
       fill="none"

@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import { COVERS } from '@/consts'
 import Cover from '@/components/coverCreator/Cover.vue'
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area'
+import { Slider } from '@/components/ui/slider'
 
-const size = 800
-const cssSize = `${size}px`
+const sizes = ref([200])
+const size = computed(() => sizes.value[0])
 
 const covers = Object.entries(COVERS).map(([key, value]) => {
   return {
@@ -17,15 +18,15 @@ const covers = Object.entries(COVERS).map(([key, value]) => {
     },
     title: {
       value: value.title,
-      offsetCorrection: value.titleOffset,
+      offsetCorrection: (value.titleOffset ?? 0) * size.value / 800, // TODO: make offset value 0 to 1, or -1 to 1 and multiply it by size
     },
     subtitle: {
       value: value.subtitle,
-      offsetCorrection: value.subtitleOffset,
+      offsetCorrection: (value.titleOffset ?? 0) * size.value / 800,
     },
     example: {
       value: value.example,
-      offsetCorrection: value.exampleOffset,
+      offsetCorrection: (value.exampleOffset ?? 0) * size.value / 800,
     },
   }
 })
@@ -44,7 +45,6 @@ function setCover(index: number) {
         <Cover
           v-for="cover, idx of covers"
           :key="idx"
-          :size="100"
           :base-color="cover.color"
           :title="cover.title"
           :subtitle="cover.subtitle"
@@ -54,14 +54,14 @@ function setCover(index: number) {
       </div>
       <ScrollBar orientation="horizontal" />
     </ScrollArea>
-    <div :class="`grid w-[${cssSize}] *:col-start-1 *:row-start-1`">
+    <div class="grid *:col-start-1 *:row-start-1" :style="{ width: `${size}px`, height: `${size}px` }">
       <Cover
-        :size
         :base-color="currentCover.color"
         :title="currentCover.title"
         :subtitle="currentCover.subtitle"
         :example="currentCover.example"
       />
     </div>
+    <Slider v-model:model-value="sizes" :min="200" :max="1000" :step="5" />
   </div>
 </template>

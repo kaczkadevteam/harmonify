@@ -1,5 +1,7 @@
 <script lang="ts">
-import { computed } from 'vue'
+import { watch } from 'node:fs'
+import { computed, ref, watchEffect } from 'vue'
+import { useElementSize } from '@vueuse/core'
 import type { CurvedText } from './CircularText.vue'
 import CircularText from './CircularText.vue'
 
@@ -17,33 +19,33 @@ function getId() {
 </script>
 
 <script setup lang="ts">
-const props = defineProps<{
+defineProps<{
   baseColor: HslColor
-  size: number
   title: CurvedText
   subtitle: CurvedText
   example: CurvedText
 }>()
 
-const cssSize = computed(() => `${props.size}px`)
-const centerX = computed(() => props.size / 2)
-const centerY = computed(() => props.size)
+const cover = ref<HTMLDivElement | null>(null)
+const { width: size } = useElementSize(cover)
+const centerX = computed(() => size.value / 2)
+const centerY = computed(() => size.value)
 const radiuses = computed(() => ({
-  title: props.size * 0.8125,
-  subtitle: props.size * 0.6,
-  example: props.size * 0.35,
-  type: props.size * 0.1,
+  title: size.value * 0.8125,
+  subtitle: size.value * 0.6,
+  example: size.value * 0.35,
+  type: size.value * 0.1,
 }))
 const fontSizes = computed(() => ({
-  title: props.size * 0.1125,
-  subtitle: props.size * 0.05,
-  example: props.size * 0.045,
-  type: props.size * 0.04,
+  title: size.value * 0.1125,
+  subtitle: size.value * 0.05,
+  example: size.value * 0.045,
+  type: size.value * 0.04,
 }))
 </script>
 
 <template>
-  <div class="outer-base outer-background">
+  <div ref="cover" class="outer-base outer-background">
     <div class="inner grid size-full justify-center overflow-hidden font-sans *:col-start-1 *:row-start-1">
       <CircularText
         :path-id="`title${getId()}`"
@@ -94,8 +96,10 @@ const fontSizes = computed(() => ({
 
 <style scoped>
 .outer-base {
-  width: v-bind(cssSize);
-  height: v-bind(cssSize);
+  width: 100%;
+  max-width: 100%;
+  max-height: 100%;
+  aspect-ratio: 1;
   --h: v-bind('baseColor.hue');
   --s: v-bind('baseColor.saturation');
   --l: v-bind('`${baseColor.lightness}%`');
