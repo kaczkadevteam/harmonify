@@ -19,7 +19,7 @@ export interface CircularTextProps {
 const props = defineProps<CircularTextProps>()
 
 const offsetToCenterTopOfCircle = computed(() => (Math.PI * 2 * props.radius) / 4)
-const offsetTextToBeInTheMiddle = computed(() => (offsetToCenterTopOfCircle.value - props.text.value.length * props.fontSize / 3.7) + (props.text.offsetCorrection ?? 0))
+const offsetTextToBeInTheMiddle = computed(() => (offsetToCenterTopOfCircle.value - props.text.value.length * props.fontSize / 3.7) + (props.text.offsetCorrection ?? 0) * props.size / 800)
 const textPathRef = ref<SVGTextPathElement | null>(null)
 
 watchEffect(() => {
