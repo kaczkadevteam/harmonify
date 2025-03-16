@@ -24,6 +24,7 @@
     "canvas-confetti": "^1.9.3",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
+    "color-convert": "^3.0.1",
     "lucide-vue-next": "^0.363.0",
     "pinia": "^2.1.7",
     "query-string": "^9.0.0",

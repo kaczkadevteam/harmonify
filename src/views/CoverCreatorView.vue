@@ -1,11 +1,14 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { type InputHTMLAttributes, computed, ref } from 'vue'
 import { ArrowLeft, Clipboard, Folder, Save } from 'lucide-vue-next'
 import { RouterLink } from 'vue-router'
+import convert from 'color-convert'
 import { COVERS } from '@/consts'
 import Cover from '@/components/coverCreator/Cover.vue'
 import { Button } from '@/components/ui/button'
 import CoversSheet from '@/components/coverCreator/CoversSheet.vue'
+import { Input as CNInput } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 
 const covers = Object.entries(COVERS).map(([key, value]) => {
   return {
@@ -31,6 +34,18 @@ const covers = Object.entries(COVERS).map(([key, value]) => {
 })
 
 const cover = ref(covers[0])
+const coverColorHex = computed(() => {
+  const hslColor = cover.value.color
+  return `#${convert.hsl.hex(hslColor.hue, hslColor.saturation, hslColor.lightness)}`
+})
+
+function onColorChange(event: Event) {
+  const hex = (event.target as InputHTMLAttributes).value
+  const [hue, saturation, lightness] = convert.hex.hsl(hex)
+  cover.value.color.hue = hue
+  cover.value.color.saturation = saturation
+  cover.value.color.lightness = lightness
+}
 
 function setCover(index: number) {
   cover.value = covers[index]
@@ -39,7 +54,7 @@ function setCover(index: number) {
 
 <template>
   <div class="p-4">
-    <form class="grid">
+    <div class="grid">
       <div class="flex gap-2">
         <div>
           <Button variant="ghost" size="icon" as-child>
@@ -63,6 +78,24 @@ function setCover(index: number) {
             <Clipboard />
           </Button>
         </div>
+      </div>
+    </div>
+    <form class="mt-2 grid gap-2">
+      <div class="grid w-fit justify-center">
+        <Label>Main color</Label>
+        <input type="color" class="w-full border-none bg-transparent" :value="coverColorHex" @input="onColorChange">
+      </div>
+      <div>
+        <Label>Title</Label>
+        <CNInput v-model="cover.title.value" />
+      </div>
+      <div>
+        <Label>Subtitle</Label>
+        <CNInput v-model="cover.subtitle.value" />
+      </div>
+      <div>
+        <Label>Example</Label>
+        <CNInput v-model="cover.example.value" />
       </div>
     </form>
   </div>
