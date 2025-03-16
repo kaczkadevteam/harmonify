@@ -1,3 +1,5 @@
+import type { CoverMetadata } from './types'
+
 export const LOCAL_STORAGE = {
   VOLUME: 'volume',
   AUTOPLAY: 'autoplay',
@@ -191,15 +193,4 @@ const COVERS_BASE = {
 
 export type COVERS_KEYS = keyof typeof COVERS_BASE
 
-export const COVERS: Record<COVERS_KEYS, {
-  hue: number
-  saturation: number
-  lightness: number
-  title: string
-  titleOffset?: number
-  subtitle: string
-  subtitleOffset?: number
-  example: string
-  exampleOffset?: number
-  lightnessOffset?: number
-}> = COVERS_BASE
+export const COVERS: Record<COVERS_KEYS, CoverMetadata> = COVERS_BASE

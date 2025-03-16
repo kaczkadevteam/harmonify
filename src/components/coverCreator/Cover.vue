@@ -4,12 +4,7 @@ import { computed, ref, watchEffect } from 'vue'
 import { useElementSize } from '@vueuse/core'
 import type { CurvedText } from './CircularText.vue'
 import CircularText from './CircularText.vue'
-
-export interface HslColor {
-  hue: number
-  saturation: number
-  lightness: number
-}
+import type { HslColor } from '@/types'
 
 // TODO: Think if this is a good idea
 let id = 0
@@ -87,7 +82,7 @@ const fontSizes = computed(() => ({
         :font-size="fontSizes.type"
         :text="{
           value: 'MOVIES',
-          offsetCorrection: -10,
+          offsetCorrection: -10 * size / 800,
         }"
       />
     </div>
@@ -96,7 +91,6 @@ const fontSizes = computed(() => ({
 
 <style scoped>
 .outer-base {
-  width: 100%;
   max-width: 100%;
   max-height: 100%;
   aspect-ratio: 1;
