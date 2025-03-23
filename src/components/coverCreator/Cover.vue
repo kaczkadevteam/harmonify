@@ -1,6 +1,6 @@
 <script lang="ts">
 import type { CurvedText } from './CircularText.vue'
-import { toRefs, useElementSize } from '@vueuse/core'
+import { toRefs } from '@vueuse/core'
 import convert from 'color-convert'
 import { computed, ref } from 'vue'
 import CircularText from './CircularText.vue'
@@ -22,8 +22,15 @@ const props = defineProps<{
   type: CurvedText
 }>()
 
+const ids = {
+  title: `title${getId()}`,
+  subtitle: `subtitle${getId()}`,
+  example: `example${getId()}`,
+  type: `type${getId()}`,
+}
 const cover = ref<HTMLDivElement | null>(null)
-const { width: size } = useElementSize(cover)
+
+const size = ref(100)
 const centerX = computed(() => size.value / 2)
 const centerY = computed(() => size.value)
 const radiuses = computed(() => ({
@@ -45,7 +52,7 @@ const [h, s, l] = toRefs(computed(() => convert.hex.hsl(props.baseColor)))
   <div ref="cover" class="outer-base outer-background">
     <div class="inner grid size-full justify-center overflow-hidden font-sans *:col-start-1 *:row-start-1">
       <CircularText
-        :path-id="`title${getId()}`"
+        :path-id="ids.title"
         class="font-bold"
         :size="size"
         :center-x="centerX"
@@ -55,7 +62,7 @@ const [h, s, l] = toRefs(computed(() => convert.hex.hsl(props.baseColor)))
         :text="title"
       />
       <CircularText
-        :path-id="`subtitle${getId()}`"
+        :path-id="ids.subtitle"
         class="font-bold italic text-white/80"
         :size="size"
         :center-x="centerX"
@@ -65,7 +72,7 @@ const [h, s, l] = toRefs(computed(() => convert.hex.hsl(props.baseColor)))
         :text="subtitle"
       />
       <CircularText
-        :path-id="`example${getId()}`"
+        :path-id="ids.example"
         class="font-bold italic text-white/80"
         :size="size"
         :center-x="centerX"
@@ -75,7 +82,7 @@ const [h, s, l] = toRefs(computed(() => convert.hex.hsl(props.baseColor)))
         :text="example"
       />
       <CircularText
-        :path-id="`type${getId()}`"
+        :path-id="ids.type"
         class="font-bold"
         :size="size"
         :center-x="centerX"
