@@ -1,6 +1,6 @@
-import process from 'node:process'
-import { Buffer } from 'node:buffer'
 import type { VercelResponse } from '@vercel/node'
+import { Buffer } from 'node:buffer'
+import process from 'node:process'
 import queryString from 'query-string'
 
 interface SpotifyAuthQuery {
@@ -34,8 +34,8 @@ export async function fetchSpotifyAuth(query: SpotifyAuthQuery) {
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
         'Authorization': `Basic ${Buffer.from(
-                      `${process.env.CLIENT_ID}:${process.env.CLIENT_SECRET}`,
-                  ).toString('base64')}`,
+          `${process.env.CLIENT_ID}:${process.env.CLIENT_SECRET}`,
+        ).toString('base64')}`,
       },
       body: queryString.stringify(query),
     },

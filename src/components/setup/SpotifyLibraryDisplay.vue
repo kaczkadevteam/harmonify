@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { Heart } from 'lucide-vue-next'
 import CheckableCard from '@/components/CheckableCard.vue'
 import { ScrollArea } from '@/components/ui/scroll-area'
-import { useSpotifyLibraryStore } from '@/stores'
 import { Skeleton } from '@/components/ui/skeleton'
+import { useSpotifyLibraryStore } from '@/stores'
+import { Heart } from 'lucide-vue-next'
 
 const spotifyLibraryStore = useSpotifyLibraryStore()
 

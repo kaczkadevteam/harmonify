@@ -1,13 +1,14 @@
 <script setup lang="ts">
-import { type HTMLAttributes, computed } from 'vue'
+import type { SwitchRootEmits, SwitchRootProps } from 'reka-ui'
+import type { HTMLAttributes } from 'vue'
+import { cn } from '@/lib/utils'
 import {
   SwitchRoot,
-  type SwitchRootEmits,
-  type SwitchRootProps,
+
   SwitchThumb,
   useForwardPropsEmits,
-} from 'radix-vue'
-import { cn } from '@/lib/utils'
+} from 'reka-ui'
+import { computed } from 'vue'
 
 const props = defineProps<SwitchRootProps & { class?: HTMLAttributes['class'] }>()
 
@@ -31,7 +32,9 @@ const forwarded = useForwardPropsEmits(delegatedProps, emits)
     )"
   >
     <SwitchThumb
-      :class="cn('pointer-events-none block h-5 w-5 rounded-full bg-background shadow-lg ring-0 transition-transform data-[state=checked]:translate-x-5 data-[state=unchecked]:translate-x-0')"
-    />
+      :class="cn('pointer-events-none block h-5 w-5 rounded-full bg-background shadow-lg ring-0 transition-transform data-[state=checked]:translate-x-5')"
+    >
+      <slot name="thumb" />
+    </SwitchThumb>
   </SwitchRoot>
 </template>

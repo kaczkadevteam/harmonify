@@ -1,17 +1,17 @@
 <script setup lang="ts">
-import { computed, onBeforeMount, onMounted, ref } from 'vue'
-import { useRouter } from 'vue-router'
-import { useWindowSize } from '@vueuse/core'
-import { cva } from 'class-variance-authority'
-import HostView from '@/components/setup/HostView.vue'
-import { useConnectionStore, useGameDataStore, useResultStore } from '@/stores'
 import LoadingCircle from '@/components/LoadingCircle.vue'
 import Player from '@/components/Player.vue'
-import { useToast } from '@/components/ui/toast/use-toast'
+import HostView from '@/components/setup/HostView.vue'
+import NicknameModal from '@/components/setup/NicknameModal.vue'
 import { ScrollArea } from '@/components/ui/scroll-area'
+import { useToast } from '@/components/ui/toast/use-toast'
 import { Breakpoint } from '@/consts'
 import { cn } from '@/lib/utils'
-import NicknameModal from '@/components/setup/NicknameModal.vue'
+import { useConnectionStore, useGameDataStore, useResultStore } from '@/stores'
+import { useWindowSize } from '@vueuse/core'
+import { cva } from 'class-variance-authority'
+import { computed, onBeforeMount, ref } from 'vue'
+import { useRouter } from 'vue-router'
 
 const router = useRouter()
 const resultStore = useResultStore()

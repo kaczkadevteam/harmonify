@@ -1,14 +1,15 @@
 <script setup lang="ts">
-import { type InputHTMLAttributes, computed, ref } from 'vue'
-import { ArrowLeft, Clipboard, Folder, Save } from 'lucide-vue-next'
-import { RouterLink } from 'vue-router'
-import convert from 'color-convert'
-import { COVERS } from '@/consts'
+import type { InputHTMLAttributes } from 'vue'
 import Cover from '@/components/coverCreator/Cover.vue'
-import { Button } from '@/components/ui/button'
 import CoversSheet from '@/components/coverCreator/CoversSheet.vue'
+import { Button } from '@/components/ui/button'
 import { Input as CNInput } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { COVERS } from '@/consts'
+import convert from 'color-convert'
+import { ArrowLeft, Clipboard, Save } from 'lucide-vue-next'
+import { computed, ref } from 'vue'
+import { RouterLink } from 'vue-router'
 
 const covers = Object.entries(COVERS).map(([key, value]) => {
   return {

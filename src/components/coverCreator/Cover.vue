@@ -1,10 +1,9 @@
 <script lang="ts">
-import { watch } from 'node:fs'
-import { computed, ref, watchEffect } from 'vue'
-import { useElementSize } from '@vueuse/core'
-import type { CurvedText } from './CircularText.vue'
-import CircularText from './CircularText.vue'
 import type { HslColor } from '@/types/'
+import type { CurvedText } from './CircularText.vue'
+import { useElementSize } from '@vueuse/core'
+import { computed, ref } from 'vue'
+import CircularText from './CircularText.vue'
 
 // TODO: Think if this is a good idea
 let id = 0
@@ -127,11 +126,7 @@ const fontSizes = computed(() => ({
 
   background:
     url('@/assets/pepe.png') 50% 60% / 50%,
-    conic-gradient(
-      from 180deg at bottom in hsl longer hue,
-      var(--primary-color) 90deg,
-      var(--pattern-color) 270deg
-    );
+    conic-gradient(from 180deg at bottom in hsl longer hue, var(--primary-color) 90deg, var(--pattern-color) 270deg);
 }
 
 .inner {

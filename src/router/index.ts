@@ -1,5 +1,6 @@
-import { type RouteLocationNormalized, createRouter, createWebHistory } from 'vue-router'
+import type { RouteLocationNormalized } from 'vue-router'
 import { useConnectionStore, useGameDataStore } from '@/stores'
+import { createRouter, createWebHistory } from 'vue-router'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -77,6 +78,7 @@ async function beforeGameEnter(to: RouteLocationNormalized) {
 
     return { name: 'setup', params: to.params }
   }
+  // eslint-disable-next-line unused-imports/no-unused-vars
   catch (e) {
     return { name: 'home' }
   }

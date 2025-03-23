@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import GuessLevelIcon from '../GuessLevelIcon.vue'
-import { GuessDisplay, TrackDisplay } from '@/components/trackDisplay'
 import type { PlayedTrack } from '@/types'
+import { GuessDisplay, TrackDisplay } from '@/components/trackDisplay'
+import GuessLevelIcon from '../GuessLevelIcon.vue'
 
 defineProps<{
   playedTrack: PlayedTrack

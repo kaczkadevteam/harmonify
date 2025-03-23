@@ -1,7 +1,8 @@
-import { defineStore } from 'pinia'
-import { type RemovableRef, useStorage } from '@vueuse/core'
 import type { MusicPlayData, MusicPlayer } from '@/types'
+import type { RemovableRef } from '@vueuse/core'
 import { LOCAL_STORAGE } from '@/consts'
+import { useStorage } from '@vueuse/core'
+import { defineStore } from 'pinia'
 
 export const useMusicPlayerStore = defineStore('musicPlayer', {
   state: (): {

@@ -1,5 +1,5 @@
-import process from 'node:process'
 import type { VercelRequest, VercelResponse } from '@vercel/node'
+import process from 'node:process'
 import { z } from 'zod'
 import { attachCookiesToResponse, fetchSpotifyAuth, redirectCallback } from './common.js'
 
@@ -52,6 +52,7 @@ export default async function handler(
         expires_in,
       ).redirect(new URL('/', baseURL).toString())
     }
+    // eslint-disable-next-line unused-imports/no-unused-vars
     catch (e) {
       return new Response('something went wrong', {
         status: 401,

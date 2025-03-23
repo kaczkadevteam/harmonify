@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { CircleUserRound } from 'lucide-vue-next'
-import NicknameForm from './NicknameForm.vue'
 import type { PlayerDto } from '@/types'
 import { cn } from '@/lib/utils'
+import { CircleUserRound } from 'lucide-vue-next'
+import NicknameForm from './NicknameForm.vue'
 
 withDefaults(defineProps<{
   isSelf: boolean

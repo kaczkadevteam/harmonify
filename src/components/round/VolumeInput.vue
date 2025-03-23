@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
-import { Volume, Volume1, Volume2, VolumeX } from 'lucide-vue-next'
-import { useElementHover } from '@vueuse/core'
-import { useMusicPlayerStore } from '@/stores'
+import { Button } from '@/components/ui/button'
 import { Slider } from '@/components/ui/slider'
 import { cn } from '@/lib/utils'
-import { Button } from '@/components/ui/button'
+import { useMusicPlayerStore } from '@/stores'
+import { useElementHover } from '@vueuse/core'
+import { Volume, Volume1, Volume2, VolumeX } from 'lucide-vue-next'
+import { computed, ref } from 'vue'
 
 const SCROLL_DELTA = -120
 const VOLUME_CHANGE_ON_SCROLL_TICK = 0.05

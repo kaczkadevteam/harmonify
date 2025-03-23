@@ -1,14 +1,14 @@
 <script setup lang="ts">
-import { useRouter } from 'vue-router'
-import { onBeforeMount, onMounted, ref, watch } from 'vue'
-import { useIntervalFn } from '@vueuse/core'
-import { Button } from '@/components/ui/button'
-import { useConnectionStore, useGameDataStore, useResultStore } from '@/stores'
-import SearchInput from '@/components/round/SearchInput.vue'
+import AudioVisualizer from '@/components/AudioVisualizer.vue'
 import CircularTimer from '@/components/round/CircularTimer.vue'
 import PlaybackControls from '@/components/round/PlaybackControls.vue'
+import SearchInput from '@/components/round/SearchInput.vue'
+import { Button } from '@/components/ui/button'
 import { useToast } from '@/components/ui/toast'
-import AudioVisualizer from '@/components/AudioVisualizer.vue'
+import { useConnectionStore, useGameDataStore, useResultStore } from '@/stores'
+import { useIntervalFn } from '@vueuse/core'
+import { onBeforeMount, onMounted, ref, watch } from 'vue'
+import { useRouter } from 'vue-router'
 
 const router = useRouter()
 const gameDataStore = useGameDataStore()
@@ -64,7 +64,7 @@ onMounted(() => {
 
 <template>
   <div class="grid grid-rows-[auto_15vh]">
-    <div class="grid grid-cols-2 place-content-center place-items-center gap-x-40 gap-y-10 self-start p-4 md:mb-60 md:mt-4 md:self-center md:justify-self-center md:p-0">
+    <div class="grid grid-cols-2 place-content-center place-items-center gap-x-40 gap-y-10 self-start p-4 md:mb-60 md:mt-4 md:place-self-center md:p-0">
       <span class=" justify-self-start text-xl">Round: {{ gameDataStore.round }}</span>
 
       <div class=" flex items-center gap-6 justify-self-end">

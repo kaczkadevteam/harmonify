@@ -1,13 +1,13 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import Input from '@/components/ui/input/Input.vue'
+import { useToast } from '@/components/ui/toast/use-toast'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
+import { LOCAL_STORAGE } from '@/consts'
+import { useConnectionStore, useGameDataStore } from '@/stores'
+import { nicknameSchema } from '@/types'
 import { watchDebounced } from '@vueuse/core'
 import { TriangleAlert } from 'lucide-vue-next'
-import Input from '@/components/ui/input/Input.vue'
-import { useConnectionStore, useGameDataStore } from '@/stores'
-import { type ToasterToast, useToast } from '@/components/ui/toast/use-toast'
-import { nicknameSchema } from '@/types'
-import { LOCAL_STORAGE } from '@/consts'
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
+import { ref, watch } from 'vue'
 
 const props = defineProps<{
   nickname: string
@@ -22,7 +22,6 @@ const error = ref('')
 let lastToast: {
   id: string
   dismiss: () => void
-  update: (props: ToasterToast) => void
 } | null = null
 
 function isCorrect() {
@@ -102,7 +101,7 @@ watchDebounced(error, () => {
 </script>
 
 <template>
-  <div class="grid w-full grid-cols-[minmax(0,1fr)_2rem] items-center justify-items-center gap-2">
+  <div class="grid w-full grid-cols-[minmax(0,1fr)_2rem] place-items-center gap-2">
     <Input v-model:model-value="localNickname" />
     <TooltipProvider v-if="error">
       <Tooltip>

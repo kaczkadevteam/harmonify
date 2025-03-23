@@ -1,10 +1,12 @@
 <script setup lang="ts">
-import { type HTMLAttributes, computed } from 'vue'
+import type { AlertDialogDescriptionProps } from 'reka-ui'
+import type { HTMLAttributes } from 'vue'
+import { cn } from '@/lib/utils'
 import {
   AlertDialogDescription,
-  type AlertDialogDescriptionProps,
-} from 'radix-vue'
-import { cn } from '@/lib/utils'
+
+} from 'reka-ui'
+import { computed } from 'vue'
 
 const props = defineProps<AlertDialogDescriptionProps & { class?: HTMLAttributes['class'] }>()
 

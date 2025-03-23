@@ -1,4 +1,4 @@
-import type { CoverMetadata } from './types'
+import type { CoverMetadata } from './types/'
 
 export const LOCAL_STORAGE = {
   VOLUME: 'volume',

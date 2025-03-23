@@ -1,6 +1,6 @@
+import type { EndGameResultsDto, PlayerScoreDto, RoundFinishedDto } from '@/types'
 import { defineStore } from 'pinia'
 import { useGameDataStore } from '.'
-import type { EndGameResultsDto, PlayerScoreDto, RoundFinishedDto } from '@/types'
 
 export interface ResultStore {
   round: RoundFinishedDto & { previousPlayerScores: PlayerScoreDto[] }

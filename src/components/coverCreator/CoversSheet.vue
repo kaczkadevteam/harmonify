@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { Folder } from 'lucide-vue-next'
-import Cover from './Cover.vue'
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
+import type { Cover as CoverType } from '@/types/'
 import { Button } from '@/components/ui/button'
 import { ScrollArea } from '@/components/ui/scroll-area'
-import type { Cover as CoverType } from '@/types/'
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
+import { Folder } from 'lucide-vue-next'
+import Cover from './Cover.vue'
 
 defineProps<{
   covers: CoverType[]

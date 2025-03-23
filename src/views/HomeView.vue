@@ -1,11 +1,11 @@
 <script setup lang="ts">
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { PinInput, PinInputGroup, PinInputInput } from '@/components/ui/pin-input'
+import { useConnectionStore, useGameDataStore } from '@/stores'
 import { useCookies } from '@vueuse/integrations/useCookies'
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { Input } from '@/components/ui/input'
-import { PinInput, PinInputGroup, PinInputInput } from '@/components/ui/pin-input'
-import { Button } from '@/components/ui/button'
-import { useConnectionStore, useGameDataStore } from '@/stores'
 
 const cookies = useCookies()
 const connectionStore = useConnectionStore()

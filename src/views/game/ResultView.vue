@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { useRouter } from 'vue-router'
-import { computed, ref } from 'vue'
-import { useWindowSize, whenever } from '@vueuse/core'
-import { useConnectionStore, useGameDataStore, useResultStore, useSettingsStore } from '@/stores'
 import type { PlayedTrack as TPlayedTrack } from '@/types'
-import { AnimationDuration, Breakpoint } from '@/consts'
 import DesktopResultView from '@/components/result/DesktopResultView.vue'
 import MobileResultView from '@/components/result/MobileResultView.vue'
+import { AnimationDuration, Breakpoint } from '@/consts'
+import { useConnectionStore, useGameDataStore, useResultStore, useSettingsStore } from '@/stores'
+import { useWindowSize, whenever } from '@vueuse/core'
+import { computed, ref } from 'vue'
+import { useRouter } from 'vue-router'
 
 const resultStore = useResultStore()
 const gameDataStore = useGameDataStore()

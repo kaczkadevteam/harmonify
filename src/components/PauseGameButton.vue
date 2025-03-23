@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { computed } from 'vue'
-import { Pause, Play } from 'lucide-vue-next'
-import { useConnectionStore, useGameDataStore } from '@/stores'
 import { Button } from '@/components/ui/button'
+import { useConnectionStore, useGameDataStore } from '@/stores'
+import { Pause, Play } from 'lucide-vue-next'
+import { computed } from 'vue'
 
 const gameDataStore = useGameDataStore()
 const connectionStore = useConnectionStore()

@@ -1,6 +1,7 @@
-import { defineStore } from 'pinia'
-import { type RemovableRef, usePreferredReducedMotion, useStorage } from '@vueuse/core'
+import type { RemovableRef } from '@vueuse/core'
 import { LOCAL_STORAGE } from '@/consts'
+import { usePreferredReducedMotion, useStorage } from '@vueuse/core'
+import { defineStore } from 'pinia'
 
 export type Autoplay = 'always' | 'once' | 'never'
 

@@ -1,6 +1,7 @@
+import type { CreatedGameDto, GameStartedDto, PlayerDto } from '@/types'
+import { displayedGuessDtoSchema, gameSettingsDtoSchema, musicPlayDataSchema, playerDtoSchema, playerSchema } from '@/types'
 import { defineStore } from 'pinia'
 import { z } from 'zod'
-import { type CreatedGameDto, type GameStartedDto, type PlayerDto, displayedGuessDtoSchema, gameSettingsDtoSchema, musicPlayDataSchema, playerDtoSchema, playerSchema } from '@/types'
 
 export const gameDataSchema = z.object({
   id: z.string().length(4),

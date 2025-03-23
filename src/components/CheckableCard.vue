@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { ImageOff } from 'lucide-vue-next'
 import { cn } from '@/lib/utils'
+import { ImageOff } from 'lucide-vue-next'
 
 defineProps<{
   id: string
