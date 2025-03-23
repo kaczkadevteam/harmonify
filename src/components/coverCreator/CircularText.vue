@@ -1,25 +1,24 @@
 <script setup lang="ts">
+import type { CurvedText } from '@/types/'
 import { computed, ref, watchEffect } from 'vue'
-
-export interface CurvedText {
-  value: string
-  offsetCorrection?: number
-}
 
 export interface CircularTextProps {
   centerX: number
   centerY: number
-  radius: number
   size: number
-  fontSize: number
   text: CurvedText
   pathId: string
 }
 
 const props = defineProps<CircularTextProps>()
 
-const offsetToCenterTopOfCircle = computed(() => (Math.PI * 2 * props.radius) / 4)
-const offsetTextToBeInTheMiddle = computed(() => (offsetToCenterTopOfCircle.value - props.text.value.length * props.fontSize / 3.7) + (props.text.offsetCorrection ?? 0) * props.size / 800)
+const fontSize = computed(() => props.text.fontSize * props.size)
+const radius = computed(() => props.text.radius * props.size)
+const offsetToCenterTopOfCircle = computed(() => (Math.PI * 2 * radius.value) / 4)
+const offsetTextToBeInTheMiddle = computed(() => {
+  const standard = offsetToCenterTopOfCircle.value - props.text.value.length * fontSize.value / 3.7
+  return standard + standard * (props.text.offsetCorrection ?? 0)
+})
 const textPathRef = ref<SVGTextPathElement | null>(null)
 
 watchEffect(() => {

@@ -1,5 +1,5 @@
 <script lang="ts">
-import type { CurvedText } from './CircularText.vue'
+import type { CurvedText } from '@/types/'
 import { toRefs } from '@vueuse/core'
 import convert from 'color-convert'
 import { computed, ref } from 'vue'
@@ -39,12 +39,6 @@ const radiuses = computed(() => ({
   example: size.value * 0.35,
   type: size.value * 0.1,
 }))
-const fontSizes = computed(() => ({
-  title: size.value * 0.1125,
-  subtitle: size.value * 0.05,
-  example: size.value * 0.045,
-  type: size.value * 0.04,
-}))
 const [h, s, l] = toRefs(computed(() => convert.hex.hsl(props.baseColor)))
 </script>
 
@@ -58,17 +52,15 @@ const [h, s, l] = toRefs(computed(() => convert.hex.hsl(props.baseColor)))
         :center-x="centerX"
         :center-y="centerY"
         :radius="radiuses.title"
-        :font-size="fontSizes.title"
         :text="title"
       />
       <CircularText
         :path-id="ids.subtitle"
-        class="font-bold italic text-white/80"
+        class="font-bold italic text-white"
         :size="size"
         :center-x="centerX"
         :center-y="centerY"
         :radius="radiuses.subtitle"
-        :font-size="fontSizes.subtitle"
         :text="subtitle"
       />
       <CircularText
@@ -78,7 +70,6 @@ const [h, s, l] = toRefs(computed(() => convert.hex.hsl(props.baseColor)))
         :center-x="centerX"
         :center-y="centerY"
         :radius="radiuses.example"
-        :font-size="fontSizes.example"
         :text="example"
       />
       <CircularText
@@ -88,7 +79,6 @@ const [h, s, l] = toRefs(computed(() => convert.hex.hsl(props.baseColor)))
         :center-x="centerX"
         :center-y="centerY"
         :radius="radiuses.type"
-        :font-size="fontSizes.type"
         :text="type"
       />
     </div>

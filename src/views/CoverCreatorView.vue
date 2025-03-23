@@ -1,8 +1,9 @@
 <script setup lang="ts">
+import type { Cover as CoverType } from '../types/'
 import Cover from '@/components/coverCreator/Cover.vue'
 import CoversSheet from '@/components/coverCreator/CoversSheet.vue'
+import CurvedTextForm from '@/components/coverCreator/CurvedTextForm.vue'
 import { Button } from '@/components/ui/button'
-import { Input as CNInput } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { useToast } from '@/components/ui/toast'
 import { COVERS } from '@/consts'
@@ -13,25 +14,33 @@ import { ArrowLeft, Clipboard, Save } from 'lucide-vue-next'
 import { ref, useTemplateRef } from 'vue'
 import { RouterLink } from 'vue-router'
 
-const covers = Object.entries(COVERS).map(([key, value]) => {
+const covers = Object.entries(COVERS).map<CoverType>(([key, value]) => {
   return {
     name: key,
     color: `#${convert.hsl.hex(value.hue, value.saturation, value.lightness)}`,
     title: {
       value: value.title,
-      offsetCorrection: (value.titleOffset ?? 0), // TODO: make offset value 0 to 1, or -1 to 1 and multiply it by size
+      fontSize: 0.1125,
+      radius: 0.8125,
+      offsetCorrection: 0,
     },
     subtitle: {
       value: value.subtitle,
-      offsetCorrection: (value.titleOffset ?? 0),
+      fontSize: 0.05,
+      radius: 0.6,
+      offsetCorrection: 0,
     },
     example: {
       value: value.example,
-      offsetCorrection: (value.exampleOffset ?? 0),
+      fontSize: 0.045,
+      radius: 0.35,
+      offsetCorrection: 0,
     },
     type: {
       value: 'MOVIES',
-      offsetCorrection: -10,
+      fontSize: 0.04,
+      radius: 0.1,
+      offsetCorrection: 0,
     },
   }
 })
@@ -111,22 +120,10 @@ async function copyToClipboard() {
           <input v-model="bottomColor" type="color" class="w-full border-none bg-transparent">
         </div>
       </div>
-      <div>
-        <Label>Title</Label>
-        <CNInput v-model="cover.title.value" />
-      </div>
-      <div>
-        <Label>Subtitle</Label>
-        <CNInput v-model="cover.subtitle.value" />
-      </div>
-      <div>
-        <Label>Example</Label>
-        <CNInput v-model="cover.example.value" />
-      </div>
-      <div>
-        <Label>Type</Label>
-        <CNInput v-model="cover.type.value" />
-      </div>
+      <CurvedTextForm v-model:model-value="cover.title" label="Title" />
+      <CurvedTextForm v-model:model-value="cover.subtitle" label="Subtitle" />
+      <CurvedTextForm v-model:model-value="cover.example" label="Example" />
+      <CurvedTextForm v-model:model-value="cover.type" label="Type" />
     </form>
   </div>
 </template>

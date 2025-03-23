@@ -1,3 +1,10 @@
+export interface CurvedText {
+  value: string
+  fontSize: number
+  radius: number
+  offsetCorrection: number
+}
+
 export interface CoverMetadata {
   hue: number
   saturation: number
@@ -14,20 +21,8 @@ export interface CoverMetadata {
 export interface Cover {
   name: string
   color: string
-  title: {
-    value: any
-    offsetCorrection: any
-  }
-  subtitle: {
-    value: any
-    offsetCorrection: any
-  }
-  example: {
-    value: any
-    offsetCorrection: any
-  }
-  type: {
-    value: any
-    offsetCorrection: any
-  }
+  title: CurvedText
+  subtitle: CurvedText
+  example: CurvedText
+  type: CurvedText
 }
