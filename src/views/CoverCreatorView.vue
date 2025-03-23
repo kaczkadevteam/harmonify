@@ -30,6 +30,10 @@ const covers = Object.entries(COVERS).map(([key, value]) => {
       value: value.example,
       offsetCorrection: (value.exampleOffset ?? 0),
     },
+    type: {
+      value: 'MOVIES',
+      offsetCorrection: -10,
+    },
   }
 })
 
@@ -68,6 +72,7 @@ function setCover(index: number) {
           :title="cover.title"
           :subtitle="cover.subtitle"
           :example="cover.example"
+          :type="cover.type"
         />
         <div class="grid content-start gap-2">
           <CoversSheet :covers="covers" @cover-click="setCover" />
@@ -96,6 +101,10 @@ function setCover(index: number) {
       <div>
         <Label>Example</Label>
         <CNInput v-model="cover.example.value" />
+      </div>
+      <div>
+        <Label>Type</Label>
+        <CNInput v-model="cover.type.value" />
       </div>
     </form>
   </div>

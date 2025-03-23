@@ -26,6 +26,10 @@ export interface Cover {
     value: any
     offsetCorrection: any
   }
+  type: {
+    value: any
+    offsetCorrection: any
+  }
 }
 
 export interface HslColor {

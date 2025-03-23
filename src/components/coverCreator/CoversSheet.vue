@@ -4,7 +4,7 @@ import Cover from './Cover.vue'
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
 import { Button } from '@/components/ui/button'
 import { ScrollArea } from '@/components/ui/scroll-area'
-import type { Cover as CoverType } from '@/types'
+import type { Cover as CoverType } from '@/types/'
 
 defineProps<{
   covers: CoverType[]
@@ -35,6 +35,7 @@ const emit = defineEmits<{
             :title="cover.title"
             :subtitle="cover.subtitle"
             :example="cover.example"
+            :type="cover.type"
             @click="emit('coverClick', idx)"
           />
         </div>

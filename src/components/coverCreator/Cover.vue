@@ -4,7 +4,7 @@ import { computed, ref, watchEffect } from 'vue'
 import { useElementSize } from '@vueuse/core'
 import type { CurvedText } from './CircularText.vue'
 import CircularText from './CircularText.vue'
-import type { HslColor } from '@/types'
+import type { HslColor } from '@/types/'
 
 // TODO: Think if this is a good idea
 let id = 0
@@ -19,6 +19,7 @@ defineProps<{
   title: CurvedText
   subtitle: CurvedText
   example: CurvedText
+  type: CurvedText
 }>()
 
 const cover = ref<HTMLDivElement | null>(null)
@@ -80,10 +81,7 @@ const fontSizes = computed(() => ({
         :center-y="centerY"
         :radius="radiuses.type"
         :font-size="fontSizes.type"
-        :text="{
-          value: 'MOVIES',
-          offsetCorrection: -10 * size / 800,
-        }"
+        :text="type"
       />
     </div>
   </div>
