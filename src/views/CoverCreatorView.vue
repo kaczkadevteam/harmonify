@@ -6,6 +6,7 @@ import CoversSheet from '@/components/coverCreator/CoversSheet.vue'
 import { Button } from '@/components/ui/button'
 import { Input as CNInput } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { useToast } from '@/components/ui/toast'
 import { COVERS } from '@/consts'
 import { unrefElement } from '@vueuse/core'
 import convert from 'color-convert'
@@ -49,6 +50,8 @@ const coverColorHex = computed(() => {
 })
 const bottomColor = ref<string>('#18181b')
 
+const { toast } = useToast()
+
 function onColorChange(event: Event, hslObject: HslColor) {
   const hex = (event.target as InputHTMLAttributes).value
   setHslColor(hslObject, hex)
@@ -59,16 +62,25 @@ function setCover(index: number) {
 }
 
 async function copyToClipboard() {
-  if (!coverImage.value)
+  if (!coverImage.value) {
     return
+  }
 
   const blob = await toBlob(unrefElement(coverImage) as HTMLElement)
-  if (!blob)
+  if (!blob) {
+    toast({
+      variant: 'destructive',
+      description: 'Could not copy, try again!',
+    })
     return
+  }
 
   await navigator.clipboard.write([
     new ClipboardItem({ 'image/png': blob }),
   ])
+  toast({
+    description: 'Cover copied to clipboard!',
+  })
 }
 
 function setHslColor(hslObject: HslColor, hex: string) {
