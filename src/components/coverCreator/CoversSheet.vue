@@ -32,6 +32,7 @@ const emit = defineEmits<{
             v-for="cover, idx of covers"
             :key="idx"
             :base-color="cover.color"
+            bottom-color="#18181b"
             :title="cover.title"
             :subtitle="cover.subtitle"
             :example="cover.example"

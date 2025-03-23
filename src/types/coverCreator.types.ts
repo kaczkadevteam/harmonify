@@ -13,7 +13,7 @@ export interface CoverMetadata {
 
 export interface Cover {
   name: string
-  color: HslColor
+  color: string
   title: {
     value: any
     offsetCorrection: any
@@ -30,10 +30,4 @@ export interface Cover {
     value: any
     offsetCorrection: any
   }
-}
-
-export interface HslColor {
-  hue: number
-  saturation: number
-  lightness: number
 }

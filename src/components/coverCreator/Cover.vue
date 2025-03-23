@@ -1,7 +1,7 @@
 <script lang="ts">
-import type { HslColor } from '@/types/'
 import type { CurvedText } from './CircularText.vue'
-import { useElementSize } from '@vueuse/core'
+import { toRefs, useElementSize } from '@vueuse/core'
+import convert from 'color-convert'
 import { computed, ref } from 'vue'
 import CircularText from './CircularText.vue'
 
@@ -13,8 +13,8 @@ function getId() {
 </script>
 
 <script setup lang="ts">
-defineProps<{
-  baseColor: HslColor
+const props = defineProps<{
+  baseColor: string
   bottomColor: string
   title: CurvedText
   subtitle: CurvedText
@@ -38,6 +38,7 @@ const fontSizes = computed(() => ({
   example: size.value * 0.045,
   type: size.value * 0.04,
 }))
+const [h, s, l] = toRefs(computed(() => convert.hex.hsl(props.baseColor)))
 </script>
 
 <template>
@@ -92,9 +93,9 @@ const fontSizes = computed(() => ({
   max-width: 100%;
   max-height: 100%;
   aspect-ratio: 1;
-  --h: v-bind('baseColor.hue');
-  --s: v-bind('baseColor.saturation');
-  --l: v-bind('`${baseColor.lightness}%`');
+  --h: v-bind('h');
+  --s: v-bind('s');
+  --l: v-bind('`${l}%`');
 }
 
 .outer-background {

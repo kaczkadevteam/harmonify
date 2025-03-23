@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import type { InputHTMLAttributes } from 'vue'
-import type { HslColor } from '../types/'
 import Cover from '@/components/coverCreator/Cover.vue'
 import CoversSheet from '@/components/coverCreator/CoversSheet.vue'
 import { Button } from '@/components/ui/button'
@@ -12,17 +10,13 @@ import { unrefElement } from '@vueuse/core'
 import convert from 'color-convert'
 import { toBlob } from 'html-to-image'
 import { ArrowLeft, Clipboard, Save } from 'lucide-vue-next'
-import { computed, ref, useTemplateRef } from 'vue'
+import { ref, useTemplateRef } from 'vue'
 import { RouterLink } from 'vue-router'
 
 const covers = Object.entries(COVERS).map(([key, value]) => {
   return {
     name: key,
-    color: {
-      hue: value.hue,
-      saturation: value.saturation,
-      lightness: value.lightness,
-    },
+    color: `#${convert.hsl.hex(value.hue, value.saturation, value.lightness)}`,
     title: {
       value: value.title,
       offsetCorrection: (value.titleOffset ?? 0), // TODO: make offset value 0 to 1, or -1 to 1 and multiply it by size
@@ -44,18 +38,9 @@ const covers = Object.entries(COVERS).map(([key, value]) => {
 
 const cover = ref(covers[0])
 const coverImage = useTemplateRef('coverImage')
-const coverColorHex = computed(() => {
-  const hslColor = cover.value.color
-  return `#${convert.hsl.hex(hslColor.hue, hslColor.saturation, hslColor.lightness)}`
-})
 const bottomColor = ref<string>('#18181b')
 
 const { toast } = useToast()
-
-function onColorChange(event: Event, hslObject: HslColor) {
-  const hex = (event.target as InputHTMLAttributes).value
-  setHslColor(hslObject, hex)
-}
 
 function setCover(index: number) {
   cover.value = covers[index]
@@ -81,13 +66,6 @@ async function copyToClipboard() {
   toast({
     description: 'Cover copied to clipboard!',
   })
-}
-
-function setHslColor(hslObject: HslColor, hex: string) {
-  const [hue, saturation, lightness] = convert.hex.hsl(hex)
-  hslObject.hue = hue
-  hslObject.saturation = saturation
-  hslObject.lightness = lightness
 }
 </script>
 
@@ -126,7 +104,7 @@ function setHslColor(hslObject: HslColor, hex: string) {
       <div class="flex gap-4">
         <div class="grid w-fit justify-center">
           <Label>Main color</Label>
-          <input type="color" class="w-full border-none bg-transparent" :value="coverColorHex" @input="onColorChange($event, cover.color)">
+          <input v-model="cover.color" type="color" class="w-full border-none bg-transparent">
         </div>
         <div class="grid w-fit justify-center">
           <Label>Bottom color</Label>
