@@ -6,9 +6,11 @@ import { Button } from '@/components/ui/button'
 import { Input as CNInput } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { COVERS } from '@/consts'
+import { unrefElement } from '@vueuse/core'
 import convert from 'color-convert'
+import { toBlob } from 'html-to-image'
 import { ArrowLeft, Clipboard, Save } from 'lucide-vue-next'
-import { computed, ref } from 'vue'
+import { computed, ref, useTemplateRef } from 'vue'
 import { RouterLink } from 'vue-router'
 
 const covers = Object.entries(COVERS).map(([key, value]) => {
@@ -39,6 +41,7 @@ const covers = Object.entries(COVERS).map(([key, value]) => {
 })
 
 const cover = ref(covers[0])
+const coverImage = useTemplateRef('coverImage')
 const coverColorHex = computed(() => {
   const hslColor = cover.value.color
   return `#${convert.hsl.hex(hslColor.hue, hslColor.saturation, hslColor.lightness)}`
@@ -55,6 +58,19 @@ function onColorChange(event: Event) {
 function setCover(index: number) {
   cover.value = covers[index]
 }
+
+async function copyToClipboard() {
+  if (!coverImage.value)
+    return
+
+  const blob = await toBlob(unrefElement(coverImage) as HTMLElement)
+  if (!blob)
+    return
+
+  await navigator.clipboard.write([
+    new ClipboardItem({ 'image/png': blob }),
+  ])
+}
 </script>
 
 <template>
@@ -69,6 +85,7 @@ function setCover(index: number) {
           </Button>
         </div>
         <Cover
+          ref="coverImage"
           :base-color="cover.color"
           :title="cover.title"
           :subtitle="cover.subtitle"
@@ -80,7 +97,7 @@ function setCover(index: number) {
           <Button variant="ghost" size="icon" type="button">
             <Save />
           </Button>
-          <Button variant="ghost" size="icon" type="button">
+          <Button variant="ghost" size="icon" type="button" @click="copyToClipboard">
             <Clipboard />
           </Button>
         </div>

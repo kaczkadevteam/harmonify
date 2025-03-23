@@ -25,6 +25,7 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "color-convert": "^3.0.1",
+    "html-to-image": "^1.11.13",
     "lucide-vue-next": "^0.483.0",
     "pinia": "^3.0.1",
     "query-string": "^9.1.1",
