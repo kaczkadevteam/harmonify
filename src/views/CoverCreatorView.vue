@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { InputHTMLAttributes } from 'vue'
+import type { HslColor } from '../types/'
 import Cover from '@/components/coverCreator/Cover.vue'
 import CoversSheet from '@/components/coverCreator/CoversSheet.vue'
 import { Button } from '@/components/ui/button'
@@ -46,13 +47,11 @@ const coverColorHex = computed(() => {
   const hslColor = cover.value.color
   return `#${convert.hsl.hex(hslColor.hue, hslColor.saturation, hslColor.lightness)}`
 })
+const bottomColor = ref<string>('#18181b')
 
-function onColorChange(event: Event) {
+function onColorChange(event: Event, hslObject: HslColor) {
   const hex = (event.target as InputHTMLAttributes).value
-  const [hue, saturation, lightness] = convert.hex.hsl(hex)
-  cover.value.color.hue = hue
-  cover.value.color.saturation = saturation
-  cover.value.color.lightness = lightness
+  setHslColor(hslObject, hex)
 }
 
 function setCover(index: number) {
@@ -71,6 +70,13 @@ async function copyToClipboard() {
     new ClipboardItem({ 'image/png': blob }),
   ])
 }
+
+function setHslColor(hslObject: HslColor, hex: string) {
+  const [hue, saturation, lightness] = convert.hex.hsl(hex)
+  hslObject.hue = hue
+  hslObject.saturation = saturation
+  hslObject.lightness = lightness
+}
 </script>
 
 <template>
@@ -87,6 +93,7 @@ async function copyToClipboard() {
         <Cover
           ref="coverImage"
           :base-color="cover.color"
+          :bottom-color="bottomColor"
           :title="cover.title"
           :subtitle="cover.subtitle"
           :example="cover.example"
@@ -104,9 +111,15 @@ async function copyToClipboard() {
       </div>
     </div>
     <form class="mt-2 grid gap-2">
-      <div class="grid w-fit justify-center">
-        <Label>Main color</Label>
-        <input type="color" class="w-full border-none bg-transparent" :value="coverColorHex" @input="onColorChange">
+      <div class="flex gap-4">
+        <div class="grid w-fit justify-center">
+          <Label>Main color</Label>
+          <input type="color" class="w-full border-none bg-transparent" :value="coverColorHex" @input="onColorChange($event, cover.color)">
+        </div>
+        <div class="grid w-fit justify-center">
+          <Label>Bottom color</Label>
+          <input v-model="bottomColor" type="color" class="w-full border-none bg-transparent">
+        </div>
       </div>
       <div>
         <Label>Title</Label>

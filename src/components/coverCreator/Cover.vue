@@ -15,6 +15,7 @@ function getId() {
 <script setup lang="ts">
 defineProps<{
   baseColor: HslColor
+  bottomColor: string
   title: CurvedText
   subtitle: CurvedText
   example: CurvedText
@@ -130,7 +131,7 @@ const fontSizes = computed(() => ({
 }
 
 .inner {
-  --inside-color: hsl(240deg 6% 10%);
+  --inside-color: v-bind(bottomColor);
   --inside-path-color: hsl(240deg 6% 40%);
 
   background: radial-gradient(
