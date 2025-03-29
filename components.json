@@ -14,5 +14,6 @@
     "ui": "@/components/ui",
     "lib": "@/lib",
     "composables": "@/composables"
-  }
+  },
+  "lastUsedVersion": "1.0.3"
 }
