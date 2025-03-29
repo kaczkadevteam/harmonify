@@ -1,7 +1,7 @@
 <script setup lang="ts">
+import { useMusicPlayerStore } from '@/stores'
 import { useMediaControls } from '@vueuse/core'
 import { nextTick, onMounted, ref } from 'vue'
-import { useMusicPlayerStore } from '@/stores'
 
 const audioEl = ref<HTMLAudioElement | null>(null)
 const src = ref<string | undefined>()

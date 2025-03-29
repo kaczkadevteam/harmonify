@@ -1,13 +1,13 @@
 <script setup lang="ts">
-import { TransitionPresets, useTransition } from '@vueuse/core'
-import { computed } from 'vue'
-import { CircleUserRound } from 'lucide-vue-next'
 import type { PlayerScoreDto } from '@/types'
-import { useGameDataStore } from '@/stores'
-import { cn } from '@/lib/utils'
 import GuessLevelIcon from '@/components/GuessLevelIcon.vue'
-import { AnimationDuration } from '@/consts'
 import { GuessDisplay } from '@/components/trackDisplay'
+import { AnimationDuration } from '@/consts'
+import { cn } from '@/lib/utils'
+import { useGameDataStore } from '@/stores'
+import { TransitionPresets, useTransition } from '@vueuse/core'
+import { CircleUserRound } from 'lucide-vue-next'
+import { computed } from 'vue'
 
 const props = defineProps<{
   animation?: false | { duration: string }

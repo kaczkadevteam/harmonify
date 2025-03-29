@@ -1,159 +1,155 @@
 <script setup lang="ts">
-import { ChevronLeft, ChevronRight } from 'lucide-vue-next'
-import { computed, ref } from 'vue'
-import type { COVERS_KEYS } from '@/consts'
+import type { Cover as CoverType } from '../types/'
+import ColorInput from '@/components/coverCreator/ColorInput.vue'
+import Cover from '@/components/coverCreator/Cover.vue'
+import CoversSheet from '@/components/coverCreator/CoversSheet.vue'
+import CurvedTextForm from '@/components/coverCreator/CurvedTextForm.vue'
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
+import { Button } from '@/components/ui/button'
+import { Label } from '@/components/ui/label'
+import { useToast } from '@/components/ui/toast'
 import { COVERS } from '@/consts'
-import CircularText from '@/components/coverCreator/CircularText.vue'
-import { cn } from '@/lib/utils'
+import { unrefElement } from '@vueuse/core'
+import convert from 'color-convert'
+import { toBlob } from 'html-to-image'
+import { ArrowLeft, Clipboard, Save } from 'lucide-vue-next'
+import { ref, useTemplateRef } from 'vue'
+import { RouterLink } from 'vue-router'
 
-const size = 800
-const cssSize = `${size}px`
-const centerX = size / 2
-const centerY = size
+const covers = Object.entries(COVERS).map<CoverType>(([key, value]) => {
+  return {
+    name: key,
+    color: `#${convert.hsl.hex(value.hue, value.saturation, value.lightness)}`,
+    title: {
+      value: value.title,
+      fontSize: 0.1125,
+      radius: 0.8125,
+      offsetCorrection: 0,
+    },
+    subtitle: {
+      value: value.subtitle,
+      fontSize: 0.05,
+      radius: 0.6,
+      offsetCorrection: 0,
+    },
+    example: {
+      value: value.example,
+      fontSize: 0.045,
+      radius: 0.35,
+      offsetCorrection: 0,
+    },
+    type: {
+      value: 'MOVIES',
+      fontSize: 0.04,
+      radius: 0.1,
+      offsetCorrection: 0,
+    },
+  }
+})
 
-const currentTrackIndex = ref(1)
-const currentTrack = computed(() => COVERS[(Object.keys(COVERS) as COVERS_KEYS[])[currentTrackIndex.value]])
+const cover = ref(covers[0])
+const coverImage = useTemplateRef('coverImage')
+const bottomColor = ref<string>('#18181b')
 
-function selectNextCover() {
-  if (currentTrackIndex.value === Object.keys(COVERS).length - 1)
-    currentTrackIndex.value = 0
-  else
-    currentTrackIndex.value++
+const { toast } = useToast()
+
+function setCover(index: number) {
+  cover.value = covers[index]
 }
 
-function selectPrevCover() {
-  if (currentTrackIndex.value === 0)
-    currentTrackIndex.value = Object.keys(COVERS).length - 1
-  else
-    currentTrackIndex.value--
+async function copyToClipboard() {
+  if (!coverImage.value) {
+    return
+  }
+
+  const blob = await toBlob(unrefElement(coverImage) as HTMLElement)
+  if (!blob) {
+    toast({
+      variant: 'destructive',
+      description: 'Could not copy, try again!',
+    })
+    return
+  }
+
+  await navigator.clipboard.write([
+    new ClipboardItem({ 'image/png': blob }),
+  ])
+  toast({
+    description: 'Cover copied to clipboard!',
+  })
 }
 </script>
 
 <template>
-  <div :class="cn('outer-base', currentTrack.title === COVERS.memes.title ? 'outer-meme-background' : 'outer-background')">
-    <div class="inner grid size-full justify-center overflow-hidden font-sans *:col-start-1 *:row-start-1">
-      <CircularText
-        path-id="title"
-        class="font-bold"
-        :size="size"
-        :center-x="centerX"
-        :center-y="centerY"
-        :radius="650"
-        :font-size="90"
-        :text="currentTrack.title"
-        :offset-correction="currentTrack.titleOffset"
-      />
-      <CircularText
-        path-id="subtitle"
-        class="font-bold italic text-white/80"
-        :size="size"
-        :center-x="centerX"
-        :center-y="centerY"
-        :radius="480"
-        :font-size="40"
-        :text="currentTrack.subtitle"
-        :offset-correction="currentTrack.subtitleOffset"
-      />
-      <CircularText
-        path-id="example"
-        class="font-bold italic text-white/80"
-        :size="size"
-        :center-x="centerX"
-        :center-y="centerY"
-        :radius="280"
-        :font-size="36"
-        :text="currentTrack.example"
-        :offset-correction="currentTrack.exampleOffset"
-      />
-      <CircularText
-        path-id="type"
-        class="font-bold"
-        :size="size"
-        :center-x="centerX"
-        :center-y="centerY"
-        :radius="80"
-        :font-size="32"
-        text="MOVIES"
-        :offset-correction="-10"
-      />
-      <div class="grid w-20 cursor-pointer place-items-center bg-black/60 opacity-0 transition-all duration-300 hover:opacity-100" @click="selectPrevCover">
-        <ChevronLeft class="size-10" />
+  <div class="grid justify-items-center">
+    <div class="relative w-full max-w-[1260px] p-4 pt-0">
+      <div class="sticky top-0 z-10 grid justify-center bg-gradient bg-fixed py-4">
+        <div class="flex gap-2">
+          <div>
+            <Button variant="ghost" size="icon" as-child>
+              <RouterLink :to="{ name: 'home' }">
+                <ArrowLeft class="w-7" />
+              </RouterLink>
+            </Button>
+          </div>
+          <Cover
+            ref="coverImage"
+            :base-color="cover.color"
+            :bottom-color="bottomColor"
+            :title="cover.title"
+            :subtitle="cover.subtitle"
+            :example="cover.example"
+            :type="cover.type"
+          />
+          <div class="grid content-start gap-2">
+            <CoversSheet :covers="covers" @cover-click="setCover" />
+            <Button variant="ghost" size="icon" type="button">
+              <Save />
+            </Button>
+            <Button variant="ghost" size="icon" type="button" @click="copyToClipboard">
+              <Clipboard />
+            </Button>
+          </div>
+        </div>
       </div>
-      <div class="grid w-20 cursor-pointer place-items-center justify-self-end bg-black/60 opacity-0 transition-all duration-300 hover:opacity-100" @click="selectNextCover">
-        <ChevronRight class="size-10" />
-      </div>
+      <form class="grid gap-2">
+        <div class="flex gap-4 justify-self-center text-center">
+          <div class="grid w-fit justify-center gap-1">
+            <Label>Main color</Label>
+            <ColorInput v-model:model-value="cover.color" />
+          </div>
+          <div class="grid w-fit justify-center gap-1 ">
+            <Label>Bottom color</Label>
+            <ColorInput v-model:model-value="bottomColor" />
+          </div>
+        </div>
+        <Accordion type="multiple">
+          <AccordionItem value="title">
+            <AccordionTrigger>Title</AccordionTrigger>
+            <AccordionContent class="pb-8">
+              <CurvedTextForm v-model:model-value="cover.title" />
+            </AccordionContent>
+          </AccordionItem>
+          <AccordionItem value="subtitle">
+            <AccordionTrigger>Subtitle</AccordionTrigger>
+            <AccordionContent>
+              <CurvedTextForm v-model:model-value="cover.subtitle" />
+            </AccordionContent>
+          </AccordionItem>
+          <AccordionItem value="example">
+            <AccordionTrigger>Example</AccordionTrigger>
+            <AccordionContent>
+              <CurvedTextForm v-model:model-value="cover.example" />
+            </AccordionContent>
+          </AccordionItem>
+          <AccordionItem value="type">
+            <AccordionTrigger>Type</AccordionTrigger>
+            <AccordionContent>
+              <CurvedTextForm v-model:model-value="cover.type" label="Type" />
+            </AccordionContent>
+          </AccordionItem>
+        </Accordion>
+      </form>
     </div>
   </div>
 </template>
-
-<style scoped>
-.outer-base {
-  width: v-bind(cssSize);
-  height: v-bind(cssSize);
-  --h: v-bind('currentTrack.hue');
-  --s: v-bind('currentTrack.saturation');
-  --l: v-bind('`${currentTrack.lightness}%`');
-  --lightness-offset: v-bind('`${currentTrack.lightnessOffset ?? 0}%`');
-}
-
-.outer-background {
-  --primary-color: hsl(var(--h) var(--s) var(--l));
-  --pattern-color: hsl(var(--h) var(--s) calc(var(--l) + 10%));
-  --pattern-color-2: hsl(var(--h) var(--s) calc(var(--l) + 5%));
-  --secondary-color: hsl(
-    var(--h) var(--s) calc(var(--l) - 10% + var(--lightness-offset))
-  );
-  --border-color: hsl(
-    var(--h) var(--s) calc(var(--l) - 12% + var(--lightness-offset))
-  );
-  --muted-color: hsl(var(--h) var(--s) 90%);
-
-  background: conic-gradient(
-    from 180deg at bottom,
-    var(--primary-color) 100deg,
-    var(--pattern-color) 115deg,
-    var(--pattern-color-2) 125deg,
-    var(--pattern-color) 135deg 140deg,
-    var(--primary-color) 160deg 180deg,
-    var(--pattern-color) 220deg,
-    var(--primary-color) 240deg
-  );
-}
-
-.outer-meme-background {
-  --primary-color: hsl(var(--h) var(--s) var(--l));
-  --pattern-color: hsl(calc(var(--h) + 240) var(--s) var(--l));
-  --pattern-color-2: hsl(var(--h) var(--s) calc(var(--l) + 5%));
-  --secondary-color: hsl(0deg 0% 0% / 35%);
-  --border-color: hsl(0deg 0% 0% / 60%);
-  --muted-color: #d9f99d;
-
-  background:
-    url('@/assets/pepe.png') 50% 60% / 50%,
-    conic-gradient(
-      from 180deg at bottom in hsl longer hue,
-      var(--primary-color) 90deg,
-      var(--pattern-color) 270deg
-    );
-}
-
-.inner {
-  --inside-color: hsl(240deg 6% 10%);
-  --inside-path-color: hsl(240deg 6% 40%);
-
-  background: radial-gradient(
-    circle at bottom,
-    white 2%,
-    var(--inside-color) 2% 20%,
-    transparent 20% 40%,
-    var(--secondary-color) 40% 41%,
-    transparent 41% 60%,
-    var(--secondary-color) 60% 61%,
-    transparent 61% 80%,
-    var(--border-color) 80% 81%,
-    var(--muted-color) 81%
-  );
-  background-position: center;
-  background-size: 142%;
-}
-</style>

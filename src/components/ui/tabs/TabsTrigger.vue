@@ -1,7 +1,9 @@
 <script setup lang="ts">
-import { type HTMLAttributes, computed } from 'vue'
-import { TabsTrigger, type TabsTriggerProps, useForwardProps } from 'radix-vue'
+import type { TabsTriggerProps } from 'reka-ui'
+import type { HTMLAttributes } from 'vue'
 import { cn } from '@/lib/utils'
+import { TabsTrigger, useForwardProps } from 'reka-ui'
+import { computed } from 'vue'
 
 const props = defineProps<TabsTriggerProps & { class?: HTMLAttributes['class'] }>()
 
@@ -22,6 +24,8 @@ const forwardedProps = useForwardProps(delegatedProps)
       props.class,
     )"
   >
-    <slot />
+    <span class="truncate">
+      <slot />
+    </span>
   </TabsTrigger>
 </template>

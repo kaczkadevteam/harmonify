@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { type AlertDialogEmits, type AlertDialogProps, AlertDialogRoot, useForwardPropsEmits } from 'radix-vue'
+import type { AlertDialogEmits, AlertDialogProps } from 'reka-ui'
+import { AlertDialogRoot, useForwardPropsEmits } from 'reka-ui'
 
 const props = defineProps<AlertDialogProps>()
 const emits = defineEmits<AlertDialogEmits>()
 
-const forwarded = useForwardPropsEmits(props, emits)
+const forwarded: any = useForwardPropsEmits(props, emits)
 </script>
 
 <template>

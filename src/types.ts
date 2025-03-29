@@ -145,8 +145,7 @@ export const roundStartedDto = z.object({
 })
 export type RoundStartedDto = z.infer<typeof roundStartedDto>
 
-export const nicknameSchema = z.string().min(2, { message: 'Username must contain at least 2 characters' })
-  .max(50, { message: 'Username must contain at most 50 characters' })
+export const nicknameSchema = z.string().min(2, { message: 'Username must contain at least 2 characters' }).max(50, { message: 'Username must contain at most 50 characters' })
 
 export const playerDtoSchema = z.object({
   guid: z.string(),

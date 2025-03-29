@@ -1,9 +1,9 @@
-import { computed, ref } from 'vue'
-import { defineStore } from 'pinia'
-import type { Router } from 'vue-router'
 import type { SelectableAlbum, SelectablePlaylist, Track } from '@/types'
-import { SpotifyService } from '@/services'
+import type { Router } from 'vue-router'
 import { removeDuplicatedTracks } from '@/lib/track'
+import { SpotifyService } from '@/services'
+import { defineStore } from 'pinia'
+import { computed, ref } from 'vue'
 
 export const useSpotifyLibraryStore = defineStore('spotifyLibrary', () => {
   const favouritesSelected = ref(false)
@@ -17,11 +17,11 @@ export const useSpotifyLibraryStore = defineStore('spotifyLibrary', () => {
       count += favourites.value?.length ?? 0
 
     count += playlists.value
-      ?.filter((p => p.selected))
+      ?.filter(p => p.selected)
       .reduce((acc, p) => acc + p.tracks.total, 0) ?? 0
 
     count += albums.value
-      ?.filter((p => p.selected))
+      ?.filter(p => p.selected)
       .reduce((acc, p) => acc + p.tracks.items.length, 0) ?? 0
 
     return count

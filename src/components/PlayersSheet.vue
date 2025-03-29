@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { Users } from 'lucide-vue-next'
 import Player from '@/components/Player.vue'
+import { Button } from '@/components/ui/button'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
 import { useGameDataStore } from '@/stores'
-import { Button } from '@/components/ui/button'
+import { Users } from 'lucide-vue-next'
 
 const gameDataStore = useGameDataStore()
 </script>

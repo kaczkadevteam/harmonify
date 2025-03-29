@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -8,11 +7,12 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog'
+import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { LOCAL_STORAGE } from '@/consts'
 import { useConnectionStore, useGameDataStore } from '@/stores'
 import { nicknameSchema } from '@/types'
-import { LOCAL_STORAGE } from '@/consts'
-import { Button } from '@/components/ui/button'
+import { onMounted, ref } from 'vue'
 
 const connectionStore = useConnectionStore()
 const gameDataStore = useGameDataStore()

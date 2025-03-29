@@ -1,15 +1,15 @@
 <script setup lang="ts">
-import { useRoute } from 'vue-router'
-import { computed } from 'vue'
-import { useWindowSize } from '@vueuse/core'
 import PauseGameButton from '@/components/PauseGameButton.vue'
+import PlayersSheet from '@/components/PlayersSheet.vue'
 import PreviewPlayer from '@/components/PreviewPlayer.vue'
-import { useGameDataStore } from '@/stores'
 import QuitGameButton from '@/components/QuitGameButton.vue'
+import RoomIdDisplay from '@/components/RoomIdDisplay.vue'
 import Settings from '@/components/Settings.vue'
 import { Breakpoint } from '@/consts'
-import PlayersSheet from '@/components/PlayersSheet.vue'
-import RoomIdDisplay from '@/components/RoomIdDisplay.vue'
+import { useGameDataStore } from '@/stores'
+import { useWindowSize } from '@vueuse/core'
+import { computed } from 'vue'
+import { useRoute } from 'vue-router'
 
 const gameDataStore = useGameDataStore()
 const route = useRoute()

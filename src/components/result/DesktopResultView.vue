@@ -1,15 +1,15 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
-import { useElementBounding, useWindowSize } from '@vueuse/core'
+import type { PlayedTrack as TPlayedTrack } from '@/types'
 import GameResults from '@/components/result/GameResults.vue'
-import { ScrollArea } from '@/components/ui/scroll-area'
 import PlayedTrack from '@/components/result/PlayedTrack.vue'
 import { Button } from '@/components/ui/button'
-import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Label } from '@/components/ui/label'
-import type { PlayedTrack as TPlayedTrack } from '@/types'
+import { ScrollArea } from '@/components/ui/scroll-area'
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { cn } from '@/lib/utils'
 import { useSettingsStore } from '@/stores'
+import { useElementBounding, useWindowSize } from '@vueuse/core'
+import { onMounted, ref } from 'vue'
 
 defineProps<{
   selectablePlayers: {

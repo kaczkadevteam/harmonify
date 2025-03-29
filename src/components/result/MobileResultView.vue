@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import type { PlayedTrack as TPlayedTrack } from '@/types'
 import GameResults from '@/components/result/GameResults.vue'
-import { ScrollArea } from '@/components/ui/scroll-area'
 import PlayedTrack from '@/components/result/PlayedTrack.vue'
 import { Button } from '@/components/ui/button'
-import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Label } from '@/components/ui/label'
-import type { PlayedTrack as TPlayedTrack } from '@/types'
+import { ScrollArea } from '@/components/ui/scroll-area'
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { useSettingsStore } from '@/stores'
 
 defineProps<{

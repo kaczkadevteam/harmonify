@@ -66,14 +66,7 @@
 
     --ring: 212.7 26.8% 83.9%;
 
-    --gradient-background: linear-gradient(
-      220deg,
-      #1e293b,
-      5%,
-      #0f172a,
-      90%,
-      #020617
-    );
+    --gradient-background: linear-gradient(220deg, #1e293b, 5%, #0f172a, 90%, #020617);
   }
 }
 

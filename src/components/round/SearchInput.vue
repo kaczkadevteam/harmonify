@@ -1,13 +1,13 @@
 <script setup lang="ts">
-import { computed, onUnmounted, ref, watch, watchEffect } from 'vue'
+import type { DisplayedGuessDto } from '@/types'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area'
+import { cn } from '@/lib/utils'
 import { onStartTyping, useFocus } from '@vueuse/core'
 import { X } from 'lucide-vue-next'
+import { computed, onUnmounted, ref, watch, watchEffect } from 'vue'
 import SearchInputOption from './searchInput/SearchInputOption.vue'
-import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area'
-import type { DisplayedGuessDto } from '@/types'
-import { Input } from '@/components/ui/input'
-import { cn } from '@/lib/utils'
-import { Button } from '@/components/ui/button'
 
 const props = defineProps<{
   guesses: DisplayedGuessDto[]

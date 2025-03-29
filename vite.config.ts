@@ -1,11 +1,11 @@
-import { URL, fileURLToPath } from 'node:url'
+import { fileURLToPath, URL } from 'node:url'
+
+import vue from '@vitejs/plugin-vue'
+import autoprefixer from 'autoprefixer'
+import tailwind from 'tailwindcss'
 
 import { defineConfig } from 'vite'
-import vue from '@vitejs/plugin-vue'
 import vercel from 'vite-plugin-vercel'
-
-import tailwind from 'tailwindcss'
-import autoprefixer from 'autoprefixer'
 
 // https://vitejs.dev/config/
 export default defineConfig({

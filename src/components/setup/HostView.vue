@@ -1,14 +1,14 @@
 <script setup lang="ts">
-import { computed, onBeforeMount, ref } from 'vue'
-import { useCookies } from '@vueuse/integrations/useCookies'
-import { useRouter } from 'vue-router'
-import { z } from 'zod'
-import { useConnectionStore, useGameDataStore, useMusicPlayerStore, useSpotifyLibraryStore } from '@/stores'
+import GameDataForm from '@/components/setup/GameDataForm.vue'
 import SpotifyLibraryDisplay from '@/components/setup/SpotifyLibraryDisplay.vue'
 import { Button } from '@/components/ui/button'
-import GameDataForm from '@/components/setup/GameDataForm.vue'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { SpotifyService } from '@/services'
+import { useConnectionStore, useGameDataStore, useMusicPlayerStore, useSpotifyLibraryStore } from '@/stores'
+import { useCookies } from '@vueuse/integrations/useCookies'
+import { computed, onBeforeMount, ref } from 'vue'
+import { useRouter } from 'vue-router'
+import { z } from 'zod'
 
 defineProps<{
   isDesktop: boolean

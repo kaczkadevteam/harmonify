@@ -1,6 +1,6 @@
+import type { VercelRequest, VercelResponse } from '@vercel/node'
 import process from 'node:process'
 import queryString from 'query-string'
-import type { VercelRequest, VercelResponse } from '@vercel/node'
 import { redirectCallback } from './common.js'
 
 export default async function handler(

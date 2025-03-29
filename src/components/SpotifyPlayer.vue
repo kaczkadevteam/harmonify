@@ -1,12 +1,12 @@
 <script setup lang="ts">
+import type { MusicPlayer } from '@/types'
+import { LOCAL_STORAGE } from '@/consts'
+import { SpotifyService } from '@/services'
+import { useMusicPlayerStore } from '@/stores'
+import { useStorage } from '@vueuse/core'
+import { useCookies } from '@vueuse/integrations/useCookies'
 import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { useCookies } from '@vueuse/integrations/useCookies'
-import { useStorage } from '@vueuse/core'
-import { useMusicPlayerStore } from '@/stores'
-import { SpotifyService } from '@/services'
-import { LOCAL_STORAGE } from '@/consts'
-import type { MusicPlayer } from '@/types'
 
 declare global {
   interface Window {

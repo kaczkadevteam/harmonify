@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { useRoute } from 'vue-router'
-import { useClipboard } from '@vueuse/core'
-import { Copy } from 'lucide-vue-next'
 import { Button } from '@/components/ui/button'
 import { useToast } from '@/components/ui/toast/use-toast'
+import { useClipboard } from '@vueuse/core'
+import { Copy } from 'lucide-vue-next'
+import { useRoute } from 'vue-router'
 
 const route = useRoute()
 

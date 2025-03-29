@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { toRefs } from '@vueuse/core'
-import { type HTMLAttributes, computed } from 'vue'
-import { CircleCheck, CircleMinus, CircleX, ShieldQuestion, Unplug } from 'lucide-vue-next'
+import type { GuessLevel } from '@/types'
+import type { HTMLAttributes } from 'vue'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { cn } from '@/lib/utils'
-import type { GuessLevel } from '@/types'
+import { toRefs } from '@vueuse/core'
+import { CircleCheck, CircleMinus, CircleX, ShieldQuestion, Unplug } from 'lucide-vue-next'
+import { computed } from 'vue'
 
 const props = defineProps<{
   guessLevel: GuessLevel

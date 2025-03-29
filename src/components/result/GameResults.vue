@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
-import { useIntervalFn } from '@vueuse/core'
-import confetti from 'canvas-confetti'
-import PlayerResult from '@/components/roundResult/PlayerResult.vue'
-import { useResultStore } from '@/stores'
 import type { PlayerScoreDto } from '@/types'
+import PlayerResult from '@/components/roundResult/PlayerResult.vue'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { AnimationDuration } from '@/consts'
+import { useResultStore } from '@/stores'
+import { useIntervalFn } from '@vueuse/core'
+import confetti from 'canvas-confetti'
+import { computed, ref } from 'vue'
 
 const props = defineProps<{
   isDesktop: boolean

@@ -1,6 +1,6 @@
+import type { Track } from '@/types'
 import { describe, expect, it } from 'vitest'
 import { removeDuplicatedTracks } from '../track'
-import type { Track } from '@/types'
 
 const rawTracks: Track[] = [{
   artists: [{ name: 'Michael Hunter', id: '4J86DBDnC5acWsN0dpZe3j' }],

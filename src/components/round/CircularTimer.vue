@@ -21,7 +21,6 @@ const fillPercentage = computed(() => {
 .circle-background {
   background:
     var(--gradient-background) fixed content-box no-repeat,
-    conic-gradient(transparent v-bind(fillPercentage), 0, hsl(var(--primary)))
-      border-box;
+    conic-gradient(transparent v-bind(fillPercentage), 0, hsl(var(--primary))) border-box;
 }
 </style>
