@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { Cover as CoverType } from '../types/'
+import ColorInput from '@/components/coverCreator/ColorInput.vue'
 import Cover from '@/components/coverCreator/Cover.vue'
 import CoversSheet from '@/components/coverCreator/CoversSheet.vue'
 import CurvedTextForm from '@/components/coverCreator/CurvedTextForm.vue'
@@ -111,13 +112,13 @@ async function copyToClipboard() {
     </div>
     <form class="mt-2 grid gap-2">
       <div class="flex gap-4">
-        <div class="grid w-fit justify-center">
+        <div class="grid w-fit justify-center gap-1">
           <Label>Main color</Label>
-          <input v-model="cover.color" type="color" class="w-full border-none bg-transparent">
+          <ColorInput v-model:model-value="cover.color" />
         </div>
-        <div class="grid w-fit justify-center">
+        <div class="grid w-fit justify-center gap-1">
           <Label>Bottom color</Label>
-          <input v-model="bottomColor" type="color" class="w-full border-none bg-transparent">
+          <ColorInput v-model:model-value="bottomColor" />
         </div>
       </div>
       <CurvedTextForm v-model:model-value="cover.title" label="Title" />
