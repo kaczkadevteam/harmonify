@@ -4,6 +4,7 @@ import ColorInput from '@/components/coverCreator/ColorInput.vue'
 import Cover from '@/components/coverCreator/Cover.vue'
 import CoversSheet from '@/components/coverCreator/CoversSheet.vue'
 import CurvedTextForm from '@/components/coverCreator/CurvedTextForm.vue'
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
 import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
 import { useToast } from '@/components/ui/toast'
@@ -80,51 +81,75 @@ async function copyToClipboard() {
 </script>
 
 <template>
-  <div class="p-4">
-    <div class="grid">
-      <div class="flex gap-2">
-        <div>
-          <Button variant="ghost" size="icon" as-child>
-            <RouterLink :to="{ name: 'home' }">
-              <ArrowLeft class="w-7" />
-            </RouterLink>
-          </Button>
-        </div>
-        <Cover
-          ref="coverImage"
-          :base-color="cover.color"
-          :bottom-color="bottomColor"
-          :title="cover.title"
-          :subtitle="cover.subtitle"
-          :example="cover.example"
-          :type="cover.type"
-        />
-        <div class="grid content-start gap-2">
-          <CoversSheet :covers="covers" @cover-click="setCover" />
-          <Button variant="ghost" size="icon" type="button">
-            <Save />
-          </Button>
-          <Button variant="ghost" size="icon" type="button" @click="copyToClipboard">
-            <Clipboard />
-          </Button>
+  <div class="grid justify-items-center">
+    <div class="relative w-full max-w-[1260px] p-4 pt-0">
+      <div class="sticky top-0 z-10 grid justify-center bg-gradient bg-fixed py-4">
+        <div class="flex gap-2">
+          <div>
+            <Button variant="ghost" size="icon" as-child>
+              <RouterLink :to="{ name: 'home' }">
+                <ArrowLeft class="w-7" />
+              </RouterLink>
+            </Button>
+          </div>
+          <Cover
+            ref="coverImage"
+            :base-color="cover.color"
+            :bottom-color="bottomColor"
+            :title="cover.title"
+            :subtitle="cover.subtitle"
+            :example="cover.example"
+            :type="cover.type"
+          />
+          <div class="grid content-start gap-2">
+            <CoversSheet :covers="covers" @cover-click="setCover" />
+            <Button variant="ghost" size="icon" type="button">
+              <Save />
+            </Button>
+            <Button variant="ghost" size="icon" type="button" @click="copyToClipboard">
+              <Clipboard />
+            </Button>
+          </div>
         </div>
       </div>
+      <form class="grid gap-2">
+        <div class="flex gap-4 justify-self-center text-center">
+          <div class="grid w-fit justify-center gap-1">
+            <Label>Main color</Label>
+            <ColorInput v-model:model-value="cover.color" />
+          </div>
+          <div class="grid w-fit justify-center gap-1 ">
+            <Label>Bottom color</Label>
+            <ColorInput v-model:model-value="bottomColor" />
+          </div>
+        </div>
+        <Accordion type="multiple">
+          <AccordionItem value="title">
+            <AccordionTrigger>Title</AccordionTrigger>
+            <AccordionContent class="pb-8">
+              <CurvedTextForm v-model:model-value="cover.title" />
+            </AccordionContent>
+          </AccordionItem>
+          <AccordionItem value="subtitle">
+            <AccordionTrigger>Subtitle</AccordionTrigger>
+            <AccordionContent>
+              <CurvedTextForm v-model:model-value="cover.subtitle" />
+            </AccordionContent>
+          </AccordionItem>
+          <AccordionItem value="example">
+            <AccordionTrigger>Example</AccordionTrigger>
+            <AccordionContent>
+              <CurvedTextForm v-model:model-value="cover.example" />
+            </AccordionContent>
+          </AccordionItem>
+          <AccordionItem value="type">
+            <AccordionTrigger>Type</AccordionTrigger>
+            <AccordionContent>
+              <CurvedTextForm v-model:model-value="cover.type" label="Type" />
+            </AccordionContent>
+          </AccordionItem>
+        </Accordion>
+      </form>
     </div>
-    <form class="mt-2 grid gap-2">
-      <div class="flex gap-4">
-        <div class="grid w-fit justify-center gap-1">
-          <Label>Main color</Label>
-          <ColorInput v-model:model-value="cover.color" />
-        </div>
-        <div class="grid w-fit justify-center gap-1">
-          <Label>Bottom color</Label>
-          <ColorInput v-model:model-value="bottomColor" />
-        </div>
-      </div>
-      <CurvedTextForm v-model:model-value="cover.title" label="Title" />
-      <CurvedTextForm v-model:model-value="cover.subtitle" label="Subtitle" />
-      <CurvedTextForm v-model:model-value="cover.example" label="Example" />
-      <CurvedTextForm v-model:model-value="cover.type" label="Type" />
-    </form>
   </div>
 </template>
