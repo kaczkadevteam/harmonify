@@ -11,8 +11,9 @@ import { useToast } from '@/components/ui/toast'
 import { COVERS } from '@/consts'
 import { unrefElement } from '@vueuse/core'
 import convert from 'color-convert'
+import { saveAs } from 'file-saver'
 import { toBlob } from 'html-to-image'
-import { ArrowLeft, Clipboard, Save } from 'lucide-vue-next'
+import { ArrowLeft, Clipboard, Download, Save } from 'lucide-vue-next'
 import { ref, useTemplateRef } from 'vue'
 import { RouterLink } from 'vue-router'
 
@@ -62,11 +63,8 @@ function setCover(index: number) {
 }
 
 async function copyToClipboard() {
-  if (!coverImage.value) {
-    return
-  }
+  const blob = await getCoverBlob()
 
-  const blob = await toBlob(unrefElement(coverImage) as HTMLElement)
   if (!blob) {
     toast({
       variant: 'destructive',
@@ -76,11 +74,33 @@ async function copyToClipboard() {
   }
 
   await navigator.clipboard.write([
-    new ClipboardItem({ 'image/png': blob }),
+    new ClipboardItem({ [blob.type]: blob }),
   ])
   toast({
     description: 'Cover copied to clipboard!',
   })
+}
+
+async function download() {
+  const blob = await getCoverBlob()
+
+  if (!blob) {
+    toast({
+      variant: 'destructive',
+      description: 'Could not download, try again!',
+    })
+    return
+  }
+
+  saveAs(blob, `${cover.value.title.value}_${cover.value.subtitle.value}_${cover.value.example.value}.png`)
+}
+
+async function getCoverBlob() {
+  if (!coverImage.value) {
+    return undefined
+  }
+
+  return await toBlob(unrefElement(coverImage) as HTMLElement)
 }
 </script>
 
@@ -112,6 +132,9 @@ async function copyToClipboard() {
             </Button>
             <Button variant="ghost" size="icon" type="button" @click="copyToClipboard">
               <Clipboard />
+            </Button>
+            <Button variant="ghost" size="icon" type="button" @click="download">
+              <Download />
             </Button>
           </div>
         </div>

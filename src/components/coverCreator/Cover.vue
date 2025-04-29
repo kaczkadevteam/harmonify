@@ -65,7 +65,7 @@ const [h, s, l] = toRefs(computed(() => convert.hex.hsl(props.baseColor)))
       />
       <CircularText
         :path-id="ids.example"
-        class="font-bold text-white/80"
+        class="font-bold text-white"
         :size="size"
         :center-x="centerX"
         :center-y="centerY"
