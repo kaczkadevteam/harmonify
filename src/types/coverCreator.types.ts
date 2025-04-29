@@ -3,6 +3,7 @@ export interface CurvedText {
   fontSize: number
   radius: number
   offsetCorrection: number
+  italic: boolean
 }
 
 export interface CoverMetadata {

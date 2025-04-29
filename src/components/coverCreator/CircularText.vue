@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { CurvedText } from '@/types/'
+import { cn } from '@/lib/utils'
 import { computed, ref, watchEffect } from 'vue'
 
 export interface CircularTextProps {
@@ -28,7 +29,7 @@ watchEffect(() => {
 </script>
 
 <template>
-  <svg v-bind="props" class="size-full" :viewBox="`0 0 ${size} ${size}`" xmlns="http://www.w3.org/2000/svg">
+  <svg v-bind="props" :class="cn('size-full', text.italic && 'italic')" :viewBox="`0 0 ${size} ${size}`" xmlns="http://www.w3.org/2000/svg">
     <path
       :id="`${pathId}`"
       fill="none"

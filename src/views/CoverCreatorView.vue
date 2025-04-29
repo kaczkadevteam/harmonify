@@ -25,24 +25,28 @@ const covers = Object.entries(COVERS).map<CoverType>(([key, value]) => {
       fontSize: 0.1125,
       radius: 0.8125,
       offsetCorrection: 0,
+      italic: false,
     },
     subtitle: {
       value: value.subtitle,
       fontSize: 0.05,
       radius: 0.6,
       offsetCorrection: 0,
+      italic: true,
     },
     example: {
       value: value.example,
       fontSize: 0.045,
       radius: 0.35,
       offsetCorrection: 0,
+      italic: true,
     },
     type: {
       value: 'MOVIES',
       fontSize: 0.04,
       radius: 0.1,
       offsetCorrection: 0,
+      italic: false,
     },
   }
 })
