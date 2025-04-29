@@ -45,11 +45,11 @@ const settingsStore = useSettingsStore()
         </div>
         <div class="grid grid-cols-[min-content_minmax(0,1fr)] items-center gap-4">
           <Label class="text-nowrap">Play animations</Label>
-          <Switch :checked="settingsStore.playAnimations" @update:checked="settingsStore.playAnimations = !settingsStore.playAnimations" />
+          <Switch v-model:model-value="settingsStore.playAnimations" />
         </div>
         <div class="grid grid-cols-[min-content_minmax(0,1fr)] items-center gap-4">
           <Label class="text-nowrap">Display audio visualizer</Label>
-          <Switch :checked="settingsStore.displayVisualizer" @update:checked="settingsStore.displayVisualizer = !settingsStore.displayVisualizer" />
+          <Switch v-model:model-value="settingsStore.playAnimations" />
         </div>
       </div>
     </SheetContent>
