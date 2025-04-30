@@ -1,0 +1,482 @@
+[
+  {
+    "name": "superheroes1",
+    "color": "#BA1C1C",
+    "title": {
+      "value": "Superheroes #1",
+      "fontSize": 0.1125,
+      "radius": 0.8125,
+      "offsetCorrection": 0,
+      "italic": false
+    },
+    "subtitle": {
+      "value": "Best-known superhero themes",
+      "fontSize": 0.05,
+      "radius": 0.6,
+      "offsetCorrection": 0,
+      "italic": true
+    },
+    "example": {
+      "value": "e.g. Dark Knight",
+      "fontSize": 0.045,
+      "radius": 0.35,
+      "offsetCorrection": 0,
+      "italic": true
+    },
+    "type": {
+      "value": "MOVIES",
+      "fontSize": 0.04,
+      "radius": 0.1,
+      "offsetCorrection": 0,
+      "italic": false
+    }
+  },
+  {
+    "name": "superheroes2",
+    "color": "#981B1B",
+    "title": {
+      "value": "Superheroes #2",
+      "fontSize": 0.1125,
+      "radius": 0.8125,
+      "offsetCorrection": 0,
+      "italic": false
+    },
+    "subtitle": {
+      "value": "Lesser-known themes from Marvel",
+      "fontSize": 0.05,
+      "radius": 0.6,
+      "offsetCorrection": 0,
+      "italic": true
+    },
+    "example": {
+      "value": "e.g. Ant-Man",
+      "fontSize": 0.045,
+      "radius": 0.35,
+      "offsetCorrection": 0,
+      "italic": true
+    },
+    "type": {
+      "value": "MOVIES",
+      "fontSize": 0.04,
+      "radius": 0.1,
+      "offsetCorrection": 0,
+      "italic": false
+    }
+  },
+  {
+    "name": "liveAction1",
+    "color": "#E9590C",
+    "title": {
+      "value": "Live Action #1",
+      "fontSize": 0.1125,
+      "radius": 0.8125,
+      "offsetCorrection": 0,
+      "italic": false
+    },
+    "subtitle": {
+      "value": "Themes from XXI century live action hits",
+      "fontSize": 0.05,
+      "radius": 0.6,
+      "offsetCorrection": 0,
+      "italic": true
+    },
+    "example": {
+      "value": "e.g. Harry Potter",
+      "fontSize": 0.045,
+      "radius": 0.35,
+      "offsetCorrection": 0,
+      "italic": true
+    },
+    "type": {
+      "value": "MOVIES",
+      "fontSize": 0.04,
+      "radius": 0.1,
+      "offsetCorrection": 0,
+      "italic": false
+    }
+  },
+  {
+    "name": "liveAction2",
+    "color": "#C03F0C",
+    "title": {
+      "value": "Live Action #2",
+      "fontSize": 0.1125,
+      "radius": 0.8125,
+      "offsetCorrection": 0,
+      "italic": false
+    },
+    "subtitle": {
+      "value": "Lesser-known themes from modern movies",
+      "fontSize": 0.05,
+      "radius": 0.6,
+      "offsetCorrection": 0,
+      "italic": true
+    },
+    "example": {
+      "value": "e.g. Blade Runner 2049",
+      "fontSize": 0.045,
+      "radius": 0.35,
+      "offsetCorrection": 0,
+      "italic": true
+    },
+    "type": {
+      "value": "MOVIES",
+      "fontSize": 0.04,
+      "radius": 0.1,
+      "offsetCorrection": 0,
+      "italic": false
+    }
+  },
+  {
+    "name": "liveAction3",
+    "color": "#9B3412",
+    "title": {
+      "value": "Live Action #3",
+      "fontSize": 0.1125,
+      "radius": 0.8125,
+      "offsetCorrection": 0,
+      "italic": false
+    },
+    "subtitle": {
+      "value": "Custom selection of modern movies themes",
+      "fontSize": 0.05,
+      "radius": 0.6,
+      "offsetCorrection": 0,
+      "italic": true
+    },
+    "example": {
+      "value": "e.g. Knives Out",
+      "fontSize": 0.045,
+      "radius": 0.35,
+      "offsetCorrection": 0,
+      "italic": true
+    },
+    "type": {
+      "value": "MOVIES",
+      "fontSize": 0.04,
+      "radius": 0.1,
+      "offsetCorrection": 0,
+      "italic": false
+    }
+  },
+  {
+    "name": "classics1",
+    "color": "#C88A04",
+    "title": {
+      "value": "Classics #1",
+      "fontSize": 0.1125,
+      "radius": 0.8125,
+      "offsetCorrection": 0,
+      "italic": false
+    },
+    "subtitle": {
+      "value": "XX century movie themes known by everyone",
+      "fontSize": 0.05,
+      "radius": 0.6,
+      "offsetCorrection": 0,
+      "italic": true
+    },
+    "example": {
+      "value": "e.g. Indiana Jones",
+      "fontSize": 0.045,
+      "radius": 0.35,
+      "offsetCorrection": 0,
+      "italic": true
+    },
+    "type": {
+      "value": "MOVIES",
+      "fontSize": 0.04,
+      "radius": 0.1,
+      "offsetCorrection": 0,
+      "italic": false
+    }
+  },
+  {
+    "name": "classics2",
+    "color": "#A26107",
+    "title": {
+      "value": "Classics #2",
+      "fontSize": 0.1125,
+      "radius": 0.8125,
+      "offsetCorrection": 0,
+      "italic": false
+    },
+    "subtitle": {
+      "value": "Lesser-known themes of XX century movies",
+      "fontSize": 0.05,
+      "radius": 0.6,
+      "offsetCorrection": 0,
+      "italic": true
+    },
+    "example": {
+      "value": "e.g. Truman Show",
+      "fontSize": 0.045,
+      "radius": 0.35,
+      "offsetCorrection": 0,
+      "italic": true
+    },
+    "type": {
+      "value": "MOVIES",
+      "fontSize": 0.04,
+      "radius": 0.1,
+      "offsetCorrection": 0,
+      "italic": false
+    }
+  },
+  {
+    "name": "tv1",
+    "color": "#149041",
+    "title": {
+      "value": "Tv Series #1",
+      "fontSize": 0.1125,
+      "radius": 0.8125,
+      "offsetCorrection": 0,
+      "italic": false
+    },
+    "subtitle": {
+      "value": "Even if you missed it, you heard its theme",
+      "fontSize": 0.05,
+      "radius": 0.6,
+      "offsetCorrection": 0,
+      "italic": true
+    },
+    "example": {
+      "value": "e.g. Game of Thrones",
+      "fontSize": 0.045,
+      "radius": 0.35,
+      "offsetCorrection": 0,
+      "italic": true
+    },
+    "type": {
+      "value": "MOVIES",
+      "fontSize": 0.04,
+      "radius": 0.1,
+      "offsetCorrection": 0,
+      "italic": false
+    }
+  },
+  {
+    "name": "tv2",
+    "color": "#166433",
+    "title": {
+      "value": "Tv Series #2",
+      "fontSize": 0.1125,
+      "radius": 0.8125,
+      "offsetCorrection": 0,
+      "italic": false
+    },
+    "subtitle": {
+      "value": "Themes from 2020s series",
+      "fontSize": 0.05,
+      "radius": 0.6,
+      "offsetCorrection": 0,
+      "italic": true
+    },
+    "example": {
+      "value": "e.g. 3 Body Problem",
+      "fontSize": 0.045,
+      "radius": 0.35,
+      "offsetCorrection": 0,
+      "italic": true
+    },
+    "type": {
+      "value": "MOVIES",
+      "fontSize": 0.04,
+      "radius": 0.1,
+      "offsetCorrection": 0,
+      "italic": false
+    }
+  },
+  {
+    "name": "dreamworks",
+    "color": "#0892B4",
+    "title": {
+      "value": "Dreamworks",
+      "fontSize": 0.1125,
+      "radius": 0.8125,
+      "offsetCorrection": 0,
+      "italic": false
+    },
+    "subtitle": {
+      "value": "Themes from Dreamworks films",
+      "fontSize": 0.05,
+      "radius": 0.6,
+      "offsetCorrection": 0,
+      "italic": true
+    },
+    "example": {
+      "value": "e.g. Kung Fu Panda",
+      "fontSize": 0.045,
+      "radius": 0.35,
+      "offsetCorrection": 0,
+      "italic": true
+    },
+    "type": {
+      "value": "MOVIES",
+      "fontSize": 0.04,
+      "radius": 0.1,
+      "offsetCorrection": 0,
+      "italic": false
+    }
+  },
+  {
+    "name": "pixar",
+    "color": "#0284C5",
+    "title": {
+      "value": "Pixar",
+      "fontSize": 0.1125,
+      "radius": 0.8125,
+      "offsetCorrection": 0,
+      "italic": false
+    },
+    "subtitle": {
+      "value": "Themes from Pixar films",
+      "fontSize": 0.05,
+      "radius": 0.6,
+      "offsetCorrection": 0,
+      "italic": true
+    },
+    "example": {
+      "value": "e.g. Toy Story",
+      "fontSize": 0.045,
+      "radius": 0.35,
+      "offsetCorrection": 0,
+      "italic": true
+    },
+    "type": {
+      "value": "MOVIES",
+      "fontSize": 0.04,
+      "radius": 0.1,
+      "offsetCorrection": 0,
+      "italic": false
+    }
+  },
+  {
+    "name": "disney",
+    "color": "#2463EB",
+    "title": {
+      "value": "Disney",
+      "fontSize": 0.1125,
+      "radius": 0.8125,
+      "offsetCorrection": 0,
+      "italic": false
+    },
+    "subtitle": {
+      "value": "Themes from Disney animated films",
+      "fontSize": 0.05,
+      "radius": 0.6,
+      "offsetCorrection": 0,
+      "italic": true
+    },
+    "example": {
+      "value": "e.g. The Lion King",
+      "fontSize": 0.045,
+      "radius": 0.35,
+      "offsetCorrection": 0,
+      "italic": true
+    },
+    "type": {
+      "value": "MOVIES",
+      "fontSize": 0.04,
+      "radius": 0.1,
+      "offsetCorrection": 0,
+      "italic": false
+    }
+  },
+  {
+    "name": "animated",
+    "color": "#5048E5",
+    "title": {
+      "value": "Animated",
+      "fontSize": 0.1125,
+      "radius": 0.8125,
+      "offsetCorrection": 0,
+      "italic": false
+    },
+    "subtitle": {
+      "value": "Neither Disney, Pixar nor Dreamworks",
+      "fontSize": 0.05,
+      "radius": 0.6,
+      "offsetCorrection": 0,
+      "italic": true
+    },
+    "example": {
+      "value": "e.g. Spider-Man: Into the Spider-Verse",
+      "fontSize": 0.045,
+      "radius": 0.35,
+      "offsetCorrection": 0,
+      "italic": true
+    },
+    "type": {
+      "value": "MOVIES",
+      "fontSize": 0.04,
+      "radius": 0.1,
+      "offsetCorrection": 0,
+      "italic": false
+    }
+  },
+  {
+    "name": "anime",
+    "color": "#6B26D9",
+    "title": {
+      "value": "Anime",
+      "fontSize": 0.1125,
+      "radius": 0.8125,
+      "offsetCorrection": 0,
+      "italic": false
+    },
+    "subtitle": {
+      "value": "Themes from Japanese anime",
+      "fontSize": 0.05,
+      "radius": 0.6,
+      "offsetCorrection": 0,
+      "italic": true
+    },
+    "example": {
+      "value": "e.g. Death Note",
+      "fontSize": 0.045,
+      "radius": 0.35,
+      "offsetCorrection": 0,
+      "italic": true
+    },
+    "type": {
+      "value": "MOVIES",
+      "fontSize": 0.04,
+      "radius": 0.1,
+      "offsetCorrection": 0,
+      "italic": false
+    }
+  },
+  {
+    "name": "memes",
+    "color": "#AD1F1F",
+    "title": {
+      "value": "XD",
+      "fontSize": 0.1125,
+      "radius": 0.8125,
+      "offsetCorrection": 0,
+      "italic": false
+    },
+    "subtitle": {
+      "value": "What is this?",
+      "fontSize": 0.05,
+      "radius": 0.6,
+      "offsetCorrection": 0,
+      "italic": true
+    },
+    "example": {
+      "value": "You really think I will tell you?",
+      "fontSize": 0.045,
+      "radius": 0.35,
+      "offsetCorrection": 0,
+      "italic": true
+    },
+    "type": {
+      "value": "MOVIES",
+      "fontSize": 0.04,
+      "radius": 0.1,
+      "offsetCorrection": 0,
+      "italic": false
+    }
+  }
+]

@@ -1,4 +1,5 @@
 export { useConnectionStore } from './connection'
+export { useCoversStore } from './covers'
 export { useGameDataStore } from './gameData'
 export { useMusicPlayerStore } from './musicPlayer'
 export { useResultStore } from './result'

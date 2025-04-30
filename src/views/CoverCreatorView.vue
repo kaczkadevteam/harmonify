@@ -6,60 +6,27 @@ import CoversSheet from '@/components/coverCreator/CoversSheet.vue'
 import CurvedTextForm from '@/components/coverCreator/CurvedTextForm.vue'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
 import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { useToast } from '@/components/ui/toast'
-import { COVERS } from '@/consts'
+import { DEFAULT_COVER } from '@/consts'
+import { useCoversStore } from '@/stores'
 import { unrefElement } from '@vueuse/core'
-import convert from 'color-convert'
 import { saveAs } from 'file-saver'
 import { toBlob } from 'html-to-image'
-import { ArrowLeft, Clipboard, Download, Save } from 'lucide-vue-next'
+import { ArrowLeft, Clipboard, CopyPlus, Download, Save } from 'lucide-vue-next'
 import { ref, useTemplateRef } from 'vue'
 import { RouterLink } from 'vue-router'
 
-const covers = Object.entries(COVERS).map<CoverType>(([key, value]) => {
-  return {
-    name: key,
-    color: `#${convert.hsl.hex(value.hue, value.saturation, value.lightness)}`,
-    title: {
-      value: value.title,
-      fontSize: 0.1125,
-      radius: 0.8125,
-      offsetCorrection: 0,
-      italic: false,
-    },
-    subtitle: {
-      value: value.subtitle,
-      fontSize: 0.05,
-      radius: 0.6,
-      offsetCorrection: 0,
-      italic: true,
-    },
-    example: {
-      value: value.example,
-      fontSize: 0.045,
-      radius: 0.35,
-      offsetCorrection: 0,
-      italic: true,
-    },
-    type: {
-      value: 'MOVIES',
-      fontSize: 0.04,
-      radius: 0.1,
-      offsetCorrection: 0,
-      italic: false,
-    },
-  }
-})
-
-const cover = ref(covers[0])
+const cover = ref<CoverType>(DEFAULT_COVER)
 const coverImage = useTemplateRef('coverImage')
 const bottomColor = ref<string>('#18181b')
+const coversStore = useCoversStore()
 
 const { toast } = useToast()
 
-function setCover(index: number) {
-  cover.value = covers[index]
+function setCover(selectedCover: CoverType) {
+  cover.value = selectedCover
 }
 
 async function copyToClipboard() {
@@ -92,7 +59,32 @@ async function download() {
     return
   }
 
-  saveAs(blob, `${cover.value.title.value}_${cover.value.subtitle.value}_${cover.value.example.value}.png`)
+  const name = getCoverNameOrDefault(cover.value)
+
+  saveAs(blob, `${name}.png`)
+}
+
+function save() {
+  let duplicated = false
+  if (cover.value.id) {
+    cover.value = JSON.parse(JSON.stringify(cover.value)) as CoverType
+    duplicated = true
+  }
+
+  cover.value.id = crypto.randomUUID()
+  if (!cover.value.name) {
+    cover.value.name = getCoverNameOrDefault(cover.value)
+  }
+
+  coversStore.savedCovers.push(cover.value)
+
+  toast({
+    description: duplicated ? 'Succesfully duplicated cover!' : 'Succesfully saved cover!',
+  })
+}
+
+function getCoverNameOrDefault(cover: CoverType) {
+  return cover.name ? cover.name : `${cover.title.value}_${cover.subtitle.value}_${cover.example.value}`
 }
 
 async function getCoverBlob() {
@@ -107,7 +99,7 @@ async function getCoverBlob() {
 <template>
   <div class="grid justify-items-center">
     <div class="relative w-full max-w-[1260px] p-4 pt-0">
-      <div class="sticky top-0 z-10 grid justify-center bg-gradient bg-fixed py-4">
+      <div class="sticky top-0 z-10 grid justify-center bg-gradient bg-fixed py-2">
         <div class="flex gap-2">
           <div>
             <Button variant="ghost" size="icon" as-child>
@@ -126,9 +118,10 @@ async function getCoverBlob() {
             :type="cover.type"
           />
           <div class="grid content-start gap-2">
-            <CoversSheet :covers="covers" @cover-click="setCover" />
-            <Button variant="ghost" size="icon" type="button">
-              <Save />
+            <CoversSheet @cover-click="setCover" />
+            <Button variant="ghost" size="icon" type="button" @click="save">
+              <CopyPlus v-if="cover.id" />
+              <Save v-else />
             </Button>
             <Button variant="ghost" size="icon" type="button" @click="copyToClipboard">
               <Clipboard />
@@ -140,6 +133,10 @@ async function getCoverBlob() {
         </div>
       </div>
       <form class="grid gap-2">
+        <div class="mt-1 grid w-[300px] gap-1 justify-self-center text-center">
+          <Label>Name</Label>
+          <Input v-model:model-value="cover.name" />
+        </div>
         <div class="flex gap-4 justify-self-center text-center">
           <div class="grid w-fit justify-center gap-1">
             <Label>Main color</Label>

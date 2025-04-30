@@ -6,20 +6,8 @@ export interface CurvedText {
   italic: boolean
 }
 
-export interface CoverMetadata {
-  hue: number
-  saturation: number
-  lightness: number
-  title: string
-  titleOffset?: number
-  subtitle: string
-  subtitleOffset?: number
-  example: string
-  exampleOffset?: number
-  lightnessOffset?: number
-}
-
 export interface Cover {
+  id?: `${string}-${string}-${string}-${string}-${string}`
   name: string
   color: string
   title: CurvedText
